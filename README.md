@@ -1,73 +1,54 @@
-<p align="center">
-  <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo-small.svg" width="200" alt="Nest Logo" /></a>
-</p>
+# Ordbok API
 
-[circleci-image]: https://img.shields.io/circleci/build/github/nestjs/nest/master?token=abc123def456
-[circleci-url]: https://circleci.com/gh/nestjs/nest
+## Introduksjon
 
-  <p align="center">A progressive <a href="http://nodejs.org" target="_blank">Node.js</a> framework for building efficient and scalable server-side applications.</p>
-    <p align="center">
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/v/@nestjs/core.svg" alt="NPM Version" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/l/@nestjs/core.svg" alt="Package License" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/dm/@nestjs/common.svg" alt="NPM Downloads" /></a>
-<a href="https://circleci.com/gh/nestjs/nest" target="_blank"><img src="https://img.shields.io/circleci/build/github/nestjs/nest/master" alt="CircleCI" /></a>
-<a href="https://coveralls.io/github/nestjs/nest?branch=master" target="_blank"><img src="https://coveralls.io/repos/github/nestjs/nest/badge.svg?branch=master#9" alt="Coverage" /></a>
-<a href="https://discord.gg/G7Qnnhy" target="_blank"><img src="https://img.shields.io/badge/discord-online-brightgreen.svg" alt="Discord"/></a>
-<a href="https://opencollective.com/nest#backer" target="_blank"><img src="https://opencollective.com/nest/backers/badge.svg" alt="Backers on Open Collective" /></a>
-<a href="https://opencollective.com/nest#sponsor" target="_blank"><img src="https://opencollective.com/nest/sponsors/badge.svg" alt="Sponsors on Open Collective" /></a>
-  <a href="https://paypal.me/kamilmysliwiec" target="_blank"><img src="https://img.shields.io/badge/Donate-PayPal-ff3f59.svg"/></a>
-    <a href="https://opencollective.com/nest#sponsor"  target="_blank"><img src="https://img.shields.io/badge/Support%20us-Open%20Collective-41B883.svg" alt="Support us"></a>
-  <a href="https://twitter.com/nestframework" target="_blank"><img src="https://img.shields.io/twitter/follow/nestframework.svg?style=social&label=Follow"></a>
-</p>
-  <!--[![Backers on Open Collective](https://opencollective.com/nest/backers/badge.svg)](https://opencollective.com/nest#backer)
-  [![Sponsors on Open Collective](https://opencollective.com/nest/sponsors/badge.svg)](https://opencollective.com/nest#sponsor)-->
+Velkomen til Ordbok API, nøkkelen din til enklare og meir tilgjengeleg tilgang til Ordbøkene-data. Dette APIet er designa for å forenkla tilgangen til omfattande informasjon frå dei offisielle norske ordbøkene og er for tida i utviklingsfasen.
 
-## Description
+## Funksjonar
 
-[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
+- **Rask tilgang**: Snarleg henting av orddefinisjonar og døme.
+- **Fleksibilitet**: Tilpassa søk for varierte brukstilfelle.
+- **Effektiv datahandtering**: GraphQL spørjespråk for å henta nøyaktig den informasjonen du treng.
 
-## Installation
+## Korleis å bruka APIet
 
-```bash
-$ yarn install
-```
+> Du treng Node.js og Yarn installert på maskina di for å bruka Ordbok API. Eg anbefalar å bruka [Volta](https://volta.sh/) for å installera Node.js og Yarn. Viss du brukar Volta, er det ikkje nødvendig å installera Node.js og Yarn fordi repoet er konfigurert med versjonar av desse verktøya.
 
-## Running the app
+Akkurat no er Ordbok API i ein utviklingsfase og kan vera ustabil. Fullstendig dokumentasjon er ikkje tilgjengeleg endå. Me oppmodar brukarar til å nytta seg av GraphQL sandbox for å utforska og testa APIet:
 
-```bash
-# development
-$ yarn run start
+- **Besøk endpoint**: Gå til [Apollo Sandbox](https://api.ordbokapi.org/graphql).
+- **Test førespurnader**: Bruk sandboxen til å gjera førespurnader og sjå responsane.
+- **Gi tilbakemelding**: Me verdset tilbakemeldinga di for å forbetra APIet.
 
-# watch mode
-$ yarn run start:dev
+## Starta prosjektet lokalt
 
-# production mode
-$ yarn run start:prod
-```
+For å starta Ordbok API lokalt, følg desse trinna:
 
-## Test
+1. Klona repoet: `git clone https://github.com/adalinesimonian/ordbokapi.git`
+2. Installer avhengnader: `yarn install`
+3. Bygg prosjektet: `yarn build`
+4. Start serveren: `yarn start:dev`
 
-```bash
-# unit tests
-$ yarn run test
+## Bidra
 
-# e2e tests
-$ yarn run test:e2e
+For å bidra til Ordbok API, følg standard GitHub pull request prosedyrar:
 
-# test coverage
-$ yarn run test:cov
-```
+1. Fork repoet.
+2. Gjer endringar i forket ditt.
+3. Send ein pull request med endringane dine.
 
-## Support
+## Lisens
 
-Nest is an MIT-licensed open source project. It can grow thanks to the sponsors and support by the amazing backers. If you'd like to join them, please [read more here](https://docs.nestjs.com/support).
+Dette prosjektet er lisensiert under ISC-lisensen. Sjå [LICENCE](LICENCE) for meir informasjon.
 
-## Stay in touch
+## Tilbakemelding og kontakt
 
-- Author - [Kamil Myśliwiec](https://kamilmysliwiec.com)
-- Website - [https://nestjs.com](https://nestjs.com/)
-- Twitter - [@nestframework](https://twitter.com/nestframework)
+For spørsmål og tilbakemeldingar, vennligst kontakt meg på [GitHub](https://github.com/adalinesimonian/ordbokapi).
 
-## License
+## Vedkjenningar
 
-Nest is [MIT licensed](LICENSE).
+Tekst og data frå ordbøkene er © Språkrådet og Universitetet i Bergen, henta frå ordbokene.no. Dette prosjektet er eit uavhengig samfunnsprosjekt av Adaline Simonian og har ingen tilknytning til Universitetet i Bergen eller Språkrådet.
+
+© 2023 Adaline Simonian. Alle rettar reservert.
+
+Besøk nettstedet vårt: [ordbokapi.org](https://ordbokapi.org)
