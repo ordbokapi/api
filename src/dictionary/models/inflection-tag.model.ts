@@ -17,6 +17,9 @@ export enum InflectionTag {
   Ubestemt = 'Ubestemt', // Indefinite
   Bestemt = 'Bestemt', // Definite
   Fleirtal = 'Fleirtal', // Plural
+  Superlativ = 'Superlativ', // Superlative
+  Komparativ = 'Komparativ', // Comparative
+  Positiv = 'Positiv', // Positive
 }
 
 registerEnumType(InflectionTag, {

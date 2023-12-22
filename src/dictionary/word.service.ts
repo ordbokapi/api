@@ -57,18 +57,18 @@ export class WordService {
     const response = await fetch(articlesUrl.toString());
     const data = await response.json();
 
-    if (data.meta.bm.total === 0 && data.meta.nn.total === 0) {
-      throw new Error('Word not found');
-    }
-
     const foundDictionaries: Dictionary[] = [];
 
-    if (data.meta.bm.total > 0) {
+    if (data.meta.bm?.total) {
       foundDictionaries.push(Dictionary.Bokmaalsordboka);
     }
 
-    if (data.meta.nn.total > 0) {
+    if (data.meta.nn?.total) {
       foundDictionaries.push(Dictionary.Nynorskordboka);
+    }
+
+    if (foundDictionaries.length === 0) {
+      throw new Error('Word not found');
     }
 
     const wordObject: Word = {
@@ -211,6 +211,9 @@ export class WordService {
       Fem: InflectionTag.Hokjoenn,
       Def: InflectionTag.Bestemt,
       Plur: InflectionTag.Fleirtal,
+      Pos: InflectionTag.Positiv,
+      Cmp: InflectionTag.Komparativ,
+      Sup: InflectionTag.Superlativ,
     };
 
     // words can have multiple paradigms, e.g. feminine gender words in Bokmål, which have both
@@ -222,12 +225,14 @@ export class WordService {
       lemma.paradigm_info?.forEach((paradigmInfo: any) => {
         const paradigm = new Paradigm();
         paradigm.paradigmId = paradigmInfo.paradigm_id;
-        paradigm.inflections = paradigmInfo.inflection.map(
-          (inf: any): Inflection => ({
-            tags: inf.tags.map((tag: string) => inflectionTagMapping[tag]),
-            wordForm: inf.word_form,
-          }),
-        );
+        paradigm.inflections = paradigmInfo.inflection
+          .filter((inf: any) => inf.tags.length > 0 || inf.word_form)
+          .map(
+            (inf: any): Inflection => ({
+              tags: inf.tags.map((tag: string) => inflectionTagMapping[tag]),
+              wordForm: inf.word_form,
+            }),
+          );
         paradigm.tags = paradigmInfo.tags
           .map((tag: string) => inflectionTagMapping[tag])
           .filter((tag: InflectionTag | undefined) => tag !== undefined);
