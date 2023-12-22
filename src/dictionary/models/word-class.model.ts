@@ -3,6 +3,7 @@ import { registerEnumType } from '@nestjs/graphql';
 export enum WordClass {
   Substantiv = 'Substantiv', // Noun
   Adjektiv = 'Adjektiv', // Adjective
+  Adverb = 'Adverb', // Adverb
   Verb = 'Verb', // Verb
   Pronomen = 'Pronomen', // Pronoun
   Preposisjon = 'Preposisjon', // Preposition

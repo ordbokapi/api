@@ -169,6 +169,7 @@ export class WordService {
     const tagMapping: { [key: string]: WordClass } = {
       NOUN: WordClass.Substantiv,
       ADJ: WordClass.Adjektiv,
+      ADV: WordClass.Adverb,
       VERB: WordClass.Verb,
       PRON: WordClass.Pronomen,
       ADP: WordClass.Preposisjon,
