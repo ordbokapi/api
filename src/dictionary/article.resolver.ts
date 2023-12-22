@@ -5,6 +5,7 @@ import { WordService } from './word.service';
 import { WordClass } from './models/word-class.model';
 import { Paradigm } from './models/paradigm.model';
 import { Gender } from './models/gender.model';
+import { Lemma } from './models/lemma.model';
 
 @Resolver(() => Article)
 export class ArticleResolver {
@@ -18,6 +19,11 @@ export class ArticleResolver {
   @ResolveField('wordClass', () => WordClass)
   async getWordClass(@Parent() article: Article) {
     return this.wordService.getWordClass(article);
+  }
+
+  @ResolveField('lemmas', () => [Lemma])
+  async getLemmas(@Parent() article: Article) {
+    return this.wordService.getLemmas(article);
   }
 
   @ResolveField('paradigms', () => [Paradigm])

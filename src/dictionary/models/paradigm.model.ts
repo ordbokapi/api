@@ -5,7 +5,7 @@ import { InflectionTag } from './inflection-tag.model';
 @ObjectType()
 export class Paradigm {
   @Field(() => Int)
-  paradigmId: number;
+  id: number;
 
   @Field(() => [Inflection])
   inflections: Inflection[];

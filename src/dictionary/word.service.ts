@@ -9,6 +9,7 @@ import { Inflection } from './models/inflection.model';
 import { InflectionTag } from './models/inflection-tag.model';
 import { Paradigm } from './models/paradigm.model';
 import { Gender } from './models/gender.model';
+import { Lemma } from './models/lemma.model';
 
 @Injectable()
 export class WordService {
@@ -109,6 +110,20 @@ export class WordService {
     return this.transformWordClass(data);
   }
 
+  async getLemmas(article: Article): Promise<Lemma[] | undefined> {
+    await this.loadConcepts();
+
+    this.logger.debug(`Getting lemmas for article: ${article.id}`);
+
+    const data = await this.fetchArticleDetails(article.id, article.dictionary);
+
+    return data.lemmas.map((lemma: any) => ({
+      id: lemma.id,
+      lemma: lemma.lemma,
+      meaning: lemma.hgno,
+    }));
+  }
+
   async getParadigms(article: Article): Promise<Paradigm[] | undefined> {
     await this.loadConcepts();
 
@@ -177,6 +192,7 @@ export class WordService {
       INTJ: WordClass.Interjeksjon,
       DET: WordClass.Determinativ,
       SCONJ: WordClass.Subjunksjon,
+      SYM: WordClass.Symbol,
     };
 
     if (article.lemmas && article.lemmas.length > 0) {
@@ -203,6 +219,7 @@ export class WordService {
       Imp: InflectionTag.Imperativ,
       Pass: InflectionTag.Passiv,
       Adj: InflectionTag.Adjektiv,
+      Adv: InflectionTag.Adverb,
       Neuter: InflectionTag.Inkjekjoenn,
       Ind: InflectionTag.Ubestemt,
       Sing: InflectionTag.Eintal,
@@ -214,6 +231,8 @@ export class WordService {
       Pos: InflectionTag.Positiv,
       Cmp: InflectionTag.Komparativ,
       Sup: InflectionTag.Superlativ,
+      Nom: InflectionTag.Nominativ,
+      Acc: InflectionTag.Akkusativ,
     };
 
     // words can have multiple paradigms, e.g. feminine gender words in Bokmål, which have both
@@ -224,7 +243,7 @@ export class WordService {
     article.lemmas?.forEach((lemma: any) => {
       lemma.paradigm_info?.forEach((paradigmInfo: any) => {
         const paradigm = new Paradigm();
-        paradigm.paradigmId = paradigmInfo.paradigm_id;
+        paradigm.id = paradigmInfo.paradigm_id;
         paradigm.inflections = paradigmInfo.inflection
           .filter((inf: any) => inf.tags.length > 0 || inf.word_form)
           .map(
@@ -236,6 +255,8 @@ export class WordService {
         paradigm.tags = paradigmInfo.tags
           .map((tag: string) => inflectionTagMapping[tag])
           .filter((tag: InflectionTag | undefined) => tag !== undefined);
+
+        // Don't push paradigm if it is
         paradigms.push(paradigm);
       });
     });
@@ -251,17 +272,19 @@ export class WordService {
     let foundMasc = false;
     let foundFem = false;
 
-    article.lemmas?.forEach((lemma: any) => {
-      lemma.paradigm_info?.forEach((paradigmInfo: any) => {
-        paradigmInfo.tags?.forEach((tag: string) => {
-          if (tag === 'Masc') {
+    for (const lemma of article.lemmas ?? []) {
+      for (const paradigmInfo of lemma.paradigm_info ?? []) {
+        for (const tag of paradigmInfo.tags ?? []) {
+          if (tag === 'Neuter') {
+            return Gender.Inkjekjoenn;
+          } else if (tag === 'Masc') {
             foundMasc = true;
           } else if (tag === 'Fem') {
             foundFem = true;
           }
-        });
-      });
-    });
+        }
+      }
+    }
 
     return foundMasc && foundFem
       ? Gender.HankjoennHokjoenn
@@ -336,12 +359,19 @@ export class WordService {
         continue;
       }
 
+      if (element.items[i].type_ === 'quote_inset') {
+        text += this.formatText(dictionary, element.items[i] as any);
+        continue;
+      }
+
       const conceptId = element.items[i].id;
       const concept = this.concepts[dictionary].concepts[conceptId];
       if (concept) {
         text += concept.expansion;
       } else {
-        console.error(`Fann ikkje concept ${conceptId} i ${dictionary}`);
+        this.logger.warn(
+          `Fann ikkje concept ${conceptId} i ${dictionary} (prøvde å formattera ${element.items[i].type_} mens bygde opp teksten ${element.content})`,
+        );
         text += '(?)';
       }
     }

@@ -9,6 +9,7 @@ export enum InflectionTag {
   Imperativ = 'Imperativ', // Imperative
   Passiv = 'Passiv', // Passive
   Adjektiv = 'Adjektiv', // Adjective
+  Adverb = 'Adverb', // Adverb
   Eintal = 'Eintal', // Singular
   HankjoennHokjoenn = 'HankjoennHokjoenn', // Masculine/Feminine
   Hankjoenn = 'Hankjoenn', // Masculine
@@ -20,6 +21,8 @@ export enum InflectionTag {
   Superlativ = 'Superlativ', // Superlative
   Komparativ = 'Komparativ', // Comparative
   Positiv = 'Positiv', // Positive
+  Nominativ = 'Nominativ', // Nominative
+  Akkusativ = 'Akkusativ', // Accusative
 }
 
 registerEnumType(InflectionTag, {

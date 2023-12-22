@@ -11,6 +11,7 @@ export enum WordClass {
   Interjeksjon = 'Interjeksjon', // Interjection
   Determinativ = 'Determinativ', // Determiner
   Subjunksjon = 'Subjunksjon', // Subjunction
+  Symbol = 'Symbol', // Symbol
 }
 
 registerEnumType(WordClass, {
