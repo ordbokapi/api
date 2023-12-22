@@ -8,6 +8,7 @@ import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { DictionaryModule } from './dictionary/dictionary.module';
 import { RequestLoggerMiddleware } from './request-logger.middleware';
+import { MemcachedProvider } from './memcached.provider';
 
 @Module({
   imports: [
@@ -24,7 +25,7 @@ import { RequestLoggerMiddleware } from './request-logger.middleware';
     DictionaryModule,
   ],
   controllers: [AppController],
-  providers: [AppService],
+  providers: [AppService, MemcachedProvider],
 })
 export class AppModule implements NestModule {
   configure(consumer: MiddlewareConsumer): void {

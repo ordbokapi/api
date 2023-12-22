@@ -1,6 +1,7 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { promisify } from 'util';
 import { brotliCompress, brotliDecompress } from 'zlib';
+import { MemcachedProvider } from '../memcached.provider';
 
 const brotliCompressAsync = promisify(brotliCompress);
 const brotliDecompressAsync = promisify(brotliDecompress);
@@ -97,7 +98,7 @@ export class ArticleCacheProvider {
     [TTLBucket.Long]: { min: 30 * 60, max: 4 * 60 * 60 },
   };
 
-  constructor() {
+  constructor(private memcachedProvider: MemcachedProvider) {
     this.logger.verbose('Initializing ArticleCacheProvider');
     // Periodically clean up expired cache entries
     setInterval(() => this.cleanupExpiredCache(), this.cleanupInterval);
@@ -189,6 +190,16 @@ export class ArticleCacheProvider {
   async get(key: string) {
     const item = this.cache.get(key);
     if (!item) {
+      // Check memcached for long-lived keys
+      const data = await this.memcachedProvider.client?.get(key);
+      if (data?.value) {
+        this.logger.verbose(`Cache hit for long-lived key: ${key}`);
+
+        // Decompress and cache in hot store
+        const decompressed = await this.decompress(data.value);
+        this.set(key, decompressed, TTLBucket.Long);
+      }
+
       this.logger.debug(`Cache miss for key: ${key}`);
       return null;
     }
@@ -205,17 +216,43 @@ export class ArticleCacheProvider {
 
     let data: any;
 
-    try {
-      data =
-        item.location === DataLocation.Hot
-          ? this.hotStore.get(key)
-          : await this.decompress(this.coolStore.get(key)!);
-    } catch (err) {
-      this.logger.error(
-        `Failed to decompress cache entry for key: ${key}`,
-        err,
-      );
-      return null;
+    if (item.location === DataLocation.Hot) {
+      data = this.hotStore.get(key);
+    }
+
+    if (!data) {
+      if (this.memcachedProvider.client) {
+        try {
+          const data = await this.memcachedProvider.client.get(key);
+          if (data?.value) {
+            this.logger.verbose(`Cache hit for key: ${key}`);
+
+            // Decompress and cache in hot store
+            const decompressed = await this.decompress(data.value);
+            this.set(key, decompressed, TTLBucket.Short);
+          }
+        } catch (err) {
+          this.logger.error(
+            `Failed to get cache entry from memcached for key: ${key}`,
+            err,
+          );
+
+          // Delete the cache entry
+          this.delete(key);
+
+          return null;
+        }
+      }
+
+      try {
+        data = await this.decompress(this.coolStore.get(key)!);
+      } catch (err) {
+        this.logger.error(
+          `Failed to decompress cache entry for key: ${key}`,
+          err,
+        );
+        return null;
+      }
     }
 
     if (
@@ -295,18 +332,35 @@ export class ArticleCacheProvider {
         this.logger.verbose(`Cooling down key: ${key}`);
         const value = this.hotStore.get(key);
         if (value) {
+          let compressed: Buffer;
           try {
-            const compressed = await this.compress(value);
-            this.coolStore.set(key, compressed);
-            this.hotStore.delete(key);
-            item.location = DataLocation.Cool;
-            item.temperature = 0;
+            compressed = await this.compress(value);
           } catch (err) {
             this.logger.error(
               `Failed to compress cache entry for key: ${key}`,
               err,
             );
+            return;
           }
+
+          if (this.memcachedProvider.client) {
+            try {
+              await this.memcachedProvider.client.set(key, compressed, {
+                expires: Math.round((item.expiresAt - Date.now()) / 1000),
+              });
+              return;
+            } catch (err) {
+              this.logger.error(
+                `Failed to set cache entry in memcached for key: ${key}`,
+                err,
+              );
+            }
+          }
+
+          this.coolStore.set(key, compressed);
+          this.hotStore.delete(key);
+          item.location = DataLocation.Cool;
+          item.temperature = 0;
         }
       }),
     );
