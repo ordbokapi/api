@@ -12,8 +12,6 @@ Velkomen til Ordbok API, nøkkelen din til enklare og meir tilgjengeleg tilgang 
 
 ## Korleis å bruka APIet
 
-> Du treng Node.js og Yarn installert på maskina di for å bruka Ordbok API. Eg anbefalar å bruka [Volta](https://volta.sh/) for å installera Node.js og Yarn. Viss du brukar Volta, er det ikkje nødvendig å installera Node.js og Yarn fordi repoet er konfigurert med versjonar av desse verktøya.
-
 Akkurat no er Ordbok API i ein utviklingsfase og kan vera ustabil. Fullstendig dokumentasjon er ikkje tilgjengeleg endå. Me oppmodar brukarar til å nytta seg av GraphQL sandbox for å utforska og testa APIet:
 
 - **Besøk endpoint**: Gå til [Apollo Sandbox](https://api.ordbokapi.org/graphql).
@@ -21,6 +19,8 @@ Akkurat no er Ordbok API i ein utviklingsfase og kan vera ustabil. Fullstendig d
 - **Gi tilbakemelding**: Me verdset tilbakemeldinga di for å forbetra APIet.
 
 ## Starta prosjektet lokalt
+
+> Du treng Node.js og Yarn installert på maskina di for å køyra Ordbok API. Eg anbefalar å bruka [Volta](https://volta.sh/) for å installera Node.js og Yarn. Viss du brukar Volta, er det ikkje nødvendig å installera Node.js og Yarn fordi repoet er konfigurert med versjonar av desse verktøya.
 
 For å starta Ordbok API lokalt, følg desse trinna:
 
