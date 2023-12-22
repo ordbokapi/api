@@ -1,11 +1,20 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, Logger } from '@nestjs/common';
 import { Word } from './models/word.model';
 import { Dictionary } from './models/dictionary.model';
 import { Definition } from './models/definition.model';
 import { Article } from './models/article.model';
+import { WordClass } from './models/word-class.model';
+import { ArticleCacheProvider } from './article-cache.provider';
+import { Inflection } from './models/inflection.model';
+import { InflectionTag } from './models/inflection-tag.model';
+import { Paradigm } from './models/paradigm.model';
+import { Gender } from './models/gender.model';
 
 @Injectable()
 export class WordService {
+  private readonly logger = new Logger(WordService.name);
+  constructor(private articleCacheProvider: ArticleCacheProvider) {}
+
   private concepts: { [Dictionary: string]: any } = {};
 
   //#region Public methods
@@ -14,6 +23,7 @@ export class WordService {
     word: string,
     dictionaries: Dictionary[],
   ): Promise<Word[]> {
+    this.logger.debug(`Getting suggestions for word: ${word}`);
     const searchUrl = new URL('https://ord.uib.no/api/suggest');
     searchUrl.searchParams.set('q', word);
     searchUrl.searchParams.set('n', '10'); // Adjust 'n' as needed for the number of suggestions
@@ -22,15 +32,14 @@ export class WordService {
 
     const response = await fetch(searchUrl.toString());
     const data = await response.json();
+    this.logger.debug(`Received suggestions: ${JSON.stringify(data)}`);
     return this.transformSuggestionsResponse(data);
   }
 
-  async getWord(
-    word: string,
-    dictionaries: Dictionary[],
-    fetchDefinitions = false,
-  ): Promise<Word> {
+  async getWord(word: string, dictionaries: Dictionary[]): Promise<Word> {
     await this.loadConcepts();
+
+    this.logger.debug(`Getting articles for word: ${word}`);
 
     const articlesUrl = new URL('https://ord.uib.no/api/articles');
     articlesUrl.searchParams.set('w', word);
@@ -47,8 +56,6 @@ export class WordService {
 
     const response = await fetch(articlesUrl.toString());
     const data = await response.json();
-
-    console.dir(data, { depth: null });
 
     if (data.meta.bm.total === 0 && data.meta.nn.total === 0) {
       throw new Error('Word not found');
@@ -76,19 +83,13 @@ export class WordService {
       ),
     };
 
-    if (fetchDefinitions) {
-      for (const article of wordObject.articles!) {
-        article.definitions = await this.getDefinitions(article);
-      }
-    }
-
-    console.dir(wordObject, { depth: null });
-
     return wordObject;
   }
 
   async getDefinitions(article: Article): Promise<Definition[]> {
     await this.loadConcepts();
+
+    this.logger.debug(`Getting definitions for article: ${article.id}`);
 
     const data = await this.fetchArticleDetails(article.id, article.dictionary);
 
@@ -98,18 +99,52 @@ export class WordService {
     return article.definitions!;
   }
 
+  async getWordClass(article: Article): Promise<WordClass | undefined> {
+    await this.loadConcepts();
+
+    this.logger.debug(`Getting word class for article: ${article.id}`);
+
+    const data = await this.fetchArticleDetails(article.id, article.dictionary);
+
+    return this.transformWordClass(data);
+  }
+
+  async getParadigms(article: Article): Promise<Paradigm[] | undefined> {
+    await this.loadConcepts();
+
+    this.logger.debug(`Getting paradigms for article: ${article.id}`);
+
+    const data = await this.fetchArticleDetails(article.id, article.dictionary);
+
+    return this.transformParadigmInfo(data);
+  }
+
+  async getGender(article: Article): Promise<Gender | undefined> {
+    await this.loadConcepts();
+
+    this.logger.debug(`Getting gender for article: ${article.id}`);
+
+    const data = await this.fetchArticleDetails(article.id, article.dictionary);
+
+    return this.transformGender(data);
+  }
+
   //#endregion
 
   //#region Private helper methods
 
   private async loadConcepts() {
     if (!this.concepts[Dictionary.Bokmaalsordboka]) {
+      this.logger.debug('Requesting concept lookup table from Bokmålsordboka');
+
       this.concepts[Dictionary.Bokmaalsordboka] = await fetch(
         'https://ord.uib.no/bm/concepts.json',
       ).then((res) => res.json());
     }
 
     if (!this.concepts[Dictionary.Nynorskordboka]) {
+      this.logger.debug('Requesting concept lookup table from Nynorskordboka');
+
       this.concepts[Dictionary.Nynorskordboka] = await fetch(
         'https://ord.uib.no/nn/concepts.json',
       ).then((res) => res.json());
@@ -130,20 +165,136 @@ export class WordService {
       : Dictionary.Nynorskordboka;
   }
 
+  private transformWordClass(article: any): WordClass | undefined {
+    const tagMapping: { [key: string]: WordClass } = {
+      NOUN: WordClass.Substantiv,
+      ADJ: WordClass.Adjektiv,
+      VERB: WordClass.Verb,
+      PRON: WordClass.Pronomen,
+      ADP: WordClass.Preposisjon,
+      CCONJ: WordClass.Konjunksjon,
+      INTJ: WordClass.Interjeksjon,
+      DET: WordClass.Determinativ,
+      SCONJ: WordClass.Subjunksjon,
+    };
+
+    if (article.lemmas && article.lemmas.length > 0) {
+      const lemma = article.lemmas[0];
+      if (lemma.paradigm_info && lemma.paradigm_info.length > 0) {
+        const tags = lemma.paradigm_info[0].tags;
+        if (tags && tags.length > 0) {
+          const wordClassTag = tags.find((tag: string) => tagMapping[tag]);
+          return wordClassTag && tagMapping[wordClassTag];
+        }
+      }
+    }
+
+    return undefined;
+  }
+
+  private transformParadigmInfo(article: any): Paradigm[] | undefined {
+    const inflectionTagMapping: { [key: string]: InflectionTag } = {
+      Inf: InflectionTag.Infinitiv,
+      Pres: InflectionTag.Presens,
+      Past: InflectionTag.Preteritum,
+      '<PerfPart>': InflectionTag.PerfektPartisipp,
+      '<PresPart>': InflectionTag.PresensPartisipp,
+      Imp: InflectionTag.Imperativ,
+      Pass: InflectionTag.Passiv,
+      Adj: InflectionTag.Adjektiv,
+      Neuter: InflectionTag.Inkjekjoenn,
+      Ind: InflectionTag.Ubestemt,
+      Sing: InflectionTag.Eintal,
+      'Masc/Fem': InflectionTag.HankjoennHokjoenn,
+      Masc: InflectionTag.Hankjoenn,
+      Fem: InflectionTag.Hokjoenn,
+      Def: InflectionTag.Bestemt,
+      Plur: InflectionTag.Fleirtal,
+    };
+
+    // words can have multiple paradigms, e.g. feminine gender words in Bokmål, which have both
+    // a masculine and a feminine paradigm
+
+    const paradigms: Paradigm[] = [];
+
+    article.lemmas?.forEach((lemma: any) => {
+      lemma.paradigm_info?.forEach((paradigmInfo: any) => {
+        const paradigm = new Paradigm();
+        paradigm.paradigmId = paradigmInfo.paradigm_id;
+        paradigm.inflections = paradigmInfo.inflection.map(
+          (inf: any): Inflection => ({
+            tags: inf.tags.map((tag: string) => inflectionTagMapping[tag]),
+            wordForm: inf.word_form,
+          }),
+        );
+        paradigm.tags = paradigmInfo.tags
+          .map((tag: string) => inflectionTagMapping[tag])
+          .filter((tag: InflectionTag | undefined) => tag !== undefined);
+        paradigms.push(paradigm);
+      });
+    });
+
+    return paradigms;
+  }
+
+  private transformGender(article: any): Gender | undefined {
+    // Gender is determined by the paradigms. If paradigms exist for both masculine and feminine
+    // grammatical genders, then the word is both masculine and feminine. If paradigms exist for
+    // only one grammatical gender, then the word is just of that gender.
+
+    let foundMasc = false;
+    let foundFem = false;
+
+    article.lemmas?.forEach((lemma: any) => {
+      lemma.paradigm_info?.forEach((paradigmInfo: any) => {
+        paradigmInfo.tags?.forEach((tag: string) => {
+          if (tag === 'Masc') {
+            foundMasc = true;
+          } else if (tag === 'Fem') {
+            foundFem = true;
+          }
+        });
+      });
+    });
+
+    return foundMasc && foundFem
+      ? Gender.HankjoennHokjoenn
+      : foundMasc
+        ? Gender.Hankjoenn
+        : foundFem
+          ? Gender.Hokjoenn
+          : undefined;
+  }
+
   private async fetchArticleDetails(
     articleId: number,
     dictionary: Dictionary,
   ): Promise<any> {
     await this.loadConcepts();
 
+    const cacheKey = `${dictionary}-${articleId}`;
+    const cachedData = this.articleCacheProvider.get(cacheKey);
+
+    if (!cachedData) {
+      const fetchDataPromise = this.fetchDataFromApi(articleId, dictionary);
+      this.articleCacheProvider.set(cacheKey, fetchDataPromise);
+      return fetchDataPromise;
+    }
+
+    return cachedData;
+  }
+
+  private async fetchDataFromApi(
+    articleId: number,
+    dictionary: Dictionary,
+  ): Promise<any> {
     const articleUrl = new URL(
       `https://ord.uib.no/${this.getDictParam(
         dictionary,
       )}/article/${articleId}.json`,
     );
     const response = await fetch(articleUrl.toString());
-    const data = await response.json();
-    return data;
+    return response.json();
   }
 
   //#endregion
@@ -234,7 +385,7 @@ export class WordService {
 
     article.definitions = definitions;
 
-    console.dir(article, { depth: null });
+    article.wordClass = this.transformWordClass(data);
 
     return article;
   }
@@ -255,13 +406,6 @@ export class WordService {
         definition.examples.push(this.formatText(dictionary, element.quote));
         break;
       case 'definition':
-        // if (!definition.subDefinitions) {
-        //   definition.subDefinitions = [];
-        // }
-        // definition.subDefinitions.push(
-        //   ...this.transformDefinitions(dictionary, element.elements),
-        // );
-
         for (const subElement of element.elements) {
           this.transformDefinitionElement(dictionary, definition, subElement);
         }
@@ -280,8 +424,6 @@ export class WordService {
     for (const def of elements) {
       const definition: Definition = {
         id: def.id,
-        dictionary,
-        wordClass: def.word_class,
         content: '',
         examples: [],
         subDefinitions: [],

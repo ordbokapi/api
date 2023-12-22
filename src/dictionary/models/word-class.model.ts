@@ -4,11 +4,12 @@ export enum WordClass {
   Substantiv = 'Substantiv', // Noun
   Adjektiv = 'Adjektiv', // Adjective
   Verb = 'Verb', // Verb
-  Adverb = 'Adverb', // Adverb
   Pronomen = 'Pronomen', // Pronoun
   Preposisjon = 'Preposisjon', // Preposition
   Konjunksjon = 'Konjunksjon', // Conjunction
   Interjeksjon = 'Interjeksjon', // Interjection
+  Determinativ = 'Determinativ', // Determiner
+  Subjunksjon = 'Subjunksjon', // Subjunction
 }
 
 registerEnumType(WordClass, {
