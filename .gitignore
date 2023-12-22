@@ -49,3 +49,6 @@ lerna-debug.log*
 !.vscode/extensions.json
 
 src/schema.gql
+
+stress-test.mjs
+stress-test-words.txt
