@@ -193,6 +193,7 @@ export class WordService {
       DET: WordClass.Determinativ,
       SCONJ: WordClass.Subjunksjon,
       SYM: WordClass.Symbol,
+      ABBR: WordClass.Forkorting,
     };
 
     if (article.lemmas && article.lemmas.length > 0) {
@@ -201,6 +202,11 @@ export class WordService {
         const tags = lemma.paradigm_info[0].tags;
         if (tags && tags.length > 0) {
           const wordClassTag = tags.find((tag: string) => tagMapping[tag]);
+          if (!tagMapping[wordClassTag]) {
+            this.logger.warn(
+              `Fann ikkje ordklasse for ${lemma.lemma} (prøvde å transformera ${tags} til ordklasse)`,
+            );
+          }
           return wordClassTag && tagMapping[wordClassTag];
         }
       }

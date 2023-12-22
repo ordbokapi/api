@@ -12,6 +12,7 @@ export enum WordClass {
   Determinativ = 'Determinativ', // Determiner
   Subjunksjon = 'Subjunksjon', // Subjunction
   Symbol = 'Symbol', // Symbol
+  Forkorting = 'Forkorting', // Abbreviation
 }
 
 registerEnumType(WordClass, {
