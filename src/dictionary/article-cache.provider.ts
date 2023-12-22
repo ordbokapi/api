@@ -57,6 +57,10 @@ const printTable = (data: any[][]) => {
   }
 };
 
+type TTLSeconds = {
+  [key in Exclude<TTLBucket, TTLBucket.Never>]: { min: number; max: number };
+};
+
 @Injectable()
 export class ArticleCacheProvider {
   private cache = new Map<
@@ -79,21 +83,19 @@ export class ArticleCacheProvider {
   // Threshold for number of accesses before moving to hot store (if over, move immediately)
   private readonly coldAccessThreshold = 5;
 
-  // Period in milliseconds for decreasing temperature and moving to cold store
-  private readonly coolDownPeriod = 60 * 1000;
+  // Interval in milliseconds for decreasing temperature and moving to cold store
+  private readonly coolDownInterval = 30 * 1000;
 
   // Initial temperature for items when added to cache
   private readonly initialTemperature = 5;
 
   // Maximum temperature for items in cache
-  private readonly maxTemperature = 10;
+  private readonly maxTemperature = 20;
 
   private readonly logger = new Logger(ArticleCacheProvider.name);
 
   // TTL in seconds
-  private readonly ttlSeconds: {
-    [key in Exclude<TTLBucket, TTLBucket.Never>]: { min: number; max: number };
-  } = {
+  private readonly ttlSeconds: TTLSeconds = {
     [TTLBucket.Short]: { min: 1 * 60, max: 60 * 60 },
     [TTLBucket.Long]: { min: 30 * 60, max: 4 * 60 * 60 },
   };
@@ -104,7 +106,7 @@ export class ArticleCacheProvider {
     setInterval(() => this.cleanupExpiredCache(), this.cleanupInterval);
 
     // Periodically move items from hot to cold store
-    setInterval(() => this.coolDown(), this.coolDownPeriod);
+    setInterval(() => this.coolDown(), this.coolDownInterval);
 
     if (process.argv.includes('--debug-cache')) {
       this.debugCache();
@@ -226,6 +228,29 @@ export class ArticleCacheProvider {
           const data = await this.memcachedProvider.client.get(key);
           if (data?.value) {
             this.logger.verbose(`Cache hit for key: ${key}`);
+
+            const ttlSeconds = this.ttlSeconds[item.bucket as keyof TTLSeconds];
+
+            // Touch the cache entry in memcached, extending its TTL up to maxTTLSeconds
+            const newTTL = Math.min(
+              // memcached expects TTL in seconds that starts from now, not from the time the item was set
+              // in other words, here we need to compare against when the maxTTLSeconds would expire
+              // based on when it was set, and pass in the difference between that and now
+              ttlSeconds.max - Math.round((item.setAt - Date.now()) / 1000),
+              // TTL extended by .min
+              ttlSeconds.min,
+            );
+
+            if (newTTL > 0) {
+              await this.memcachedProvider.client
+                .touch(key, newTTL)
+                .catch((err) => {
+                  this.logger.error(
+                    `Failed to extend TTL in memcached for key: ${key}`,
+                    err,
+                  );
+                });
+            }
 
             // Decompress and cache in hot store
             const decompressed = await this.decompress(data.value);
