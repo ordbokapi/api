@@ -1995,6 +1995,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@types/request-ip@npm:^0.0.41":
+  version: 0.0.41
+  resolution: "@types/request-ip@npm:0.0.41"
+  dependencies:
+    "@types/node": "npm:*"
+  checksum: f8c0394cf4db561a742f1e92bbaaf488c94d4998a49c894f28e2018279c014827c4064d2c076053831a4d4313bbe821fe4357cc491f0d1e3e1bde4f5098be9aa
+  languageName: node
+  linkType: hard
+
 "@types/semver@npm:^7.5.0":
   version: 7.5.6
   resolution: "@types/semver@npm:7.5.6"
@@ -6381,6 +6390,7 @@ __metadata:
     "@types/express": "npm:^4.17.17"
     "@types/jest": "npm:^29.5.2"
     "@types/node": "npm:^20.3.1"
+    "@types/request-ip": "npm:^0.0.41"
     "@types/supertest": "npm:^6.0.0"
     "@typescript-eslint/eslint-plugin": "npm:^6.0.0"
     "@typescript-eslint/parser": "npm:^6.0.0"
@@ -6394,6 +6404,7 @@ __metadata:
     jest: "npm:^29.5.0"
     prettier: "npm:^3.0.0"
     reflect-metadata: "npm:^0.2.0"
+    request-ip: "npm:^3.3.0"
     rxjs: "npm:^7.8.1"
     source-map-support: "npm:^0.5.21"
     supertest: "npm:^6.3.3"
@@ -7054,6 +7065,13 @@ __metadata:
   version: 1.6.1
   resolution: "repeat-string@npm:1.6.1"
   checksum: 87fa21bfdb2fbdedc44b9a5b118b7c1239bdd2c2c1e42742ef9119b7d412a5137a1d23f1a83dc6bb686f4f27429ac6f542e3d923090b44181bafa41e8ac0174d
+  languageName: node
+  linkType: hard
+
+"request-ip@npm:^3.3.0":
+  version: 3.3.0
+  resolution: "request-ip@npm:3.3.0"
+  checksum: 35ab5fcb29408cb72629b53207f00a443a60fe881ffb63e3b08a06c07dae3eee617522741bd0b035492153d6c9babe7f8d9f79c008d493d1e6638b0bd92cb02b
   languageName: node
   linkType: hard
 

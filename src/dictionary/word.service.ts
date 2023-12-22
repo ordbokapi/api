@@ -4,7 +4,7 @@ import { Dictionary } from './models/dictionary.model';
 import { Definition } from './models/definition.model';
 import { Article } from './models/article.model';
 import { WordClass } from './models/word-class.model';
-import { ArticleCacheProvider } from './article-cache.provider';
+import { ArticleCacheProvider, TTLBucket } from './article-cache.provider';
 import { Inflection } from './models/inflection.model';
 import { InflectionTag } from './models/inflection-tag.model';
 import { Paradigm } from './models/paradigm.model';
@@ -25,6 +25,15 @@ export class WordService {
     dictionaries: Dictionary[],
   ): Promise<Word[]> {
     this.logger.debug(`Getting suggestions for word: ${word}`);
+
+    const cacheKey = `${this.getDictParam(dictionaries)}-suggestions-${word}`;
+
+    const cachedData = await this.articleCacheProvider.get(cacheKey);
+
+    if (cachedData) {
+      return cachedData;
+    }
+
     const searchUrl = new URL('https://ord.uib.no/api/suggest');
     searchUrl.searchParams.set('q', word);
     searchUrl.searchParams.set('n', '10'); // Adjust 'n' as needed for the number of suggestions
@@ -34,13 +43,25 @@ export class WordService {
     const response = await fetch(searchUrl.toString());
     const data = await response.json();
     this.logger.debug(`Received suggestions: ${JSON.stringify(data)}`);
-    return this.transformSuggestionsResponse(data);
+    const suggestions = this.transformSuggestionsResponse(data);
+
+    this.articleCacheProvider.set(cacheKey, suggestions);
+
+    return suggestions;
   }
 
   async getWord(word: string, dictionaries: Dictionary[]): Promise<Word> {
     await this.loadConcepts();
 
     this.logger.debug(`Getting articles for word: ${word}`);
+
+    const cacheKey = `${this.getDictParam(dictionaries)}-articles-${word}`;
+
+    const cachedData = await this.articleCacheProvider.get(cacheKey);
+
+    if (cachedData) {
+      return cachedData;
+    }
 
     const articlesUrl = new URL('https://ord.uib.no/api/articles');
     articlesUrl.searchParams.set('w', word);
@@ -84,6 +105,8 @@ export class WordService {
       ),
     };
 
+    this.articleCacheProvider.set(cacheKey, wordObject, TTLBucket.Long);
+
     return wordObject;
   }
 
@@ -117,21 +140,7 @@ export class WordService {
 
     const data = await this.fetchArticleDetails(article.id, article.dictionary);
 
-    return data.lemmas.map((lemma: any) => ({
-      id: lemma.id,
-      lemma: lemma.lemma,
-      meaning: lemma.hgno,
-    }));
-  }
-
-  async getParadigms(article: Article): Promise<Paradigm[] | undefined> {
-    await this.loadConcepts();
-
-    this.logger.debug(`Getting paradigms for article: ${article.id}`);
-
-    const data = await this.fetchArticleDetails(article.id, article.dictionary);
-
-    return this.transformParadigmInfo(data);
+    return this.transformLemmaInfo(data);
   }
 
   async getGender(article: Article): Promise<Gender | undefined> {
@@ -147,24 +156,6 @@ export class WordService {
   //#endregion
 
   //#region Private helper methods
-
-  private async loadConcepts() {
-    if (!this.concepts[Dictionary.Bokmaalsordboka]) {
-      this.logger.debug('Requesting concept lookup table from Bokmålsordboka');
-
-      this.concepts[Dictionary.Bokmaalsordboka] = await fetch(
-        'https://ord.uib.no/bm/concepts.json',
-      ).then((res) => res.json());
-    }
-
-    if (!this.concepts[Dictionary.Nynorskordboka]) {
-      this.logger.debug('Requesting concept lookup table from Nynorskordboka');
-
-      this.concepts[Dictionary.Nynorskordboka] = await fetch(
-        'https://ord.uib.no/nn/concepts.json',
-      ).then((res) => res.json());
-    }
-  }
 
   private getDictParam(dictionary: Dictionary | Dictionary[]): string {
     return Array.isArray(dictionary)
@@ -215,7 +206,7 @@ export class WordService {
     return undefined;
   }
 
-  private transformParadigmInfo(article: any): Paradigm[] | undefined {
+  private transformLemmaInfo(article: any): Lemma[] | undefined {
     const inflectionTagMapping: { [key: string]: InflectionTag } = {
       Inf: InflectionTag.Infinitiv,
       Pres: InflectionTag.Presens,
@@ -244,9 +235,16 @@ export class WordService {
     // words can have multiple paradigms, e.g. feminine gender words in Bokmål, which have both
     // a masculine and a feminine paradigm
 
-    const paradigms: Paradigm[] = [];
+    const lemmas: Lemma[] = [];
 
     article.lemmas?.forEach((lemma: any) => {
+      const lemmaEntity: Lemma = {
+        id: lemma.id,
+        lemma: lemma.lemma,
+        meaning: lemma.hgno,
+        paradigms: [],
+      };
+
       lemma.paradigm_info?.forEach((paradigmInfo: any) => {
         const paradigm = new Paradigm();
         paradigm.id = paradigmInfo.paradigm_id;
@@ -262,12 +260,13 @@ export class WordService {
           .map((tag: string) => inflectionTagMapping[tag])
           .filter((tag: InflectionTag | undefined) => tag !== undefined);
 
-        // Don't push paradigm if it is
-        paradigms.push(paradigm);
+        lemmaEntity.paradigms.push(paradigm);
       });
+
+      lemmas.push(lemmaEntity);
     });
 
-    return paradigms;
+    return lemmas;
   }
 
   private transformGender(article: any): Gender | undefined {
@@ -301,6 +300,39 @@ export class WordService {
           : undefined;
   }
 
+  private async loadConcepts() {
+    await Promise.all(
+      [Dictionary.Bokmaalsordboka, Dictionary.Nynorskordboka].map(
+        async (dict) => {
+          if (!this.concepts[dict]) {
+            const cacheKey = `${dict}-concepts`;
+            const cachedData = await this.articleCacheProvider.get(cacheKey);
+
+            if (!cachedData) {
+              const fetchDataPromise = this.fetchConceptsFromApi(dict);
+              this.articleCacheProvider.set(cacheKey, fetchDataPromise);
+              this.concepts[dict] = await fetchDataPromise;
+            } else {
+              this.concepts[dict] = await cachedData;
+            }
+          }
+        },
+      ),
+    );
+  }
+
+  private async fetchConceptsFromApi(dictionary: Dictionary): Promise<any> {
+    this.logger.debug(
+      `Requesting concept lookup table from ${dictionary} from API`,
+    );
+
+    const conceptsUrl = new URL(
+      `https://ord.uib.no/${this.getDictParam(dictionary)}/concepts.json`,
+    );
+    const response = await fetch(conceptsUrl.toString());
+    return response.json();
+  }
+
   private async fetchArticleDetails(
     articleId: number,
     dictionary: Dictionary,
@@ -308,11 +340,11 @@ export class WordService {
     await this.loadConcepts();
 
     const cacheKey = `${dictionary}-${articleId}`;
-    const cachedData = this.articleCacheProvider.get(cacheKey);
+    const cachedData = await this.articleCacheProvider.get(cacheKey);
 
     if (!cachedData) {
       const fetchDataPromise = this.fetchDataFromApi(articleId, dictionary);
-      this.articleCacheProvider.set(cacheKey, fetchDataPromise);
+      this.articleCacheProvider.set(cacheKey, fetchDataPromise, TTLBucket.Long);
       return fetchDataPromise;
     }
 

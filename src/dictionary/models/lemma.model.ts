@@ -1,4 +1,5 @@
 import { Field, Int, ObjectType } from '@nestjs/graphql';
+import { Paradigm } from './paradigm.model';
 
 @ObjectType()
 export class Lemma {
@@ -10,4 +11,7 @@ export class Lemma {
 
   @Field(() => Int)
   meaning: number;
+
+  @Field(() => [Paradigm])
+  paradigms: Paradigm[];
 }

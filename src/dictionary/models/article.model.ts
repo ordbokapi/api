@@ -2,7 +2,6 @@ import { Field, Int, ObjectType } from '@nestjs/graphql';
 import { Dictionary } from './dictionary.model';
 import { Definition } from './definition.model';
 import { WordClass } from './word-class.model';
-import { Paradigm } from './paradigm.model';
 import { Gender } from './gender.model';
 import { Lemma } from './lemma.model';
 
@@ -19,9 +18,6 @@ export class Article {
 
   @Field(() => [Lemma], { nullable: true })
   lemmas?: Lemma[];
-
-  @Field(() => [Paradigm], { nullable: true })
-  paradigms?: Paradigm[];
 
   @Field(() => Gender, { nullable: true })
   gender?: Gender;

@@ -3,7 +3,6 @@ import { Article } from './models/article.model';
 import { Definition } from './models/definition.model';
 import { WordService } from './word.service';
 import { WordClass } from './models/word-class.model';
-import { Paradigm } from './models/paradigm.model';
 import { Gender } from './models/gender.model';
 import { Lemma } from './models/lemma.model';
 
@@ -24,11 +23,6 @@ export class ArticleResolver {
   @ResolveField('lemmas', () => [Lemma])
   async getLemmas(@Parent() article: Article) {
     return this.wordService.getLemmas(article);
-  }
-
-  @ResolveField('paradigms', () => [Paradigm])
-  async getParadigms(@Parent() article: Article) {
-    return this.wordService.getParadigms(article);
   }
 
   @ResolveField('gender', () => Gender, { nullable: true })
