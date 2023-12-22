@@ -1,10 +1,10 @@
-import { Injectable, Logger } from '@nestjs/common';
+import { Inject, Injectable, Logger } from '@nestjs/common';
 import { Word } from './models/word.model';
 import { Dictionary } from './models/dictionary.model';
 import { Definition } from './models/definition.model';
 import { Article } from './models/article.model';
 import { WordClass } from './models/word-class.model';
-import { ArticleCacheProvider, TTLBucket } from './article-cache.provider';
+import { ICacheProvider, TTLBucket } from '../providers';
 import { Inflection } from './models/inflection.model';
 import { InflectionTag } from './models/inflection-tag.model';
 import { Paradigm } from './models/paradigm.model';
@@ -14,7 +14,9 @@ import { Lemma } from './models/lemma.model';
 @Injectable()
 export class WordService {
   private readonly logger = new Logger(WordService.name);
-  constructor(private articleCacheProvider: ArticleCacheProvider) {}
+  constructor(
+    @Inject('ICacheProvider') private articleCacheProvider: ICacheProvider,
+  ) {}
 
   private concepts: { [Dictionary: string]: any } = {};
 

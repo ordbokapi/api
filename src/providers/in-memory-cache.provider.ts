@@ -1,10 +1,6 @@
 import { Injectable, Logger } from '@nestjs/common';
-import { promisify } from 'util';
-import { brotliCompress, brotliDecompress } from 'zlib';
-import { MemcachedProvider } from '../memcached.provider';
-
-const brotliCompressAsync = promisify(brotliCompress);
-const brotliDecompressAsync = promisify(brotliDecompress);
+import { CacheSerializationProvider as CacheSerializationProvider } from './compression.provider';
+import { ICacheProvider, TTLBucket } from './i-cache-provider';
 
 const formatTTL = (ttl: number): string => {
   if (ttl < 60) {
@@ -15,12 +11,6 @@ const formatTTL = (ttl: number): string => {
     return `${Math.round(ttl / 60 / 60)} hours`;
   }
 };
-
-export enum TTLBucket {
-  Short,
-  Long,
-  Never,
-}
 
 enum DataLocation {
   Hot,
@@ -62,7 +52,7 @@ type TTLSeconds = {
 };
 
 @Injectable()
-export class ArticleCacheProvider {
+export class InMemoryCacheProvider implements ICacheProvider {
   private cache = new Map<
     string,
     {
@@ -92,7 +82,7 @@ export class ArticleCacheProvider {
   // Maximum temperature for items in cache
   private readonly maxTemperature = 20;
 
-  private readonly logger = new Logger(ArticleCacheProvider.name);
+  private readonly logger = new Logger(InMemoryCacheProvider.name);
 
   // TTL in seconds
   private readonly ttlSeconds: TTLSeconds = {
@@ -100,7 +90,7 @@ export class ArticleCacheProvider {
     [TTLBucket.Long]: { min: 30 * 60, max: 4 * 60 * 60 },
   };
 
-  constructor(private memcachedProvider: MemcachedProvider) {
+  constructor(private readonly serializer: CacheSerializationProvider) {
     this.logger.verbose('Initializing ArticleCacheProvider');
     // Periodically clean up expired cache entries
     setInterval(() => this.cleanupExpiredCache(), this.cleanupInterval);
@@ -192,16 +182,6 @@ export class ArticleCacheProvider {
   async get(key: string) {
     const item = this.cache.get(key);
     if (!item) {
-      // Check memcached for long-lived keys
-      const data = await this.memcachedProvider.client?.get(key);
-      if (data?.value) {
-        this.logger.verbose(`Cache hit for long-lived key: ${key}`);
-
-        // Decompress and cache in hot store
-        const decompressed = await this.decompress(data.value);
-        this.set(key, decompressed, TTLBucket.Long);
-      }
-
       this.logger.debug(`Cache miss for key: ${key}`);
       return null;
     }
@@ -223,54 +203,8 @@ export class ArticleCacheProvider {
     }
 
     if (!data) {
-      if (this.memcachedProvider.client) {
-        try {
-          const data = await this.memcachedProvider.client.get(key);
-          if (data?.value) {
-            this.logger.verbose(`Cache hit for key: ${key}`);
-
-            const ttlSeconds = this.ttlSeconds[item.bucket as keyof TTLSeconds];
-
-            // Touch the cache entry in memcached, extending its TTL up to maxTTLSeconds
-            const newTTL = Math.min(
-              // memcached expects TTL in seconds that starts from now, not from the time the item was set
-              // in other words, here we need to compare against when the maxTTLSeconds would expire
-              // based on when it was set, and pass in the difference between that and now
-              ttlSeconds.max - Math.round((item.setAt - Date.now()) / 1000),
-              // TTL extended by .min
-              ttlSeconds.min,
-            );
-
-            if (newTTL > 0) {
-              await this.memcachedProvider.client
-                .touch(key, newTTL)
-                .catch((err) => {
-                  this.logger.error(
-                    `Failed to extend TTL in memcached for key: ${key}`,
-                    err,
-                  );
-                });
-            }
-
-            // Decompress and cache in hot store
-            const decompressed = await this.decompress(data.value);
-            this.set(key, decompressed, TTLBucket.Short);
-          }
-        } catch (err) {
-          this.logger.error(
-            `Failed to get cache entry from memcached for key: ${key}`,
-            err,
-          );
-
-          // Delete the cache entry
-          this.delete(key);
-
-          return null;
-        }
-      }
-
       try {
-        data = await this.decompress(this.coolStore.get(key)!);
+        data = await this.serializer.deserialize(this.coolStore.get(key)!);
       } catch (err) {
         this.logger.error(
           `Failed to decompress cache entry for key: ${key}`,
@@ -324,18 +258,10 @@ export class ArticleCacheProvider {
     this.logger.verbose(`Deleted cache for key: ${key}`);
   }
 
-  private async decompress(data: Buffer) {
-    return JSON.parse((await brotliDecompressAsync(data)).toString());
-  }
-
-  private async compress(data: any) {
-    return brotliCompressAsync(Buffer.from(JSON.stringify(await data)));
-  }
-
   private async coolDown() {
     const toCoolDown = new Map<
       string,
-      typeof ArticleCacheProvider.prototype.cache extends Map<unknown, infer V>
+      typeof InMemoryCacheProvider.prototype.cache extends Map<unknown, infer V>
         ? V
         : never
     >();
@@ -359,27 +285,13 @@ export class ArticleCacheProvider {
         if (value) {
           let compressed: Buffer;
           try {
-            compressed = await this.compress(value);
+            compressed = await this.serializer.serialize(value);
           } catch (err) {
             this.logger.error(
               `Failed to compress cache entry for key: ${key}`,
               err,
             );
             return;
-          }
-
-          if (this.memcachedProvider.client) {
-            try {
-              await this.memcachedProvider.client.set(key, compressed, {
-                expires: Math.round((item.expiresAt - Date.now()) / 1000),
-              });
-              return;
-            } catch (err) {
-              this.logger.error(
-                `Failed to set cache entry in memcached for key: ${key}`,
-                err,
-              );
-            }
           }
 
           this.coolStore.set(key, compressed);

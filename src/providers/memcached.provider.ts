@@ -11,10 +11,8 @@ export class MemcachedProvider {
   //   MEMCACHEDCLOUD_PASSWORD
 
   // Create a memcached client if config is present, otherwise return null
-  readonly client = process.env.MEMCACHEDCLOUD_SERVERS
-    ? memjs.Client.create(process.env.MEMCACHEDCLOUD_SERVERS, {
-        username: process.env.MEMCACHEDCLOUD_USERNAME,
-        password: process.env.MEMCACHEDCLOUD_PASSWORD,
-      })
-    : undefined;
+  readonly client = memjs.Client.create(process.env.MEMCACHEDCLOUD_SERVERS, {
+    username: process.env.MEMCACHEDCLOUD_USERNAME,
+    password: process.env.MEMCACHEDCLOUD_PASSWORD,
+  });
 }

@@ -8,7 +8,7 @@ import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { DictionaryModule } from './dictionary/dictionary.module';
 import { RequestLoggerMiddleware } from './request-logger.middleware';
-import { MemcachedProvider } from './memcached.provider';
+import { MemcachedProvider } from './providers/memcached.provider';
 
 @Module({
   imports: [

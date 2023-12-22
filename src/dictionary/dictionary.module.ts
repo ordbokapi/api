@@ -2,16 +2,26 @@ import { Module } from '@nestjs/common';
 import { WordResolver } from './word.resolver';
 import { WordService } from './word.service';
 import { ArticleResolver } from './article.resolver';
-import { ArticleCacheProvider } from './article-cache.provider';
-import { MemcachedProvider } from '../memcached.provider';
+import {
+  MemcachedProvider,
+  InMemoryCacheProvider,
+  MemcachedCacheProvider,
+  CacheSerializationProvider,
+} from '../providers';
 
 @Module({
   providers: [
     WordResolver,
     WordService,
     ArticleResolver,
-    ArticleCacheProvider,
     MemcachedProvider,
+    CacheSerializationProvider,
+    {
+      provide: 'ICacheProvider',
+      useClass: process.env.MEMCACHEDCLOUD_SERVERS
+        ? MemcachedCacheProvider
+        : InMemoryCacheProvider,
+    },
   ],
   exports: [WordService],
 })
