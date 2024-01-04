@@ -50,5 +50,6 @@ lerna-debug.log*
 
 src/schema.gql
 
+error-test.mjs
 stress-test.mjs
 stress-test-words.txt

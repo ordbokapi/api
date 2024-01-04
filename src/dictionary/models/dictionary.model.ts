@@ -7,4 +7,5 @@ export enum Dictionary {
 
 registerEnumType(Dictionary, {
   name: 'Dictionary',
+  description: 'Ei ordbok.',
 });

@@ -17,5 +17,5 @@ export enum WordClass {
 
 registerEnumType(WordClass, {
   name: 'WordClass',
-  description: 'Den grammatiske klassen til eit ord',
+  description: 'Den grammatiske klassen til eit ord.',
 });

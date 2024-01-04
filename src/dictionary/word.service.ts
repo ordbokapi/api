@@ -1,15 +1,18 @@
 import { Inject, Injectable, Logger } from '@nestjs/common';
-import { Word } from './models/word.model';
-import { Dictionary } from './models/dictionary.model';
-import { Definition } from './models/definition.model';
-import { Article } from './models/article.model';
-import { WordClass } from './models/word-class.model';
 import { ICacheProvider, TTLBucket } from '../providers';
-import { Inflection } from './models/inflection.model';
-import { InflectionTag } from './models/inflection-tag.model';
-import { Paradigm } from './models/paradigm.model';
-import { Gender } from './models/gender.model';
-import { Lemma } from './models/lemma.model';
+import {
+  Word,
+  Dictionary,
+  Definition,
+  Article,
+  WordClass,
+  Inflection,
+  InflectionTag,
+  Paradigm,
+  Gender,
+  Lemma,
+  Suggestions,
+} from './models';
 
 @Injectable()
 export class WordService {
@@ -25,7 +28,7 @@ export class WordService {
   async getSuggestions(
     word: string,
     dictionaries: Dictionary[],
-  ): Promise<Word[]> {
+  ): Promise<Suggestions> {
     this.logger.debug(`Getting suggestions for word: ${word}`);
 
     const cacheKey = `${this.getDictParam(dictionaries)}-suggestions-${word}`;
@@ -43,6 +46,11 @@ export class WordService {
     searchUrl.searchParams.set('include', 'ef');
 
     const response = await fetch(searchUrl.toString());
+
+    if (!response.ok) {
+      throw new Error(`Error fetching suggestions: ${response.statusText}`);
+    }
+
     const data = await response.json();
     this.logger.debug(`Received suggestions: ${JSON.stringify(data)}`);
     const suggestions = this.transformSuggestionsResponse(data);
@@ -52,7 +60,10 @@ export class WordService {
     return suggestions;
   }
 
-  async getWord(word: string, dictionaries: Dictionary[]): Promise<Word> {
+  async getWord(
+    word: string,
+    dictionaries: Dictionary[],
+  ): Promise<Word | undefined> {
     await this.loadConcepts();
 
     this.logger.debug(`Getting articles for word: ${word}`);
@@ -79,6 +90,11 @@ export class WordService {
     // {"meta": {"bm": {"total": 0}, "nn": {"total": 0}}, "articles": {"bm": [], "nn": []}}
 
     const response = await fetch(articlesUrl.toString());
+
+    if (!response.ok) {
+      throw new Error(`Error fetching articles: ${response.statusText}`);
+    }
+
     const data = await response.json();
 
     const foundDictionaries: Dictionary[] = [];
@@ -92,7 +108,7 @@ export class WordService {
     }
 
     if (foundDictionaries.length === 0) {
-      throw new Error('Word not found');
+      return undefined;
     }
 
     const wordObject: Word = {
@@ -215,6 +231,7 @@ export class WordService {
       Past: InflectionTag.Preteritum,
       '<PerfPart>': InflectionTag.PerfektPartisipp,
       '<PresPart>': InflectionTag.PresensPartisipp,
+      '<SPass>': InflectionTag.SPassiv,
       Imp: InflectionTag.Imperativ,
       Pass: InflectionTag.Passiv,
       Adj: InflectionTag.Adjektiv,
@@ -332,6 +349,13 @@ export class WordService {
       `https://ord.uib.no/${this.getDictParam(dictionary)}/concepts.json`,
     );
     const response = await fetch(conceptsUrl.toString());
+
+    if (!response.ok) {
+      throw new Error(
+        `Error fetching concepts: ${response.statusText} (${response.status})`,
+      );
+    }
+
     return response.json();
   }
 
@@ -363,6 +387,13 @@ export class WordService {
       )}/article/${articleId}.json`,
     );
     const response = await fetch(articleUrl.toString());
+
+    if (!response.ok) {
+      throw new Error(
+        `Error fetching article ${articleId}: ${response.statusText} (${response.status})`,
+      );
+    }
+
     return response.json();
   }
 
@@ -419,22 +450,29 @@ export class WordService {
     return text;
   }
 
-  private transformSuggestionsResponse(data: any): Word[] {
+  private transformSuggestionsResponse(data: any): Suggestions {
     // Transform the response into an array of Word models
 
     // Example API response:
     // {"q": "tekst", "cnt": 8, "cmatch": 1, "a": {"exact": [["tekst", ["bm", "nn"]], ["teksta", ["nn"]]], "inflect": [["tekste", ["bm", "nn"]], ["takast", ["nn"]]], "freetext": [["tekst", ["bm", "nn"]], ["teksta", ["nn"]]], "similar": [["tekst-TV", ["bm"]], ["tekst-tv", ["bm"]]]}}
 
-    const words: Word[] = [];
+    const suggestions = new Suggestions();
 
-    for (const word of data.a.exact) {
-      words.push({
-        word: word[0],
-        dictionaries: word[1].map((d: string) => this.getDictionary(d)),
-      });
-    }
+    suggestions.exact = this.mapSuggestionsToWords(data.a?.exact);
+    suggestions.inflections = this.mapSuggestionsToWords(data.a?.inflect);
+    suggestions.freetext = this.mapSuggestionsToWords(data.a?.freetext);
+    suggestions.similar = this.mapSuggestionsToWords(data.a?.similar);
 
-    return words;
+    return suggestions;
+  }
+
+  private mapSuggestionsToWords(rawWords: any) {
+    return rawWords?.map((rawWord: any) => {
+      return {
+        word: rawWord[0],
+        dictionaries: rawWord[1].map((d: string) => this.getDictionary(d)),
+      };
+    });
   }
 
   private transformArticleResponse(article: Article, data: any): Article {
@@ -446,7 +484,7 @@ export class WordService {
 
     // console.dir(data, { depth: null });
 
-    if (data.body && data.body.definitions) {
+    if (data.body?.definitions?.length) {
       definitions.push(
         ...this.transformDefinitions(
           article.dictionary,

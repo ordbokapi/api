@@ -1,17 +1,24 @@
 import { Field, Int, ObjectType } from '@nestjs/graphql';
 import { Paradigm } from './paradigm.model';
 
-@ObjectType()
+@ObjectType({
+  description:
+    'Representerer grunnforma av eit ord, med tilhøyrande betyding og bøyingsparadigme.',
+})
 export class Lemma {
-  @Field(() => Int)
+  @Field(() => Int, { description: 'Ein unik identifikator for lemmaet.' })
   id: number;
 
-  @Field(() => String)
+  @Field(() => String, { description: 'Grunnforma av ordet.' })
   lemma: string;
 
-  @Field(() => Int)
+  @Field(() => Int, {
+    description: 'Numerisk referansenummer til betydinga av lemmaet.',
+  })
   meaning: number;
 
-  @Field(() => [Paradigm])
+  @Field(() => [Paradigm], {
+    description: 'Liste av bøyingsparadigme assosiert med lemmaet.',
+  })
   paradigms: Paradigm[];
 }

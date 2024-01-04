@@ -6,6 +6,7 @@ export enum InflectionTag {
   Preteritum = 'Preteritum', // Past
   PerfektPartisipp = 'PerfektPartisipp', // Perfect participle
   PresensPartisipp = 'PresensPartisipp', // Present participle
+  SPassiv = 'SPassiv', // S-Passive
   Imperativ = 'Imperativ', // Imperative
   Passiv = 'Passiv', // Passive
   Adjektiv = 'Adjektiv', // Adjective
@@ -27,5 +28,5 @@ export enum InflectionTag {
 
 registerEnumType(InflectionTag, {
   name: 'InflectionTag',
-  description: 'Bøyingsmerke',
+  description: 'Bøyingsmerke for eit ord.',
 });

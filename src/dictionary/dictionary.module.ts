@@ -1,19 +1,17 @@
 import { Module } from '@nestjs/common';
-import { WordResolver } from './word.resolver';
 import { WordService } from './word.service';
-import { ArticleResolver } from './article.resolver';
 import {
   MemcachedProvider,
   InMemoryCacheProvider,
   MemcachedCacheProvider,
   CacheSerializationProvider,
 } from '../providers';
+import * as resolvers from './resolvers';
 
 @Module({
   providers: [
-    WordResolver,
+    ...Object.values(resolvers),
     WordService,
-    ArticleResolver,
     MemcachedProvider,
     CacheSerializationProvider,
     {
