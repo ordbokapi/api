@@ -17,7 +17,33 @@ import { MemcachedProvider } from './providers/memcached.provider';
       autoSchemaFile: join(process.cwd(), 'src/schema.gql'),
       playground: false,
       plugins: [
-        ApolloServerPluginLandingPageLocalDefault(),
+        ApolloServerPluginLandingPageLocalDefault({
+          embed: {
+            initialState: {
+              pollForSchemaUpdates: process.env.NODE_ENV !== 'production',
+            },
+          },
+          document: `query ExampleSuggestionsQuery($word: String!) {
+  getSuggestions(word: $word) {
+    exact {
+      word
+      articles {
+        dictionary
+        wordClass
+        gender
+        definitions {
+          content
+          examples
+        }
+      }
+    }
+  }
+}
+`,
+          variables: {
+            word: 'klasse',
+          },
+        }),
         ApolloServerPluginInlineTrace(),
       ],
       introspection: true, // public API for use by anyone, so introspection makes sense
