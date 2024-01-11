@@ -1,5 +1,4 @@
-import { Inject, Injectable, Logger } from '@nestjs/common';
-import { ICacheProvider, TTLBucket } from '../providers';
+import { Injectable, Logger } from '@nestjs/common';
 import {
   Word,
   Dictionary,
@@ -12,14 +11,13 @@ import {
   Gender,
   Lemma,
   Suggestions,
-} from './models';
+} from '../models';
+import { OrdboekeneApiService } from './ordboekene-api.service';
 
 @Injectable()
 export class WordService {
   private readonly logger = new Logger(WordService.name);
-  constructor(
-    @Inject('ICacheProvider') private articleCacheProvider: ICacheProvider,
-  ) {}
+  constructor(private ordboekeneApiService: OrdboekeneApiService) {}
 
   private concepts: { [Dictionary: string]: any } = {};
 
@@ -31,33 +29,10 @@ export class WordService {
   ): Promise<Suggestions> {
     this.logger.debug(`Getting suggestions for word: ${word}`);
 
-    const cacheKey = `${this.getDictParam(dictionaries)}-suggestions-${word}`;
-
-    const cachedData = await this.articleCacheProvider.get(cacheKey);
-
-    if (cachedData) {
-      return cachedData;
-    }
-
-    const searchUrl = new URL('https://ord.uib.no/api/suggest');
-    searchUrl.searchParams.set('q', word);
-    searchUrl.searchParams.set('n', '10'); // Adjust 'n' as needed for the number of suggestions
-    searchUrl.searchParams.set('dict', this.getDictParam(dictionaries));
-    searchUrl.searchParams.set('include', 'ef');
-
-    const response = await fetch(searchUrl.toString());
-
-    if (!response.ok) {
-      throw new Error(`Error fetching suggestions: ${response.statusText}`);
-    }
-
-    const data = await response.json();
+    const data = await this.ordboekeneApiService.suggest(word, dictionaries);
     this.logger.debug(`Received suggestions: ${JSON.stringify(data)}`);
-    const suggestions = this.transformSuggestionsResponse(data);
 
-    this.articleCacheProvider.set(cacheKey, suggestions);
-
-    return suggestions;
+    return this.transformSuggestionsResponse(data);
   }
 
   async getWord(
@@ -68,18 +43,7 @@ export class WordService {
 
     this.logger.debug(`Getting articles for word: ${word}`);
 
-    const cacheKey = `${this.getDictParam(dictionaries)}-articles-${word}`;
-
-    const cachedData = await this.articleCacheProvider.get(cacheKey);
-
-    if (cachedData) {
-      return cachedData;
-    }
-
-    const articlesUrl = new URL('https://ord.uib.no/api/articles');
-    articlesUrl.searchParams.set('w', word);
-    articlesUrl.searchParams.set('dict', this.getDictParam(dictionaries));
-    articlesUrl.searchParams.set('scope', 'e');
+    const data = await this.ordboekeneApiService.articles(word, dictionaries);
 
     // Example API response:
 
@@ -88,14 +52,6 @@ export class WordService {
     // or, if not found:
 
     // {"meta": {"bm": {"total": 0}, "nn": {"total": 0}}, "articles": {"bm": [], "nn": []}}
-
-    const response = await fetch(articlesUrl.toString());
-
-    if (!response.ok) {
-      throw new Error(`Error fetching articles: ${response.statusText}`);
-    }
-
-    const data = await response.json();
 
     const foundDictionaries: Dictionary[] = [];
 
@@ -123,8 +79,6 @@ export class WordService {
       ),
     };
 
-    this.articleCacheProvider.set(cacheKey, wordObject, TTLBucket.Long);
-
     return wordObject;
   }
 
@@ -133,11 +87,13 @@ export class WordService {
 
     this.logger.debug(`Getting definitions for article: ${article.id}`);
 
-    const data = await this.fetchArticleDetails(article.id, article.dictionary);
+    const data = await this.ordboekeneApiService.article(
+      article.id,
+      article.dictionary,
+    );
 
     this.transformArticleResponse(article, data);
 
-    // Return the definitions
     return article.definitions!;
   }
 
@@ -149,7 +105,7 @@ export class WordService {
 
     this.logger.debug(`Getting article: ${articleId}`);
 
-    const data = await this.fetchArticleDetails(articleId, dictionary);
+    const data = await this.ordboekeneApiService.article(articleId, dictionary);
 
     const article: Article = {
       id: articleId,
@@ -166,7 +122,10 @@ export class WordService {
 
     this.logger.debug(`Getting word class for article: ${article.id}`);
 
-    const data = await this.fetchArticleDetails(article.id, article.dictionary);
+    const data = await this.ordboekeneApiService.article(
+      article.id,
+      article.dictionary,
+    );
 
     return this.transformWordClass(data);
   }
@@ -176,7 +135,10 @@ export class WordService {
 
     this.logger.debug(`Getting lemmas for article: ${article.id}`);
 
-    const data = await this.fetchArticleDetails(article.id, article.dictionary);
+    const data = await this.ordboekeneApiService.article(
+      article.id,
+      article.dictionary,
+    );
 
     return this.transformLemmaInfo(data);
   }
@@ -186,7 +148,10 @@ export class WordService {
 
     this.logger.debug(`Getting gender for article: ${article.id}`);
 
-    const data = await this.fetchArticleDetails(article.id, article.dictionary);
+    const data = await this.ordboekeneApiService.article(
+      article.id,
+      article.dictionary,
+    );
 
     return this.transformGender(data);
   }
@@ -342,79 +307,25 @@ export class WordService {
   private async loadConcepts() {
     await Promise.all(
       [Dictionary.Bokmaalsordboka, Dictionary.Nynorskordboka].map(
-        async (dict) => {
-          if (!this.concepts[dict]) {
-            const cacheKey = `${dict}-concepts`;
-            const cachedData = await this.articleCacheProvider.get(cacheKey);
-
-            if (!cachedData) {
-              const fetchDataPromise = this.fetchConceptsFromApi(dict);
-              this.articleCacheProvider.set(cacheKey, fetchDataPromise);
-              this.concepts[dict] = await fetchDataPromise;
-            } else {
-              this.concepts[dict] = await cachedData;
-            }
+        async (dictionary) => {
+          if (this.concepts[dictionary]) {
+            return;
+          }
+          this.logger.debug(
+            `Requesting concept lookup table from ${dictionary} from API`,
+          );
+          try {
+            this.concepts[dictionary] =
+              await this.ordboekeneApiService.concepts(dictionary);
+          } catch (error) {
+            this.logger.error(
+              `Failed to fetch concepts from Ordbøkene API for ${dictionary}.`,
+              error,
+            );
           }
         },
       ),
     );
-  }
-
-  private async fetchConceptsFromApi(dictionary: Dictionary): Promise<any> {
-    this.logger.debug(
-      `Requesting concept lookup table from ${dictionary} from API`,
-    );
-
-    const conceptsUrl = new URL(
-      `https://ord.uib.no/${this.getDictParam(dictionary)}/concepts.json`,
-    );
-    const response = await fetch(conceptsUrl.toString());
-
-    if (!response.ok) {
-      throw new Error(
-        `Error fetching concepts: ${response.statusText} (${response.status})`,
-      );
-    }
-
-    return response.json();
-  }
-
-  private async fetchArticleDetails(
-    articleId: number,
-    dictionary: Dictionary,
-  ): Promise<any> {
-    await this.loadConcepts();
-
-    const cacheKey = `${dictionary}-${articleId}`;
-    const cachedData = await this.articleCacheProvider.get(cacheKey);
-
-    if (!cachedData) {
-      const fetchDataPromise = this.fetchDataFromApi(articleId, dictionary);
-      this.articleCacheProvider.set(cacheKey, fetchDataPromise, TTLBucket.Long);
-      return fetchDataPromise;
-    }
-
-    return cachedData;
-  }
-
-  private async fetchDataFromApi(
-    articleId: number,
-    dictionary: Dictionary,
-  ): Promise<any> {
-    const articleUrl = new URL(
-      `https://ord.uib.no/${this.getDictParam(
-        dictionary,
-      )}/article/${articleId}.json`,
-    );
-    const response = await fetch(articleUrl.toString());
-
-    if (!response.ok) {
-      throw new Error(
-        `Error fetching article ${articleId}: ${response.statusText} (${response.status})`,
-      );
-    }
-
-    return response.json();
   }
 
   //#endregion

@@ -250,7 +250,7 @@ export class InMemoryCacheProvider implements ICacheProvider {
     return data;
   }
 
-  private delete(key: string) {
+  delete(key: string) {
     this.cache.delete(key);
     this.hotStore.delete(key);
     this.coolStore.delete(key);

@@ -6,7 +6,7 @@ import {
   Args,
   Int,
 } from '@nestjs/graphql';
-import { WordService } from '../word.service';
+import { WordService } from '../providers';
 import {
   Article,
   Definition,

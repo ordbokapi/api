@@ -1,5 +1,5 @@
 import { Resolver, Query, Args, Parent, ResolveField } from '@nestjs/graphql';
-import { WordService } from '../word.service';
+import { WordService } from '../providers';
 import { Dictionary, Article, Word } from '../models';
 
 @Resolver(() => Word)

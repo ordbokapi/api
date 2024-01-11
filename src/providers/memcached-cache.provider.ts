@@ -110,7 +110,7 @@ export class MemcachedCacheProvider implements ICacheProvider {
 
   async set(key: string, value: any, bucket: TTLBucket = TTLBucket.Short) {
     if (this.hotCache.has(key)) {
-      this.delete(key);
+      this.deleteHot(key);
     }
 
     this.logger.verbose(`Caching key: ${key}`);
@@ -143,13 +143,19 @@ export class MemcachedCacheProvider implements ICacheProvider {
       `Cached key: ${key} with TTL ${formatTTL(ttlSeconds.min)}`,
     );
 
-    const serialized = await this.cacheSerializationProvider.serialize(value);
-    await this.memcachedProvider.client?.set(key, serialized, {
-      expires: ttlSeconds.min,
-    });
-    const item = this.hotCache.get(key);
-    if (item) {
-      item.stored = true;
+    try {
+      const serialized = await this.cacheSerializationProvider.serialize(
+        await value, // value may be a promise
+      );
+      await this.memcachedProvider.client?.set(key, serialized, {
+        expires: ttlSeconds.min,
+      });
+      const item = this.hotCache.get(key);
+      if (item) {
+        item.stored = true;
+      }
+    } catch (err) {
+      this.logger.error(`Failed to cache key in memcached: ${key}`, err);
     }
   }
 
@@ -210,15 +216,20 @@ export class MemcachedCacheProvider implements ICacheProvider {
       );
 
       // Delete the cache entry
-      this.delete(key);
+      this.deleteHot(key);
 
       return null;
     }
   }
 
-  private delete(key: string) {
+  private deleteHot(key: string) {
     this.hotCache.delete(key);
     this.logger.verbose(`Deleted hot cache for key: ${key}`);
+  }
+
+  async delete(key: string) {
+    this.deleteHot(key);
+    await this.memcachedProvider.client?.delete(key);
   }
 
   private async prune() {
@@ -238,7 +249,7 @@ export class MemcachedCacheProvider implements ICacheProvider {
 
     for (const key of toDelete) {
       this.logger.verbose(`Pruning key: ${key} from hot store`);
-      this.delete(key);
+      this.deleteHot(key);
     }
   }
 }
