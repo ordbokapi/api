@@ -1,10 +1,42 @@
-import { Resolver, ResolveField, Parent } from '@nestjs/graphql';
+import {
+  Resolver,
+  ResolveField,
+  Parent,
+  Query,
+  Args,
+  Int,
+} from '@nestjs/graphql';
 import { WordService } from '../word.service';
-import { Article, Definition, WordClass, Gender, Lemma } from '../models';
+import {
+  Article,
+  Definition,
+  WordClass,
+  Gender,
+  Lemma,
+  Dictionary,
+} from '../models';
 
 @Resolver(() => Article)
 export class ArticleResolver {
   constructor(private wordService: WordService) {}
+
+  @Query(() => Article, {
+    description: 'Hentar artikkelen med eit gitt id.',
+  })
+  async article(
+    @Args('id', {
+      type: () => Int,
+      description: 'Id-en til artikkelen som skal hentast.',
+    })
+    id: number,
+    @Args('dictionary', {
+      type: () => Dictionary,
+      description: 'Ordboka som artikkelen skal hentast frå.',
+    })
+    dictionary: Dictionary,
+  ) {
+    return this.wordService.getArticle(id, dictionary);
+  }
 
   @ResolveField(() => [Definition])
   async definitions(@Parent() article: Article) {

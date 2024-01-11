@@ -141,6 +141,26 @@ export class WordService {
     return article.definitions!;
   }
 
+  async getArticle(
+    articleId: number,
+    dictionary: Dictionary,
+  ): Promise<Article> {
+    await this.loadConcepts();
+
+    this.logger.debug(`Getting article: ${articleId}`);
+
+    const data = await this.fetchArticleDetails(articleId, dictionary);
+
+    const article: Article = {
+      id: articleId,
+      dictionary,
+    };
+
+    this.transformArticleResponse(article, data);
+
+    return article;
+  }
+
   async getWordClass(article: Article): Promise<WordClass | undefined> {
     await this.loadConcepts();
 

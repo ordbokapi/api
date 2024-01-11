@@ -24,7 +24,7 @@ import { MemcachedProvider } from './providers/memcached.provider';
             },
           },
           document: `query ExampleSuggestionsQuery($word: String!) {
-  getSuggestions(word: $word) {
+  suggestions(word: $word) {
     exact {
       word
       articles {

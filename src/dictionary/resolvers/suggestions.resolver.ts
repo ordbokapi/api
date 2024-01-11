@@ -10,7 +10,7 @@ export class SuggestionsResolver {
     description:
       'Hentar forslag til ord basert på delvis ordtekst og valde ordbøker.',
   })
-  async getSuggestions(
+  async suggestions(
     @Args('word', {
       type: () => String,
       description: 'Den delvise ordteksten som det skal hentast forslag for.',

@@ -11,7 +11,7 @@ export class WordResolver {
     description:
       'Hentar eit spesifikt ord basert på ordteksten og ein valfri liste av ordbøker.',
   })
-  async getWord(
+  async word(
     @Args('word', {
       type: () => String,
       description: 'Ordet som skal søkjast etter.',
