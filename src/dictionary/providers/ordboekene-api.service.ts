@@ -3,6 +3,14 @@ import { Dictionary } from '../models';
 import { ICacheProvider, TTLBucket } from '../../providers';
 import { createHash } from 'crypto';
 
+export enum OrdboekeneApiSearchType {
+  Any = 0,
+  Exact = 1 << 0,
+  Freetext = 1 << 1,
+  Inflection = 1 << 2,
+  Similar = 1 << 3,
+}
+
 @Injectable()
 export class OrdboekeneApiService {
   private readonly logger = new Logger(OrdboekeneApiService.name);
@@ -17,18 +25,24 @@ export class OrdboekeneApiService {
     word: string,
     dictionaries?: Dictionary[],
     maxCount?: number,
+    searchType?: OrdboekeneApiSearchType,
   ): Promise<any> {
     return this.request<any>('api/suggest', {
       q: word,
+      include: this.getSearchTypeParam(searchType),
       ...(dictionaries ? { dict: this.getDictParam(dictionaries) } : {}),
       ...(maxCount ? { n: maxCount } : {}),
     });
   }
 
-  articles(word: string, dictionaries: Dictionary[]): Promise<any> {
+  articles(
+    word: string,
+    dictionaries: Dictionary[],
+    searchType: OrdboekeneApiSearchType = OrdboekeneApiSearchType.Exact,
+  ): Promise<any> {
     return this.request<any>('api/articles', {
       w: word,
-      scope: 'e',
+      scope: this.getSearchTypeParam(searchType),
       ...(dictionaries ? { dict: this.getDictParam(dictionaries) } : {}),
     });
   }
@@ -137,5 +151,32 @@ export class OrdboekeneApiService {
 
   private generateCacheKey(url: string): string {
     return `ordboekene_api_${createHash('sha1').update(url).digest('hex')}`;
+  }
+
+  private getSearchTypeParam(searchType?: OrdboekeneApiSearchType): string {
+    // if blank, return all
+    if (!searchType) {
+      return 'efis';
+    }
+
+    let param = '';
+
+    if (searchType & OrdboekeneApiSearchType.Exact) {
+      param += 'e';
+    }
+
+    if (searchType & OrdboekeneApiSearchType.Freetext) {
+      param += 'f';
+    }
+
+    if (searchType & OrdboekeneApiSearchType.Inflection) {
+      param += 'i';
+    }
+
+    if (searchType & OrdboekeneApiSearchType.Similar) {
+      param += 's';
+    }
+
+    return param;
   }
 }

@@ -12,7 +12,10 @@ import {
   Lemma,
   Suggestions,
 } from '../models';
-import { OrdboekeneApiService } from './ordboekene-api.service';
+import {
+  OrdboekeneApiService,
+  OrdboekeneApiSearchType as ApiSearchType,
+} from './ordboekene-api.service';
 
 @Injectable()
 export class WordService {
@@ -26,10 +29,16 @@ export class WordService {
   async getSuggestions(
     word: string,
     dictionaries: Dictionary[],
+    searchType?: ApiSearchType,
   ): Promise<Suggestions> {
     this.logger.debug(`Getting suggestions for word: ${word}`);
 
-    const data = await this.ordboekeneApiService.suggest(word, dictionaries);
+    const data = await this.ordboekeneApiService.suggest(
+      word,
+      dictionaries,
+      undefined,
+      searchType,
+    );
     this.logger.debug(`Received suggestions: ${JSON.stringify(data)}`);
 
     return this.transformSuggestionsResponse(data);
@@ -398,12 +407,14 @@ export class WordService {
   }
 
   private mapSuggestionsToWords(rawWords: any) {
-    return rawWords?.map((rawWord: any) => {
-      return {
-        word: rawWord[0],
-        dictionaries: rawWord[1].map((d: string) => this.getDictionary(d)),
-      };
-    });
+    return (
+      rawWords?.map((rawWord: any) => {
+        return {
+          word: rawWord[0],
+          dictionaries: rawWord[1].map((d: string) => this.getDictionary(d)),
+        };
+      }) ?? []
+    );
   }
 
   private transformArticleResponse(article: Article, data: any): Article {

@@ -7,26 +7,22 @@ import { Word } from './word.model';
 })
 export class Suggestions {
   @Field(() => [Word], {
-    nullable: true,
     description: 'Liste av ord som matchar søkjeordet.',
   })
-  exact?: Word[];
+  exact: Word[];
 
   @Field(() => [Word], {
-    nullable: true,
     description: 'Liste av ord som er bøyingsformer av søkjeordet.',
   })
-  inflections?: Word[];
+  inflections: Word[];
 
   @Field(() => [Word], {
-    nullable: true,
     description: 'Liste av ord som er funne ved fritekstsøk på søkjeordet.',
   })
-  freetext?: Word[];
+  freetext: Word[];
 
   @Field(() => [Word], {
-    nullable: true,
     description: 'Liste av ord som liknar på søkjeordet.',
   })
-  similar?: Word[];
+  similar: Word[];
 }

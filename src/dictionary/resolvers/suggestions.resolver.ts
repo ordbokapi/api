@@ -1,5 +1,9 @@
-import { Resolver, Query, Args } from '@nestjs/graphql';
-import { WordService } from '../providers';
+import { Resolver, Query, Args, Info } from '@nestjs/graphql';
+import { GraphQLResolveInfo } from 'graphql';
+import {
+  WordService,
+  OrdboekeneApiSearchType as ApiSearchType,
+} from '../providers';
 import { Dictionary, Suggestions, Word } from '../models';
 
 @Resolver(() => Word)
@@ -23,7 +27,37 @@ export class SuggestionsResolver {
         'Liste over ordbøker som skal brukast for å generera forslag. Standardverdiane er Bokmålsordboka og Nynorskordboka.',
     })
     dictionaries: Dictionary[],
+    @Info() info: GraphQLResolveInfo,
   ) {
-    return this.wordService.getSuggestions(word, dictionaries);
+    const selections = info.fieldNodes[0].selectionSet?.selections;
+
+    if (!selections) {
+      return [];
+    }
+
+    let searchTypes: ApiSearchType = ApiSearchType.Any;
+
+    for (const selection of selections) {
+      if (selection.kind !== 'Field') {
+        continue;
+      }
+
+      switch (selection.name.value) {
+        case 'exact':
+          searchTypes |= ApiSearchType.Exact;
+          break;
+        case 'freetext':
+          searchTypes |= ApiSearchType.Freetext;
+          break;
+        case 'inflections':
+          searchTypes |= ApiSearchType.Inflection;
+          break;
+        case 'similar':
+          searchTypes |= ApiSearchType.Similar;
+          break;
+      }
+    }
+
+    return this.wordService.getSuggestions(word, dictionaries, searchTypes);
   }
 }
