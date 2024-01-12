@@ -1,6 +1,6 @@
 import { Resolver, Query, Args, Parent, ResolveField } from '@nestjs/graphql';
 import { WordService } from '../providers';
-import { Dictionary, Article, Word } from '../models';
+import { Dictionary, Article, Word, WordClass } from '../models';
 
 @Resolver(() => Word)
 export class WordResolver {
@@ -24,13 +24,30 @@ export class WordResolver {
         'Liste over ordbøker der søket skal utførast. Standardverdiane er Bokmålsordboka og Nynorskordboka.',
     })
     dictionaries: Dictionary[],
+    @Args('wordClass', {
+      type: () => WordClass,
+      nullable: true,
+      description:
+        'Begrensar søket til å berre gjelda ord med denne ordklassen.',
+    })
+    wordClass: WordClass | undefined,
   ) {
-    return this.wordService.getWord(word, dictionaries);
+    return this.wordService.getWord(word, dictionaries, wordClass);
   }
 
   @ResolveField(() => [Article], { nullable: true })
-  async articles(@Parent() word: Word) {
-    return (await this.wordService.getWord(word.word, word.dictionaries))
-      ?.articles;
+  async articles(
+    @Parent() word: Word,
+    @Args('wordClass', {
+      type: () => WordClass,
+      nullable: true,
+      description:
+        'Begrensar artiklane til å berre gjelda ord med denne ordklassen.',
+    })
+    wordClass: WordClass | undefined,
+  ) {
+    return (
+      await this.wordService.getWord(word.word, word.dictionaries, wordClass)
+    )?.articles;
   }
 }

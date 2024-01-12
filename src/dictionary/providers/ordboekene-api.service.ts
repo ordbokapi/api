@@ -26,12 +26,14 @@ export class OrdboekeneApiService {
     dictionaries?: Dictionary[],
     maxCount?: number,
     searchType?: OrdboekeneApiSearchType,
+    wordClass?: string,
   ): Promise<any> {
     return this.request<any>('api/suggest', {
       q: word,
       include: this.getSearchTypeParam(searchType),
       ...(dictionaries ? { dict: this.getDictParam(dictionaries) } : {}),
       ...(maxCount ? { n: maxCount } : {}),
+      ...(wordClass ? { wc: wordClass } : {}),
     });
   }
 
@@ -39,11 +41,13 @@ export class OrdboekeneApiService {
     word: string,
     dictionaries: Dictionary[],
     searchType: OrdboekeneApiSearchType = OrdboekeneApiSearchType.Exact,
+    wordClass?: string,
   ): Promise<any> {
     return this.request<any>('api/articles', {
       w: word,
       scope: this.getSearchTypeParam(searchType),
       ...(dictionaries ? { dict: this.getDictParam(dictionaries) } : {}),
+      ...(wordClass ? { wc: wordClass } : {}),
     });
   }
 

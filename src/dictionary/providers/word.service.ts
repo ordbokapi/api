@@ -16,6 +16,22 @@ import {
   OrdboekeneApiService,
   OrdboekeneApiSearchType as ApiSearchType,
 } from './ordboekene-api.service';
+import { TwoWayMap } from '../types';
+
+const wordClassMap = new TwoWayMap([
+  ['NOUN', WordClass.Substantiv],
+  ['ADJ', WordClass.Adjektiv],
+  ['ADV', WordClass.Adverb],
+  ['VERB', WordClass.Verb],
+  ['PRON', WordClass.Pronomen],
+  ['ADP', WordClass.Preposisjon],
+  ['CCONJ', WordClass.Konjunksjon],
+  ['INTJ', WordClass.Interjeksjon],
+  ['DET', WordClass.Determinativ],
+  ['SCONJ', WordClass.Subjunksjon],
+  ['SYM', WordClass.Symbol],
+  ['ABBR', WordClass.Forkorting],
+]);
 
 @Injectable()
 export class WordService {
@@ -30,14 +46,17 @@ export class WordService {
     word: string,
     dictionaries: Dictionary[],
     searchType?: ApiSearchType,
+    maxCount?: number,
+    wordClass?: WordClass,
   ): Promise<Suggestions> {
     this.logger.debug(`Getting suggestions for word: ${word}`);
 
     const data = await this.ordboekeneApiService.suggest(
       word,
       dictionaries,
-      undefined,
+      maxCount,
       searchType,
+      wordClass ? wordClassMap.getReverse(wordClass) : undefined,
     );
     this.logger.debug(`Received suggestions: ${JSON.stringify(data)}`);
 
@@ -47,12 +66,18 @@ export class WordService {
   async getWord(
     word: string,
     dictionaries: Dictionary[],
+    wordClass?: WordClass,
   ): Promise<Word | undefined> {
     await this.loadConcepts();
 
     this.logger.debug(`Getting articles for word: ${word}`);
 
-    const data = await this.ordboekeneApiService.articles(word, dictionaries);
+    const data = await this.ordboekeneApiService.articles(
+      word,
+      dictionaries,
+      ApiSearchType.Exact,
+      wordClass ? wordClassMap.getReverse(wordClass) : undefined,
+    );
 
     // Example API response:
 
@@ -184,33 +209,20 @@ export class WordService {
   }
 
   private transformWordClass(article: any): WordClass | undefined {
-    const tagMapping: { [key: string]: WordClass } = {
-      NOUN: WordClass.Substantiv,
-      ADJ: WordClass.Adjektiv,
-      ADV: WordClass.Adverb,
-      VERB: WordClass.Verb,
-      PRON: WordClass.Pronomen,
-      ADP: WordClass.Preposisjon,
-      CCONJ: WordClass.Konjunksjon,
-      INTJ: WordClass.Interjeksjon,
-      DET: WordClass.Determinativ,
-      SCONJ: WordClass.Subjunksjon,
-      SYM: WordClass.Symbol,
-      ABBR: WordClass.Forkorting,
-    };
-
     if (article.lemmas && article.lemmas.length > 0) {
       const lemma = article.lemmas[0];
       if (lemma.paradigm_info && lemma.paradigm_info.length > 0) {
         const tags = lemma.paradigm_info[0].tags;
         if (tags && tags.length > 0) {
-          const wordClassTag = tags.find((tag: string) => tagMapping[tag]);
-          if (!tagMapping[wordClassTag]) {
+          const wordClassTag = tags.find((tag: string) =>
+            wordClassMap.has(tag),
+          );
+          if (!wordClassTag) {
             this.logger.warn(
               `Fann ikkje ordklasse for ${lemma.lemma} (prøvde å transformera ${tags} til ordklasse)`,
             );
           }
-          return wordClassTag && tagMapping[wordClassTag];
+          return wordClassTag && wordClassMap.get(wordClassTag);
         }
       }
     }

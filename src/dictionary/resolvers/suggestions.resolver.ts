@@ -4,7 +4,7 @@ import {
   WordService,
   OrdboekeneApiSearchType as ApiSearchType,
 } from '../providers';
-import { Dictionary, Suggestions, Word } from '../models';
+import { Dictionary, Suggestions, Word, WordClass } from '../models';
 
 @Resolver(() => Word)
 export class SuggestionsResolver {
@@ -27,6 +27,19 @@ export class SuggestionsResolver {
         'Liste over ordbøker som skal brukast for å generera forslag. Standardverdiane er Bokmålsordboka og Nynorskordboka.',
     })
     dictionaries: Dictionary[],
+    @Args('maxCount', {
+      type: () => Number,
+      nullable: true,
+      description: 'Begrensar talet på forslag som skal returnerast.',
+    })
+    maxCount: number | undefined,
+    @Args('wordClass', {
+      type: () => WordClass,
+      nullable: true,
+      description:
+        'Begrensar forslaga til å berre gjelda ord med denne ordklassen.',
+    })
+    wordClass: WordClass | undefined,
     @Info() info: GraphQLResolveInfo,
   ) {
     const selections = info.fieldNodes[0].selectionSet?.selections;
@@ -58,6 +71,12 @@ export class SuggestionsResolver {
       }
     }
 
-    return this.wordService.getSuggestions(word, dictionaries, searchTypes);
+    return this.wordService.getSuggestions(
+      word,
+      dictionaries,
+      searchTypes,
+      maxCount,
+      wordClass,
+    );
   }
 }
