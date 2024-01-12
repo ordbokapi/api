@@ -285,7 +285,9 @@ export class InMemoryCacheProvider implements ICacheProvider {
         if (value) {
           let compressed: Buffer;
           try {
-            compressed = await this.serializer.serialize(value);
+            compressed = await this.serializer.serialize(
+              await value, // value may be a promise
+            );
           } catch (err) {
             this.logger.error(
               `Failed to compress cache entry for key: ${key}`,
