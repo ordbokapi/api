@@ -11,6 +11,7 @@ import {
   Gender,
   Lemma,
   Suggestions,
+  ArticleRelationship,
 } from '../models';
 import {
   OrdboekeneApiService,
@@ -32,6 +33,90 @@ const wordClassMap = new TwoWayMap([
   ['SYM', WordClass.Symbol],
   ['ABBR', WordClass.Forkorting],
 ]);
+
+type ArticleTextElement = {
+  content: string;
+  items: ArticleElement[];
+};
+
+type ArticleElement =
+  | {
+      type_: 'entity';
+      id: string;
+    }
+  | {
+      type_: 'usage';
+      items: [];
+      text: string;
+    }
+  | {
+      type_: 'quote_inset' | 'explanation' | 'etymology_language';
+      content: string;
+      items: ArticleElement[];
+    }
+  | {
+      type_: 'definition';
+      elements: ArticleElement[];
+      id: number;
+      sub_definition: boolean;
+    }
+  | {
+      type_: 'example';
+      quote: ArticleTextElement;
+      explanation: ArticleTextElement;
+    }
+  | {
+      type_: 'compound_list';
+      elements: ArticleElement[];
+      intro: ArticleTextElement;
+    }
+  | {
+      type_: 'article_ref';
+      article_id: number;
+      lemmas: {
+        type_: 'lemma';
+        hgno: number;
+        id: number;
+        lemma: string;
+      }[];
+      definition_id: number;
+      definition_order: number;
+    }
+  | {
+      type_: 'sub_article';
+      article_id: number;
+      lemmas: string[];
+      article: {
+        type_: 'article';
+        article_id: number;
+        lemmas: {
+          type_: 'lemma';
+          hgno: number;
+          id: number;
+          lemma: string;
+        }[];
+        body: {
+          pronunciation: ArticleElement[];
+          definitions: ArticleElement[];
+        };
+        article_type: string;
+        author: string;
+        dict_id: string;
+        frontpage: boolean;
+        latest_status: number;
+        owner: string;
+        properties: {
+          edit_state: string;
+        };
+        version: number;
+        word_class: string;
+      };
+      intro: {
+        content: string;
+        items: ArticleElement[];
+      };
+      status: null | string;
+    };
 
 @Injectable()
 export class WordService {
@@ -129,6 +214,19 @@ export class WordService {
     this.transformArticleResponse(article, data);
 
     return article.definitions!;
+  }
+
+  async getUsages(article: Article): Promise<Article[]> {
+    await this.loadConcepts();
+
+    this.logger.debug(`Getting usages for article: ${article.id}`);
+
+    const data = await this.ordboekeneApiService.article(
+      article.id,
+      article.dictionary,
+    );
+
+    return this.transformUsages(article, data);
   }
 
   async getArticle(
@@ -355,11 +453,11 @@ export class WordService {
 
   private formatText(
     dictionary: Dictionary,
-    element: {
-      content: string;
-      items: { type_: string; id: string; [key: string]: any }[];
-    },
+    element: ArticleTextElement,
   ): string {
+    if (!element || !element.content) {
+      console.dir(element, { depth: null });
+    }
     // Format the text element
     const segments = element.content.split('$');
     let text = '';
@@ -370,36 +468,75 @@ export class WordService {
         continue;
       }
 
-      if (element.items[i].type_ === 'article_ref') {
-        const article = element.items[i];
-        const lemma = article.lemmas[0].lemma;
-        text += lemma;
-        continue;
-      }
-
-      if (element.items[i].type_ === 'usage') {
-        text += element.items[i].text;
-        continue;
-      }
-
-      if (element.items[i].type_ === 'quote_inset') {
-        text += this.formatText(dictionary, element.items[i] as any);
-        continue;
-      }
-
-      const conceptId = element.items[i].id;
-      const concept = this.concepts[dictionary].concepts[conceptId];
-      if (concept) {
-        text += concept.expansion;
-      } else {
-        this.logger.warn(
-          `Fann ikkje concept ${conceptId} i ${dictionary} (prøvde å formattera ${element.items[i].type_} mens bygde opp teksten ${element.content})`,
-        );
-        text += '(?)';
-      }
+      text += this.formatElement(dictionary, element.items[i]);
     }
 
     return text;
+  }
+
+  private formatElement(dictionary: Dictionary, element: ArticleElement) {
+    switch (element.type_) {
+      case 'entity': {
+        const conceptId = element.id;
+        const concept = this.concepts[dictionary].concepts[conceptId];
+        if (concept) {
+          return concept.expansion;
+        } else {
+          this.logger.warn(
+            `Fann ikkje concept ${conceptId} i ${dictionary} (prøvde å formattera ${element.type_})`,
+          );
+          return '(?)';
+        }
+      }
+
+      case 'compound_list': {
+        let text = '';
+        text += this.formatText(dictionary, element.intro) + ' ';
+        text += element.elements
+          .map((item: any) => this.formatElement(dictionary, item))
+          .join(', ');
+        return text;
+      }
+
+      case 'article_ref': {
+        const article = element;
+        const lemma = article.lemmas[0].lemma;
+        return lemma;
+      }
+
+      case 'sub_article': {
+        const article = element.article;
+        const lemma = article.lemmas[0].lemma;
+        return lemma;
+      }
+
+      case 'usage': {
+        return element.text;
+      }
+
+      case 'quote_inset':
+      case 'explanation':
+      case 'etymology_language': {
+        return this.formatText(dictionary, element);
+      }
+
+      case 'definition': {
+        return element.elements
+          .map((item: any) => this.formatText(dictionary, item))
+          .join(' ');
+      }
+
+      case 'example': {
+        return this.formatText(dictionary, element.quote);
+      }
+
+      default: {
+        this.logger.warn(
+          `Kunne ikkje formattera element av type ${(element as any).type_}`,
+        );
+        return '';
+      }
+    }
   }
 
   private transformSuggestionsResponse(data: any): Suggestions {
@@ -461,17 +598,61 @@ export class WordService {
   private transformDefinitionElement(
     dictionary: Dictionary,
     definition: Definition,
-    element: any,
+    element: ArticleElement,
   ): Definition {
     switch (element.type_) {
       case 'explanation':
-        definition.content += this.formatText(dictionary, element);
+        const match = element.content.match(/^(S(?:e|jå): )\$/);
+        if (match) {
+          const appendix = [];
+          const seeAlso = new ArticleRelationship();
+
+          for (const subElement of element.items) {
+            if (
+              subElement.type_ !== 'article_ref' &&
+              subElement.type_ !== 'sub_article'
+            ) {
+              continue;
+            }
+
+            seeAlso.articles.push({
+              id: subElement.article_id,
+              dictionary,
+            });
+
+            appendix.push(this.formatElement(dictionary, subElement));
+          }
+
+          seeAlso.summary = `${match[1]}${appendix.join(', ')}`;
+
+          definition.seeAlso.push(seeAlso);
+
+          break;
+        }
+        definition.content += this.formatElement(dictionary, element);
         break;
       case 'example':
-        if (!definition.examples) {
-          definition.examples = [];
+        definition.examples.push(this.formatElement(dictionary, element));
+        break;
+      case 'compound_list':
+        const usage = new ArticleRelationship();
+        usage.summary = this.formatElement(dictionary, element);
+
+        for (const subElement of element.elements) {
+          if (
+            subElement.type_ !== 'article_ref' &&
+            subElement.type_ !== 'sub_article'
+          ) {
+            continue;
+          }
+
+          usage.articles.push({
+            id: subElement.article_id,
+            dictionary,
+          });
         }
-        definition.examples.push(this.formatText(dictionary, element.quote));
+
+        definition.usages.push(usage);
         break;
       case 'definition':
         for (const subElement of element.elements) {
@@ -490,12 +671,19 @@ export class WordService {
     const definitions: Definition[] = [];
 
     for (const def of elements) {
-      const definition: Definition = {
+      // Skip if this is a usage related to another article
+      if (
+        def.type_ === 'definition' &&
+        def.elements.length === 1 &&
+        def.elements[0].type_ === 'sub_article'
+      ) {
+        continue;
+      }
+
+      const definition = new Definition({
         id: def.id,
         content: '',
-        examples: [],
-        subDefinitions: [],
-      };
+      });
 
       if (def.elements) {
         for (const element of def.elements) {
@@ -508,6 +696,29 @@ export class WordService {
     }
 
     return definitions;
+  }
+
+  private transformUsages(article: Article, data: any): Article[] {
+    // Usages are in the definitions array but are 'definition' elements with
+    // a single 'sub_article' element in the 'elements' array
+
+    const usages: Article[] = [];
+
+    for (const element of data?.body?.definitions?.[0]?.elements ?? []) {
+      this.logger.debug(`Processing element: ${JSON.stringify(element)}`);
+      if (element.type_ === 'definition') {
+        for (const subElement of element.elements) {
+          if (subElement.type_ === 'sub_article') {
+            usages.push({
+              id: subElement.article_id,
+              dictionary: article.dictionary,
+            });
+          }
+        }
+      }
+    }
+
+    return usages;
   }
 
   //#endregion

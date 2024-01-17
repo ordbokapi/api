@@ -57,4 +57,9 @@ export class ArticleResolver {
   async gender(@Parent() article: Article) {
     return this.wordService.getGender(article);
   }
+
+  @ResolveField(() => [Article])
+  async usages(@Parent() article: Article) {
+    return this.wordService.getUsages(article);
+  }
 }

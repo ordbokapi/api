@@ -10,6 +10,10 @@ import { Lemma } from './lemma.model';
     'Representerer ein artikkel i eit leksikon eller ordbok, med detaljert informasjon om ord og deira bruk.',
 })
 export class Article {
+  constructor(article?: Partial<Article>) {
+    Object.assign(this, article);
+  }
+
   @Field(() => Int, { description: 'Ein unik identifikator for artikkelen.' })
   id: number;
 
@@ -40,4 +44,11 @@ export class Article {
     description: 'Liste over definisjonar av ordet i artikkelen.',
   })
   definitions?: Definition[];
+
+  @Field(() => [Article], {
+    nullable: true,
+    description:
+      'Liste over artiklar som inkluderar andre bruksmåter av ordet/uttrykket definert av denne artikkelen.',
+  })
+  usages?: Article[];
 }

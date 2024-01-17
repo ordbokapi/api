@@ -1,4 +1,5 @@
 export * from './article.model';
+export * from './article-relationship.model';
 export * from './definition.model';
 export * from './dictionary.model';
 export * from './gender.model';
