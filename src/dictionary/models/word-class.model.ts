@@ -13,6 +13,7 @@ export enum WordClass {
   Subjunksjon = 'Subjunksjon', // Subjunction
   Symbol = 'Symbol', // Symbol
   Forkorting = 'Forkorting', // Abbreviation
+  Uttrykk = 'Uttrykk', // Phrase
 }
 
 registerEnumType(WordClass, {

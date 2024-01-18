@@ -1,5 +1,6 @@
 import { Field, Int, ObjectType } from '@nestjs/graphql';
 import { ArticleRelationship } from './article-relationship.model';
+import { RichContentSegment } from './rich-content-segment.model';
 
 @ObjectType({
   description:
@@ -17,14 +18,25 @@ export class Definition {
   })
   id?: number;
 
-  @Field({ description: 'Innhaldet i definisjonen.' })
-  content?: string;
+  @Field(() => [String], { description: 'Innhaldet i definisjonen.' })
+  content: string[] = [];
+
+  @Field(() => [[RichContentSegment]], {
+    description: 'Innhaldet i definisjonen, segmentert i rich content.',
+  })
+  richContent: RichContentSegment[][] = [];
 
   @Field(() => [String], {
     description:
       'Ei liste over døme som illustrerer bruk av ordet eller uttrykket.',
   })
   examples: string[] = [];
+
+  @Field(() => [[RichContentSegment]], {
+    description:
+      'Ei liste over døme som illustrerer bruk av ordet eller uttrykket, segmentert i rich content.',
+  })
+  richExamples: RichContentSegment[][] = [];
 
   @Field(() => [ArticleRelationship], {
     description:

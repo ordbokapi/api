@@ -1,5 +1,6 @@
 import { Field, ObjectType } from '@nestjs/graphql';
 import { Article } from './article.model';
+import { RichContentSegment } from './rich-content-segment.model';
 
 @ObjectType({
   description:
@@ -13,7 +14,13 @@ export class ArticleRelationship {
   @Field(() => String, {
     description: 'Ein brukarvennleg tekst som beskriv relasjonen.',
   })
-  summary: string = '';
+  content: string = '';
+
+  @Field(() => [RichContentSegment], {
+    description:
+      'Ein brukarvennleg tekst som beskriv relasjonen, segmentert i rich content.',
+  })
+  richContent: RichContentSegment[] = [];
 
   @Field(() => [Article], {
     description: 'Artiklane som er relatert til kilden.',

@@ -12,12 +12,13 @@ import {
   Lemma,
   Suggestions,
   ArticleRelationship,
+  RichContentArticleSegment,
 } from '../models';
 import {
   OrdboekeneApiService,
   OrdboekeneApiSearchType as ApiSearchType,
 } from './ordboekene-api.service';
-import { TwoWayMap } from '../types';
+import { TwoWayMap, RichContentBuilder } from '../types';
 
 const wordClassMap = new TwoWayMap([
   ['NOUN', WordClass.Substantiv],
@@ -32,6 +33,7 @@ const wordClassMap = new TwoWayMap([
   ['SCONJ', WordClass.Subjunksjon],
   ['SYM', WordClass.Symbol],
   ['ABBR', WordClass.Forkorting],
+  ['EXPR', WordClass.Uttrykk],
 ]);
 
 type ArticleTextElement = {
@@ -41,7 +43,7 @@ type ArticleTextElement = {
 
 type ArticleElement =
   | {
-      type_: 'entity';
+      type_: 'entity' | 'language' | 'relation';
       id: string;
     }
   | {
@@ -454,89 +456,131 @@ export class WordService {
   private formatText(
     dictionary: Dictionary,
     element: ArticleTextElement,
-  ): string {
-    if (!element || !element.content) {
-      console.dir(element, { depth: null });
-    }
+  ): RichContentBuilder {
+    const richContent = new RichContentBuilder();
+
     // Format the text element
     const segments = element.content.split('$');
-    let text = '';
 
     for (const [i, segment] of segments.entries()) {
-      text += segment;
+      richContent.append(segment);
       if (i >= segments.length - 1) {
         continue;
       }
 
-      text += this.formatElement(dictionary, element.items[i]);
+      richContent.append(this.formatElement(dictionary, element.items[i]));
     }
 
-    return text;
+    return richContent;
   }
 
-  private formatElement(dictionary: Dictionary, element: ArticleElement) {
+  private formatElement(
+    dictionary: Dictionary,
+    element: ArticleElement,
+  ): RichContentBuilder {
+    const richContent = new RichContentBuilder();
+
     switch (element.type_) {
-      case 'entity': {
+      case 'entity':
+      case 'language':
+      case 'relation': {
         const conceptId = element.id;
         const concept = this.concepts[dictionary].concepts[conceptId];
+
         if (concept) {
           return concept.expansion;
         } else {
           this.logger.warn(
             `Fann ikkje concept ${conceptId} i ${dictionary} (prøvde å formattera ${element.type_})`,
           );
-          return '(?)';
+          richContent.append('(?)');
         }
+
+        break;
       }
 
       case 'compound_list': {
-        let text = '';
-        text += this.formatText(dictionary, element.intro) + ' ';
-        text += element.elements
-          .map((item: any) => this.formatElement(dictionary, item))
-          .join(', ');
-        return text;
+        richContent
+          .append(this.formatText(dictionary, element.intro))
+          .append(' ');
+        element.elements.forEach((item: any, index: number) => {
+          richContent.append(this.formatElement(dictionary, item));
+          if (index < element.elements.length - 1) {
+            richContent.append(', ');
+          }
+        });
+        break;
       }
 
       case 'article_ref': {
         const article = element;
         const lemma = article.lemmas[0].lemma;
-        return lemma;
+
+        richContent.append(
+          new RichContentArticleSegment({
+            content: lemma,
+            article: {
+              id: article.article_id,
+              dictionary,
+            },
+            definitionId: article.definition_id,
+            definitionIndex: article.definition_order - 1,
+          }),
+        );
+
+        break;
       }
 
       case 'sub_article': {
         const article = element.article;
         const lemma = article.lemmas[0].lemma;
-        return lemma;
+
+        richContent.append(
+          new RichContentArticleSegment({
+            content: lemma,
+            article: {
+              id: article.article_id,
+              dictionary,
+            },
+          }),
+        );
+        break;
       }
 
       case 'usage': {
-        return element.text;
+        richContent.append(element.text);
+        break;
       }
 
       case 'quote_inset':
       case 'explanation':
       case 'etymology_language': {
-        return this.formatText(dictionary, element);
+        richContent.append(this.formatText(dictionary, element));
+        break;
       }
 
       case 'definition': {
-        return element.elements
-          .map((item: any) => this.formatText(dictionary, item))
-          .join(' ');
+        element.elements.forEach((item: any) =>
+          richContent.append(this.formatElement(dictionary, item)),
+        );
+        break;
       }
 
       case 'example': {
-        return this.formatText(dictionary, element.quote);
+        richContent.append(this.formatText(dictionary, element.quote));
+        break;
       }
 
       default: {
         this.logger.warn(
           `Kunne ikkje formattera element av type ${(element as any).type_}`,
         );
-        return '';
+        richContent.append('(?)');
+        break;
       }
     }
+
+    return richContent;
   }
 
   private transformSuggestionsResponse(data: any): Suggestions {
@@ -575,7 +619,7 @@ export class WordService {
 
     // console.dir(data, { depth: null });
 
-    if (data.body?.definitions?.length) {
+    if (data?.body?.definitions?.[0]?.elements?.length) {
       definitions.push(
         ...this.transformDefinitions(
           article.dictionary,
@@ -601,7 +645,7 @@ export class WordService {
     element: ArticleElement,
   ): Definition {
     switch (element.type_) {
-      case 'explanation':
+      case 'explanation': {
         const match = element.content.match(/^(S(?:e|jå): )\$/);
         if (match) {
           const appendix = [];
@@ -623,20 +667,35 @@ export class WordService {
             appendix.push(this.formatElement(dictionary, subElement));
           }
 
-          seeAlso.summary = `${match[1]}${appendix.join(', ')}`;
+          seeAlso.content = `${match[1]}${appendix.join(', ')}`;
 
           definition.seeAlso.push(seeAlso);
 
           break;
         }
-        definition.content += this.formatElement(dictionary, element);
+        const richContent = this.formatElement(dictionary, element);
+
+        definition.content.push(richContent.toString());
+        definition.richContent.push(richContent.build());
         break;
-      case 'example':
-        definition.examples.push(this.formatElement(dictionary, element));
+      }
+
+      case 'example': {
+        // definition.examples.push(this.formatElement(dictionary, element));
+        const richContent = this.formatElement(dictionary, element);
+
+        definition.examples.push(richContent.toString());
+        definition.richExamples.push(richContent.build());
         break;
-      case 'compound_list':
+      }
+
+      case 'compound_list': {
         const usage = new ArticleRelationship();
-        usage.summary = this.formatElement(dictionary, element);
+        // usage.content = this.formatElement(dictionary, element);
+        const richContent = this.formatElement(dictionary, element);
+
+        usage.content = richContent.toString();
+        usage.richContent = richContent.build();
 
         for (const subElement of element.elements) {
           if (
@@ -654,11 +713,14 @@ export class WordService {
 
         definition.usages.push(usage);
         break;
-      case 'definition':
+      }
+
+      case 'definition': {
         for (const subElement of element.elements) {
           this.transformDefinitionElement(dictionary, definition, subElement);
         }
         break;
+      }
     }
 
     return definition;
@@ -680,10 +742,7 @@ export class WordService {
         continue;
       }
 
-      const definition = new Definition({
-        id: def.id,
-        content: '',
-      });
+      const definition = new Definition({ id: def.id });
 
       if (def.elements) {
         for (const element of def.elements) {
@@ -705,7 +764,6 @@ export class WordService {
     const usages: Article[] = [];
 
     for (const element of data?.body?.definitions?.[0]?.elements ?? []) {
-      this.logger.debug(`Processing element: ${JSON.stringify(element)}`);
       if (element.type_ === 'definition') {
         for (const subElement of element.elements) {
           if (subElement.type_ === 'sub_article') {
