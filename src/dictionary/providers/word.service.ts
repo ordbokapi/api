@@ -716,9 +716,17 @@ export class WordService {
       }
 
       case 'definition': {
+        const subDefinition = new Definition({ id: element.id });
+
         for (const subElement of element.elements) {
-          this.transformDefinitionElement(dictionary, definition, subElement);
+          this.transformDefinitionElement(
+            dictionary,
+            subDefinition,
+            subElement,
+          );
         }
+
+        definition.subDefinitions.push(subDefinition);
         break;
       }
     }
