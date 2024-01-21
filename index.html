@@ -1,4 +1,4 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="nn">
   <head>
     <meta charset="UTF-8" />
@@ -6,66 +6,99 @@
     <title>Ordbok API</title>
     <link rel="stylesheet" href="style.css" />
   </head>
-  <body>
-    <header>
-      <div class="container">
-        <h1>Velkomen til Ordbok API</h1>
-        <p>
-          Nøkkelen din til enklare og meir tilgjengeleg tilgang til
-          Ordbøkene-data.
-        </p>
-      </div>
-    </header>
 
-    <nav class="resource-links">
+  <body>
+    <nav id="navbar">
       <div class="container">
-        <a href="https://github.com/adalinesimonian/ordbokapi">GitHub Prosjekt</a>
-        <a href="https://api.ordbokapi.org/graphql">Apollo Sandbox</a>
+        <a href="#welcome" class="navbar-logo">
+          <img src="images/ordbokapi-logo.png" alt="Ordbok API Logo" />
+        </a>
+        <a href="#features">Funksjonar</a>
+        <a href="#usage">Bruk</a>
+        <a href="https://github.com/adalinesimonian/ordbokapi" target="_blank"
+          >GitHub prosjekt</a
+        >
+        <a href="https://api.ordbokapi.org/graphql" target="_blank"
+          >Apollo Sandbox</a
+        >
       </div>
     </nav>
 
-    <section id="features">
+    <section id="welcome" class="jumbotron">
       <div class="container">
-        <h2>Funksjonar av Ordbok API</h2>
-        <p>
-          Oppdag krafta i Ordbok API, eit verktøy designa for å forenkla
-          tilgangen til omfattande informasjon frå dei offisielle norske
-          ordbøkene. APIet vårt gir deg:
-        </p>
-        <ul>
-          <li>Rask tilgang: Snarleg henting av orddefinisjonar og døme.</li>
-          <li>Fleksibilitet: Tilpassa søk for varierte brukstilfelle.</li>
-          <li>
-            Effektiv datahandtering: GraphQL spørjespråk for å henta nøyaktig
-            den informasjonen du treng.
-          </li>
-        </ul>
+        <div class="text-content">
+          <h1>Ordbok API</h1>
+          <p>
+            Nøkkelen din til enklare og meir tilgjengeleg tilgang til
+            Ordbøkene-data.
+          </p>
+          <a href="https://api.ordbokapi.org/graphql" class="btn btn-primary"
+            >Prøv det no</a
+          >
+          <a href="https://github.com/adalinesimonian/ordbokapi" class="btn"
+            >GitHub prosjekt</a
+          >
+        </div>
+        <div class="image-content">
+          <div id="container"></div>
+          <script type="module" src="graph.js"></script>
+          <word-graph></word-graph>
+        </div>
       </div>
     </section>
 
-    <section id="usage">
+    <section id="features" class="jumbotron text-on-right">
+      <div class="container">
+        <h2>Funksjonar</h2>
+        <div class="text-content">
+          <p>
+            Oppdag krafta i Ordbok API, eit verktøy designa for å forenkla
+            tilgangen til omfattande informasjon frå dei offisielle norske
+            ordbøkene. APIet vårt gir deg:
+          </p>
+          <ul>
+            <li>
+              <strong>Rask tilgang:</strong> Snarleg henting av orddefinisjonar
+              og døme.
+            </li>
+            <li>
+              <strong>Fleksibilitet:</strong> Tilpassa søk for varierte
+              brukstilfelle.
+            </li>
+            <li>
+              <strong>Effektiv datahandtering:</strong> GraphQL spørjespråk for
+              å henta nøyaktig den informasjonen du treng.
+            </li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <section id="usage" class="jumbotron">
       <div class="container">
         <h2>Korleis å bruka APIet</h2>
-        <p>
-          Akkurat no er Ordbok API i ein utviklingsfase og kan vera ustabil.
-          Fullstendig dokumentasjon er ikkje tilgjengeleg endå. Me oppmodar
-          brukarar til å nytta seg av GraphQL sandbox for å utforska og testa
-          APIet:
-        </p>
-        <ol>
-          <li>
-            Besøk endpoint: Gå til
-            <a href="https://api.ordbokapi.org/graphql">Apollo Sandbox</a>.
-          </li>
-          <li>
-            Test førespurnader: Bruk sandboxen til å gjera førespurnader og sjå
-            responsane.
-          </li>
-          <li>
-            Gi tilbakemelding: Me verdset tilbakemeldinga di for å forbetra
-            APIet.
-          </li>
-        </ol>
+        <div class="text-content">
+          <p>
+            Akkurat no er Ordbok API i ein utviklingsfase og kan vera ustabil.
+            Fullstendig dokumentasjon er ikkje tilgjengeleg endå. Me oppmodar
+            brukarar til å nytta seg av GraphQL sandbox for å utforska og testa
+            APIet:
+          </p>
+          <ol>
+            <li>
+              <strong>Besøk endpoint:</strong> Gå til
+              <a href="https://api.ordbokapi.org/graphql">Apollo Sandbox</a>.
+            </li>
+            <li>
+              <strong>Test førespurnader:</strong> Bruk sandboxen til å gjera
+              førespurnader og sjå responsane.
+            </li>
+            <li>
+              <strong>Gi tilbakemelding:</strong> Me verdset tilbakemeldinga di
+              for å forbetra APIet.
+            </li>
+          </ol>
+        </div>
       </div>
     </section>
 

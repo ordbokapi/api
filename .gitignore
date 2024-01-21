@@ -1,4 +1,14 @@
 *
 !.gitignore
-!index.html
-!style.css
+!*.html
+!*.css
+!images
+!images/*
+!CNAME
+!graph-data.json
+!graph.js
+!.prettierrc
+!.editorconfig
+!.vscode
+!.vscode/*
+!LICENCE
