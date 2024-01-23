@@ -2,6 +2,11 @@
 
 ![Prosjektbanner](https://ordbokapi.org/images/ordbokapi-open-graph.png)
 
+<p align="center">
+  <a href="https://ordbokapi.org">Prosjektnettstad</a> •
+  <a href="https://api.ordbokapi.org/graphql">Apollo Sandbox</a>
+</p>
+
 ## Introduksjon
 
 Velkomen til Ordbok API, nøkkelen din til enklare og meir tilgjengeleg tilgang til Ordbøkene-data. Dette APIet er designa for å forenkla tilgangen til omfattande informasjon frå dei offisielle norske ordbøkene og er for tida i utviklingsfasen.
