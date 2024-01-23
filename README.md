@@ -1,5 +1,7 @@
 # Ordbok API
 
+![Prosjektbanner](https://ordbokapi.org/images/ordbokapi-open-graph.png)
+
 ## Introduksjon
 
 Velkomen til Ordbok API, nøkkelen din til enklare og meir tilgjengeleg tilgang til Ordbøkene-data. Dette APIet er designa for å forenkla tilgangen til omfattande informasjon frå dei offisielle norske ordbøkene og er for tida i utviklingsfasen.
@@ -8,14 +10,14 @@ Velkomen til Ordbok API, nøkkelen din til enklare og meir tilgjengeleg tilgang 
 
 - **Rask tilgang**: Snarleg henting av orddefinisjonar og døme.
 - **Fleksibilitet**: Tilpassa søk for varierte brukstilfelle.
-- **Effektiv datahandtering**: GraphQL spørjespråk for å henta nøyaktig den informasjonen du treng.
+- **Effektiv datahandtering**: GraphQL-spørjespråk for å henta nøyaktig den informasjonen du treng.
 
-## Korleis å bruka APIet
+## Korleis bruka APIet
 
 Akkurat no er Ordbok API i ein utviklingsfase og kan vera ustabil. Fullstendig dokumentasjon er ikkje tilgjengeleg endå. Me oppmodar brukarar til å nytta seg av GraphQL sandbox for å utforska og testa APIet:
 
-- **Besøk endpoint**: Gå til [Apollo Sandbox](https://api.ordbokapi.org/graphql).
-- **Test førespurnader**: Bruk sandboxen til å gjera førespurnader og sjå responsane.
+- **Besøk endepunkt**: Gå til [Apollo Sandbox](https://api.ordbokapi.org/graphql).
+- **Test førespurnader**: Bruk sandkassa til å gjera førespurnader og sjå responsane.
 - **Gi tilbakemelding**: Me verdset tilbakemeldinga di for å forbetra APIet.
 
 ## Starta prosjektet lokalt
@@ -24,7 +26,7 @@ Akkurat no er Ordbok API i ein utviklingsfase og kan vera ustabil. Fullstendig d
 
 For å starta Ordbok API lokalt, følg desse trinna:
 
-1. Klona repoet: `git clone https://github.com/adalinesimonian/ordbokapi.git`
+1. Klona repoet: `git clone https://github.com/ordbokapi/api.git`
 2. Installer avhengnader: `yarn install`
 3. Bygg prosjektet: `yarn build`
 4. Start serveren: `yarn start:dev`
@@ -43,12 +45,10 @@ Dette prosjektet er lisensiert under ISC-lisensen. Sjå [LICENCE](LICENCE) for m
 
 ## Tilbakemelding og kontakt
 
-For spørsmål og tilbakemeldingar, vennligst kontakt meg på [GitHub](https://github.com/adalinesimonian/ordbokapi).
+For spørsmål og tilbakemeldingar, vennligst kontakt meg på [GitHub](https://github.com/adalinesimonian).
 
 ## Vedkjenningar
 
 Tekst og data frå ordbøkene er © Språkrådet og Universitetet i Bergen, henta frå ordbokene.no. Dette prosjektet er eit uavhengig samfunnsprosjekt av Adaline Simonian og har ingen tilknytning til Universitetet i Bergen eller Språkrådet.
 
 © 2023 Adaline Simonian. Alle rettar reservert.
-
-Besøk nettstedet vårt: [ordbokapi.org](https://ordbokapi.org)
