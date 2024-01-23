@@ -52,6 +52,24 @@ class WordGraph extends HTMLElement {
   }
 
   /**
+   * Gets the charge strength of the nodes in the graph. The charge strength
+   * is based on the size of the canvas.
+   * @returns {number} The charge strength.
+   */
+  getChargeStrength() {
+    return Math.min(this.canvas.width, this.canvas.height) < 600 ? -50 : -100;
+  }
+
+  /**
+   * Gets the font size of the nodes in the graph. The font size is based on
+   * the size of the canvas.
+   * @returns {number} The font size.
+   */
+  getFontSize() {
+    return Math.min(this.canvas.width, this.canvas.height) < 600 ? 11 : 15;
+  }
+
+  /**
    * Updates the size of the canvas based on the current element's dimensions.
    * @param {ResizeObserverEntry | undefined} entry The resize observer entry.
    * If not provided, the element's bounding client rect is used.
@@ -64,10 +82,12 @@ class WordGraph extends HTMLElement {
 
     // Update the simulation center.
     if (this.simulation) {
-      this.simulation.force(
-        'center',
-        d3.forceCenter(this.canvas.width / 2, this.canvas.height / 2)
-      );
+      this.simulation
+        .force(
+          'center',
+          d3.forceCenter(this.canvas.width / 2, this.canvas.height / 2)
+        )
+        .force('charge', d3.forceManyBody().strength(this.getChargeStrength()));
     }
   }
 
@@ -128,7 +148,7 @@ class WordGraph extends HTMLElement {
           .id((node) => node.id)
           .strength(0.05)
       )
-      .force('charge', d3.forceManyBody().strength(-100))
+      .force('charge', d3.forceManyBody().strength(this.getChargeStrength()))
       .force('collision', d3.forceCollide().radius(20))
       .force(
         'center',
@@ -244,7 +264,7 @@ class WordGraph extends HTMLElement {
   drawNodes(nodes) {
     const ctx = this.context;
     ctx.save();
-    ctx.font = '15px Lora';
+    ctx.font = `${this.getFontSize()}px Lora`;
     ctx.textAlign = 'center';
     ctx.textBaseline = 'middle';
 

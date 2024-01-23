@@ -37,6 +37,7 @@ h5,
 h6 {
   font-family: 'Sarala', sans-serif;
   font-size: 4rem;
+  margin-bottom: 0.5rem;
 }
 
 #navbar {
@@ -84,6 +85,10 @@ footer a {
   font-size: 1.5rem;
 }
 
+#welcome {
+  min-height: calc(100vh - 84px);
+}
+
 .jumbotron .container {
   width: 80%;
   max-width: 1200px;
@@ -122,21 +127,62 @@ footer a {
 word-graph {
   width: 500px;
   height: 500px;
-  margin: 20px;
+}
+
+#welcome .container {
+  height: calc(100vh - 84px);
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+}
+
+#welcome .text-content {
+  position: relative;
+  z-index: 2;
+  background: linear-gradient(
+    to right,
+    var(--jumbotron-even-bg-color) 0%,
+    var(--jumbotron-even-bg-color) 80%,
+    transparent 100%
+  );
+  height: calc(100vh - 84px);
+  display: flex;
+  flex-direction: column;
+  align-items: left;
+  justify-content: center;
+}
+
+#welcome .image-content {
+  position: absolute;
+  top: 84px;
+  right: 0;
+  bottom: 0;
+  left: 40%;
+  max-width: 100%;
+  z-index: 1;
+  overflow-y: hidden;
+}
+
+word-graph {
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 100%;
+  height: 100%;
 }
 
 @media (max-width: 1199px) {
-  .jumbotron .container {
+  .jumbotron:not(#welcome) .container {
     flex-direction: column;
   }
 
-  .jumbotron .container .text-content,
-  .jumbotron .container .image-content {
+  .jumbotron:not(#welcome) .container .text-content,
+  .jumbotron:not(#welcome) .container .image-content {
     width: 100%;
     padding: 0;
   }
 
-  .jumbotron .container > * {
+  .jumbotron:not(#welcome) .container > * {
     max-width: 100%;
   }
 
@@ -151,11 +197,6 @@ word-graph {
 
   .jumbotron {
     font-size: 1.5rem;
-  }
-
-  word-graph {
-    width: 300px;
-    height: 300px;
   }
 }
 
@@ -223,4 +264,59 @@ a.btn.btn-primary:active {
 strong {
   font-weight: bold;
   color: var(--main-text-emphasis-color);
+}
+
+@media (max-width: 1199px) {
+  #welcome .text-content {
+    max-width: 50%;
+  }
+
+  a.btn {
+    font-size: 1rem;
+    margin: 0 5px;
+  }
+}
+
+@media (max-width: 768px) {
+  #welcome .text-content {
+    background: none;
+  }
+
+  word-graph {
+    position: static;
+    width: 100%;
+    height: 300px;
+    margin: 2rem;
+  }
+
+  /* for first jumbotron, reset advanced styling with overlapping image and
+  instead use simple stacking */
+  #welcome .container {
+    flex-direction: column;
+    height: auto;
+    max-width: 100%;
+    width: 100%;
+  }
+
+  #welcome .text-content {
+    height: auto;
+    padding: 2rem;
+    max-width: 100%;
+    width: 100%;
+    text-align: center;
+  }
+
+  #welcome .image-content {
+    position: static;
+    max-width: 100%;
+    width: 100%;
+    height: auto;
+    z-index: 1;
+    overflow: hidden;
+  }
+
+  #welcome .image-content img {
+    width: 100%;
+    height: auto;
+  }
 }
