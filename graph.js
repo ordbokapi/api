@@ -1,8 +1,9 @@
 import * as d3 from 'https://cdn.jsdelivr.net/npm/d3@7/+esm';
+import { GraphDataProvider } from './graph-data-provider.js';
 
 /**
  * @typedef {{x: number, y: number, width: number, height: number}} BoundingBox
- * @typedef {{id: string, bbox?: BoundingBox, x?: number, y?: number}} Node
+ * @typedef {{id: number, text: string, bbox?: BoundingBox, x?: number, y?: number}} Node
  * @typedef {{source: Node, target: Node}} Link
  * @typedef {{nodes: Node[], links: Link[]}} GraphData
  */
@@ -74,7 +75,9 @@ class WordGraph extends HTMLElement {
    * Loads data from 'data.json' and sets up the graph.
    */
   loadDataAndSetupGraph() {
-    d3.json('graph-data.json').then((data) => {
+    const graphDataProvider = new GraphDataProvider();
+
+    graphDataProvider.getRandomData().then((data) => {
       this.setupGraph(data);
     });
   }
@@ -85,7 +88,7 @@ class WordGraph extends HTMLElement {
    * @param {Object} data The data used to set up the graph.
    */
   setupGraph(data) {
-    const { nodes, links } = this.prepareGraphData(data);
+    const { nodes, links } = data;
     const simulation = this.createSimulation(nodes, links);
     this.simulation = simulation;
     this.addMouseInteraction(simulation, nodes);
@@ -123,9 +126,9 @@ class WordGraph extends HTMLElement {
         d3
           .forceLink(links)
           .id((node) => node.id)
-          .strength(0.1)
+          .strength(0.05)
       )
-      .force('charge', d3.forceManyBody().strength(-200))
+      .force('charge', d3.forceManyBody().strength(-100))
       .force(
         'center',
         d3.forceCenter(this.canvas.width / 2, this.canvas.height / 2)
@@ -241,7 +244,7 @@ class WordGraph extends HTMLElement {
   drawNodes(nodes) {
     const ctx = this.context;
     ctx.save();
-    ctx.font = '19px Lora';
+    ctx.font = '15px Lora';
     ctx.textAlign = 'center';
     ctx.textBaseline = 'middle';
 
@@ -259,7 +262,7 @@ class WordGraph extends HTMLElement {
    * @param {Node} node The node to draw.
    */
   drawNode(ctx, node) {
-    const textMetrics = ctx.measureText(node.id);
+    const textMetrics = ctx.measureText(node.text);
     const textWidth = textMetrics.width;
     const textHeight = parseInt(ctx.font, 10);
 
@@ -291,7 +294,7 @@ class WordGraph extends HTMLElement {
     ctx.fill();
 
     ctx.fillStyle = '#fff';
-    ctx.fillText(node.id, node.x, node.y);
+    ctx.fillText(node.text, node.x, node.y);
   }
 
   /**
