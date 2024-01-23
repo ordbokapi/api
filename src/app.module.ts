@@ -32,8 +32,12 @@ import { MemcachedProvider } from './providers/memcached.provider';
         wordClass
         gender
         definitions {
-          content
-          examples
+          content {
+            textContent
+          }
+          examples {
+            textContent
+          }
         }
       }
     }
