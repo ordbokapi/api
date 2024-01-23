@@ -64,6 +64,14 @@ Options:
 
   app.useGlobalPipes(new ValidationPipe());
 
+  app.enableCors({
+    // allow all origins because this api is public with no sensitive data or
+    // authentication
+    origin: '*',
+    allowedHeaders: ['Content-Type'],
+    methods: ['GET', 'POST'],
+  });
+
   await app.listen(port, '0.0.0.0');
   console.log(`Application is running on: ${await app.getUrl()}`);
 }
