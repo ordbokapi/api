@@ -129,10 +129,12 @@ class WordGraph extends HTMLElement {
           .strength(0.05)
       )
       .force('charge', d3.forceManyBody().strength(-100))
+      .force('collision', d3.forceCollide().radius(20))
       .force(
         'center',
         d3.forceCenter(this.canvas.width / 2, this.canvas.height / 2)
-      );
+      )
+      .alphaTarget(0.5);
   }
 
   /**
@@ -160,8 +162,6 @@ class WordGraph extends HTMLElement {
           }
         });
       });
-
-      simulation.alpha(0.1).restart();
     });
   }
 
