@@ -1,7 +1,8 @@
 import {
   RichContentSegment,
   RichContentTextSegment,
-  RichContentType,
+  RichContentSegmentType,
+  RichContentArticleSegment,
 } from '../models';
 
 export class RichContentBuilder {
@@ -21,7 +22,8 @@ export class RichContentBuilder {
 
       if (
         this.segments.length > 0 &&
-        this.segments[this.segments.length - 1].type === RichContentType.Text
+        this.segments[this.segments.length - 1].type ===
+          RichContentSegmentType.Text
       ) {
         this.segments[this.segments.length - 1].content += segment;
       } else {
@@ -43,14 +45,18 @@ export class RichContentBuilder {
       return this;
     }
 
-    if (segment.type === RichContentType.Text && segment.content.length === 0) {
+    if (
+      segment.type === RichContentSegmentType.Text &&
+      segment.content.length === 0
+    ) {
       return this;
     }
 
     if (
       this.segments.length > 0 &&
-      this.segments[this.segments.length - 1].type === RichContentType.Text &&
-      segment.type === RichContentType.Text
+      this.segments[this.segments.length - 1].type ===
+        RichContentSegmentType.Text &&
+      segment.type === RichContentSegmentType.Text
     ) {
       this.segments[this.segments.length - 1].content += segment.content;
 
@@ -68,5 +74,17 @@ export class RichContentBuilder {
 
   public toString(): string {
     return this.segments.reduce((acc, segment) => acc + segment.content, '');
+  }
+
+  public forEachArticleSegment(
+    callback: (article: RichContentArticleSegment, index: number) => void,
+  ): RichContentBuilder {
+    for (const [index, segment] of this.segments.entries()) {
+      if (segment.type === RichContentSegmentType.Article) {
+        callback(segment as RichContentArticleSegment, index);
+      }
+    }
+
+    return this;
   }
 }

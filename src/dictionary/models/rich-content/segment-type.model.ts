@@ -1,11 +1,11 @@
 import { registerEnumType } from '@nestjs/graphql';
 
-export enum RichContentType {
+export enum RichContentSegmentType {
   Text = 'Text',
   Article = 'Article',
 }
 
-registerEnumType(RichContentType, {
-  name: 'RichContentType',
+registerEnumType(RichContentSegmentType, {
+  name: 'RichContentSegmentType',
   description: 'Typen av rich content-segmentet.',
 });

@@ -11,8 +11,15 @@ import {
   Gender,
   Lemma,
   Suggestions,
-  ArticleRelationship,
+  RelatedArticleRelationship,
+  UsageArticleRelationship,
+  SynonymArticleRelationship,
+  AntonymArticleRelationship,
+  SeeAlsoArticleRelationship,
   RichContentArticleSegment,
+  ArticleRelationship,
+  ArticleGraph,
+  ArticleGraphEdge,
 } from '../models';
 import {
   OrdboekeneApiService,
@@ -218,17 +225,17 @@ export class WordService {
     return article.definitions!;
   }
 
-  async getUsages(article: Article): Promise<Article[]> {
+  async getRelationships(article: Article): Promise<ArticleRelationship[]> {
     await this.loadConcepts();
 
-    this.logger.debug(`Getting usages for article: ${article.id}`);
+    this.logger.debug(`Getting relationships for article: ${article.id}`);
 
     const data = await this.ordboekeneApiService.article(
       article.id,
       article.dictionary,
     );
 
-    return this.transformUsages(article, data);
+    return this.transformRelationships(article, data);
   }
 
   async getArticle(
@@ -241,12 +248,16 @@ export class WordService {
 
     const data = await this.ordboekeneApiService.article(articleId, dictionary);
 
+    this.logger.debug(`Received article: ${articleId}`);
+
     const article: Article = {
       id: articleId,
       dictionary,
     };
 
     this.transformArticleResponse(article, data);
+
+    this.logger.debug(`Transformed article: ${articleId}`);
 
     return article;
   }
@@ -288,6 +299,26 @@ export class WordService {
     );
 
     return this.transformGender(data);
+  }
+
+  async getArticleGraph(
+    articleId: number,
+    dictionary: Dictionary,
+    depth: number,
+    edgeFields: (keyof ArticleGraphEdge)[],
+  ): Promise<ArticleGraph> {
+    await this.loadConcepts();
+
+    this.logger.debug(
+      `Getting article graph for article ${articleId} in ${dictionary}`,
+    );
+
+    return this.walkArticleGraph(
+      articleId,
+      dictionary,
+      Math.min(depth, 3),
+      edgeFields,
+    );
   }
 
   //#endregion
@@ -622,6 +653,7 @@ export class WordService {
     if (data?.body?.definitions?.[0]?.elements?.length) {
       definitions.push(
         ...this.transformDefinitions(
+          article.id,
           article.dictionary,
           data.body.definitions[0].elements.some(
             (d: any) => d.type_ === 'definition',
@@ -639,79 +671,131 @@ export class WordService {
     return article;
   }
 
+  private getRelationshipConstructors(
+    element:
+      | (ArticleElement & { type_: 'explanation' })
+      | Extract<ArticleElement, { type_: 'compound_list' }>,
+  ): {
+    from: number;
+    to?: number; // exclusive. if undefined, then until end of array
+    constructor: new (article: Article) => ArticleRelationship;
+  }[] {
+    const constructorRanges: {
+      from: number;
+      to?: number; // exclusive. if undefined, then until end of array
+      constructor: new (article: Article) => ArticleRelationship;
+    }[] = [];
+
+    if (element.type_ === 'compound_list') {
+      constructorRanges.push({
+        from: 0,
+        constructor: UsageArticleRelationship,
+      });
+
+      return constructorRanges;
+    }
+
+    if (element.content.match(/^(S(?:e|jå): )\$/)) {
+      constructorRanges.push({
+        from: 0,
+        constructor: SeeAlsoArticleRelationship,
+      });
+
+      return constructorRanges;
+    }
+
+    // match first part of the explanation that only has references,
+    // i.e. it only contains $ and surrounding whitespace or punctuation
+    // e.g. "$, $, $: xxx $ xxx" -> "$, $, $:"
+    const match = element.content.match(/^(\s*\$\s*[,:;]?\s*)+/);
+    if (match) {
+      // count the number of references
+      const refCount = match[0].match(/\$/g)?.length ?? 0;
+
+      constructorRanges.push({
+        from: 0,
+        to: refCount,
+        constructor: SynonymArticleRelationship,
+      });
+
+      return constructorRanges;
+    }
+
+    if (element.content.match(/^\s*ikkj?e \$(?:\b|$)/)) {
+      constructorRanges.push({
+        from: 0,
+        to: 1,
+        constructor: AntonymArticleRelationship,
+      });
+
+      constructorRanges.push({
+        from: 1,
+        constructor: RelatedArticleRelationship,
+      });
+
+      return constructorRanges;
+    }
+
+    constructorRanges.push({
+      from: 0,
+      constructor: RelatedArticleRelationship,
+    });
+
+    return constructorRanges;
+  }
+
   private transformDefinitionElement(
+    articleId: number,
     dictionary: Dictionary,
     definition: Definition,
     element: ArticleElement,
   ): Definition {
     switch (element.type_) {
-      case 'explanation': {
-        const match = element.content.match(/^(S(?:e|jå): )\$/);
-        if (match) {
-          const appendix = [];
-          const seeAlso = new ArticleRelationship();
-
-          for (const subElement of element.items) {
-            if (
-              subElement.type_ !== 'article_ref' &&
-              subElement.type_ !== 'sub_article'
-            ) {
-              continue;
-            }
-
-            seeAlso.articles.push({
-              id: subElement.article_id,
-              dictionary,
-            });
-
-            appendix.push(this.formatElement(dictionary, subElement));
-          }
-
-          seeAlso.content = `${match[1]}${appendix.join(', ')}`;
-
-          definition.seeAlso.push(seeAlso);
-
-          break;
-        }
+      case 'explanation':
+      case 'compound_list': {
         const richContent = this.formatElement(dictionary, element);
 
         definition.content.push(richContent.toString());
         definition.richContent.push(richContent.build());
+
+        const constructorRanges = this.getRelationshipConstructors(
+          element as ArticleElement & {
+            type_: 'explanation' | 'compound_list';
+          },
+        );
+
+        let index = 0;
+        let range = constructorRanges.shift();
+        richContent.forEachArticleSegment((segment) => {
+          const { article } = segment as RichContentArticleSegment;
+
+          if (article.id === articleId) {
+            index++;
+            return;
+          }
+
+          while (
+            range &&
+            (index < range.from || (range.to && index >= range.to))
+          ) {
+            range = constructorRanges.shift();
+          }
+
+          const constructor = range?.constructor ?? RelatedArticleRelationship;
+
+          definition.relationships.push(new constructor(article));
+
+          index++;
+        });
+
         break;
       }
 
       case 'example': {
-        // definition.examples.push(this.formatElement(dictionary, element));
         const richContent = this.formatElement(dictionary, element);
 
         definition.examples.push(richContent.toString());
         definition.richExamples.push(richContent.build());
-        break;
-      }
-
-      case 'compound_list': {
-        const usage = new ArticleRelationship();
-        // usage.content = this.formatElement(dictionary, element);
-        const richContent = this.formatElement(dictionary, element);
-
-        usage.content = richContent.toString();
-        usage.richContent = richContent.build();
-
-        for (const subElement of element.elements) {
-          if (
-            subElement.type_ !== 'article_ref' &&
-            subElement.type_ !== 'sub_article'
-          ) {
-            continue;
-          }
-
-          usage.articles.push({
-            id: subElement.article_id,
-            dictionary,
-          });
-        }
-
-        definition.usages.push(usage);
         break;
       }
 
@@ -720,6 +804,7 @@ export class WordService {
 
         for (const subElement of element.elements) {
           this.transformDefinitionElement(
+            articleId,
             dictionary,
             subDefinition,
             subElement,
@@ -735,29 +820,26 @@ export class WordService {
   }
 
   private transformDefinitions(
+    articleId: number,
     dictionary: Dictionary,
     elements: any[],
   ): Definition[] {
     const definitions: Definition[] = [];
 
     for (const def of elements) {
-      // Skip if this is a usage related to another article
-      if (
-        def.type_ === 'definition' &&
-        def.elements.length === 1 &&
-        def.elements[0].type_ === 'sub_article'
-      ) {
-        continue;
-      }
-
       const definition = new Definition({ id: def.id });
 
       if (def.elements) {
         for (const element of def.elements) {
-          this.transformDefinitionElement(dictionary, definition, element);
+          this.transformDefinitionElement(
+            articleId,
+            dictionary,
+            definition,
+            element,
+          );
         }
       } else {
-        this.transformDefinitionElement(dictionary, definition, def);
+        this.transformDefinitionElement(articleId, dictionary, definition, def);
       }
       definitions.push(definition);
     }
@@ -765,26 +847,134 @@ export class WordService {
     return definitions;
   }
 
-  private transformUsages(article: Article, data: any): Article[] {
-    // Usages are in the definitions array but are 'definition' elements with
-    // a single 'sub_article' element in the 'elements' array
+  private transformRelationships(
+    article: Article,
+    data: any,
+  ): ArticleRelationship[] {
+    const relationships: ArticleRelationship[] = [];
 
-    const usages: Article[] = [];
+    if (!article.definitions?.length) {
+      this.transformArticleResponse(article, data);
+    }
 
-    for (const element of data?.body?.definitions?.[0]?.elements ?? []) {
-      if (element.type_ === 'definition') {
-        for (const subElement of element.elements) {
-          if (subElement.type_ === 'sub_article') {
-            usages.push({
-              id: subElement.article_id,
-              dictionary: article.dictionary,
-            });
+    const articleIds = new Set<number>();
+    articleIds.add(article.id);
+
+    for (const definition of article.definitions ?? []) {
+      for (const relationship of definition.relationships ?? []) {
+        if (!articleIds.has(relationship.article.id)) {
+          relationships.push(relationship);
+          articleIds.add(relationship.article.id);
+        }
+      }
+
+      for (const subDefinition of definition.subDefinitions ?? []) {
+        for (const relationship of subDefinition.relationships ?? []) {
+          if (!articleIds.has(relationship.article.id)) {
+            relationships.push(relationship);
+            articleIds.add(relationship.article.id);
           }
         }
       }
     }
 
-    return usages;
+    return relationships;
+  }
+
+  private async walkArticleGraph(
+    articleId: number,
+    dictionary: Dictionary,
+    depth: number,
+    edgeFields: (keyof ArticleGraphEdge)[],
+  ): Promise<ArticleGraph> {
+    const articleIdSet = new Set<number>();
+    const edgeSet = new Set<string>();
+
+    const computeEdgeKey = (edge: ArticleGraphEdge) => {
+      // only include the fields that are specified in edgeFields, except for
+      // sourceId and targetId, which are always included
+      const keyFields = new Set(['sourceId', 'targetId', ...edgeFields]);
+
+      return Object.entries(edge)
+        .filter(([key]) => keyFields.has(key))
+        .map(([key, value]) => `${key}:${value}`)
+        .join('-');
+    };
+
+    const graph = new ArticleGraph();
+
+    const addEdge = (edge: ArticleGraphEdge) => {
+      const key = computeEdgeKey(edge);
+      if (!edgeSet.has(key)) {
+        edgeSet.add(key);
+        graph.edges.push(edge);
+      }
+    };
+
+    const addArticle = async (nodeId: number, currentDepth: number) => {
+      if (articleIdSet.has(nodeId)) {
+        return;
+      }
+
+      articleIdSet.add(nodeId);
+
+      const article = await this.getArticle(nodeId, dictionary);
+
+      graph.nodes.push(article);
+
+      if (currentDepth === depth) {
+        return;
+      }
+
+      const articleIdsToProcess = new Set<number>();
+
+      // iterate through definitions and add edges
+
+      for (const [
+        definitionIndex,
+        definition,
+      ] of article.definitions?.entries() ?? []) {
+        for (const relationship of definition.relationships ?? []) {
+          addEdge(
+            new ArticleGraphEdge({
+              sourceId: article.id,
+              targetId: relationship.article.id,
+              type: relationship.type,
+              sourceDefinitionId: definition.id,
+              sourceDefinitionIndex: definitionIndex,
+            }),
+          );
+
+          articleIdsToProcess.add(relationship.article.id);
+        }
+
+        for (const subDefinition of definition.subDefinitions ?? []) {
+          for (const relationship of subDefinition.relationships ?? []) {
+            addEdge(
+              new ArticleGraphEdge({
+                sourceId: article.id,
+                targetId: relationship.article.id,
+                type: relationship.type,
+                sourceDefinitionId: definition.id,
+                sourceDefinitionIndex: definitionIndex,
+              }),
+            );
+
+            articleIdsToProcess.add(relationship.article.id);
+          }
+        }
+      }
+
+      await Promise.all(
+        Array.from(articleIdsToProcess).map(async (id) => {
+          await addArticle(id, currentDepth + 1);
+        }),
+      );
+    };
+
+    await addArticle(articleId, 0);
+
+    return graph;
   }
 
   //#endregion

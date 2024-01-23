@@ -14,6 +14,7 @@ import {
   Gender,
   Lemma,
   Dictionary,
+  ArticleRelationship,
 } from '../models';
 
 @Resolver(() => Article)
@@ -58,8 +59,8 @@ export class ArticleResolver {
     return this.wordService.getGender(article);
   }
 
-  @ResolveField(() => [Article])
-  async usages(@Parent() article: Article) {
-    return this.wordService.getUsages(article);
+  @ResolveField(() => [ArticleRelationship])
+  async relationships(@Parent() article: Article) {
+    return this.wordService.getRelationships(article);
   }
 }

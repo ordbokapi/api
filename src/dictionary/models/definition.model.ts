@@ -1,6 +1,6 @@
 import { Field, Int, ObjectType } from '@nestjs/graphql';
-import { ArticleRelationship } from './article-relationship.model';
-import { RichContentSegment } from './rich-content-segment.model';
+import { ArticleRelationship } from './article-relationship';
+import { RichContentSegment } from './rich-content';
 
 @ObjectType({
   description:
@@ -40,14 +40,9 @@ export class Definition {
 
   @Field(() => [ArticleRelationship], {
     description:
-      'Ei liste over bruksområde for ordet eller uttrykket, som kan vera nyttig for å forstå konteksten det blir brukt i.',
+      'Ei liste over artikkelrelasjonar som er relevante for definisjonen.',
   })
-  usages: ArticleRelationship[] = [];
-
-  @Field(() => [ArticleRelationship], {
-    description: 'Ei liste over artiklar som er relatert til definisjonen.',
-  })
-  seeAlso: ArticleRelationship[] = [];
+  relationships: ArticleRelationship[] = [];
 
   @Field(() => [Definition], {
     description:

@@ -1,7 +1,7 @@
 import { Field, Int, ObjectType } from '@nestjs/graphql';
-import { RichContentType } from './rich-content-type.model';
-import { RichContentSegment } from './rich-content-segment.model';
-import { Article } from './article.model';
+import { RichContentSegmentType } from './segment-type.model';
+import { RichContentSegment } from './segment.model';
+import { Article } from '../article.model';
 
 @ObjectType({
   description:
@@ -13,10 +13,10 @@ export class RichContentArticleSegment implements RichContentSegment {
     Object.assign(this, segment);
   }
 
-  @Field(() => RichContentType, {
+  @Field(() => RichContentSegmentType, {
     description: 'Typen av rich content-segmentet.',
   })
-  type: RichContentType = RichContentType.Article;
+  type: RichContentSegmentType.Article = RichContentSegmentType.Article;
 
   @Field(() => String, {
     description: 'Innhaldet i segmentet.',
