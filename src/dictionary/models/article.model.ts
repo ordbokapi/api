@@ -48,7 +48,7 @@ export class Article {
   @Field(() => [Article], {
     nullable: true,
     description:
-      'Liste over artiklar som inkluderar andre bruksmåter av ordet/uttrykket definert av denne artikkelen.',
+      'Liste over artiklar som inkluderar denne artikkelen som ein del av eit uttrykk.',
   })
-  usages?: Article[];
+  phrases?: Article[];
 }

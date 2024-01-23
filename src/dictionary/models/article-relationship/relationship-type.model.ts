@@ -6,6 +6,7 @@ export enum ArticleRelationshipType {
   Usage = 'Bruk',
   Synonym = 'Synonym',
   Antonym = 'Motsetning',
+  Phrase = 'Uttrykk',
 }
 
 registerEnumType(ArticleRelationshipType, {

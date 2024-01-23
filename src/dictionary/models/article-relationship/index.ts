@@ -1,4 +1,5 @@
 export * from './antonym-relationship.model';
+export * from './phrase-relationship.model';
 export * from './relationship.model';
 export * from './relationship-type.model';
 export * from './related-relationship.model';

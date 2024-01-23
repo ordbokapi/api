@@ -20,6 +20,8 @@ import {
   ArticleRelationship,
   ArticleGraph,
   ArticleGraphEdge,
+  ArticleRelationshipType,
+  PhraseArticleRelationship,
 } from '../models';
 import {
   OrdboekeneApiService,
@@ -299,6 +301,19 @@ export class WordService {
     );
 
     return this.transformGender(data);
+  }
+
+  async getPhrases(article: Article): Promise<Article[]> {
+    await this.loadConcepts();
+
+    this.logger.debug(`Getting phrases for article: ${article.id}`);
+
+    const data = await this.ordboekeneApiService.article(
+      article.id,
+      article.dictionary,
+    );
+
+    return this.transformPhrases(article, data);
   }
 
   async getArticleGraph(
@@ -827,6 +842,14 @@ export class WordService {
     const definitions: Definition[] = [];
 
     for (const def of elements) {
+      // Skip if this is a phrase
+      if (
+        def.type_ === 'definition' &&
+        def.elements?.every((e: any) => e.type_ === 'sub_article')
+      ) {
+        continue;
+      }
+
       const definition = new Definition({ id: def.id });
 
       if (def.elements) {
@@ -845,6 +868,28 @@ export class WordService {
     }
 
     return definitions;
+  }
+
+  private transformPhrases(article: Article, data: any): Article[] {
+    // Phrases are in the definitions array but are 'definition' elements with
+    // a single 'sub_article' element in the 'elements' array
+
+    const phrases: Article[] = [];
+
+    for (const element of data?.body?.definitions?.[0]?.elements ?? []) {
+      if (element.type_ === 'definition') {
+        for (const subElement of element.elements) {
+          if (subElement.type_ === 'sub_article') {
+            phrases.push({
+              id: subElement.article_id,
+              dictionary: article.dictionary,
+            });
+          }
+        }
+      }
+    }
+
+    return phrases;
   }
 
   private transformRelationships(
@@ -875,6 +920,13 @@ export class WordService {
             articleIds.add(relationship.article.id);
           }
         }
+      }
+    }
+
+    for (const phrase of this.transformPhrases(article, data)) {
+      if (!articleIds.has(phrase.id)) {
+        relationships.push(new PhraseArticleRelationship(phrase));
+        articleIds.add(phrase.id);
       }
     }
 
@@ -963,6 +1015,20 @@ export class WordService {
             articleIdsToProcess.add(relationship.article.id);
           }
         }
+      }
+
+      // iterate through phrases and add edges
+
+      for (const phrase of await this.getPhrases(article)) {
+        addEdge(
+          new ArticleGraphEdge({
+            sourceId: article.id,
+            targetId: phrase.id,
+            type: ArticleRelationshipType.Phrase,
+          }),
+        );
+
+        articleIdsToProcess.add(phrase.id);
       }
 
       await Promise.all(

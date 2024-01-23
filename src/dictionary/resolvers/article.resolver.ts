@@ -63,4 +63,9 @@ export class ArticleResolver {
   async relationships(@Parent() article: Article) {
     return this.wordService.getRelationships(article);
   }
+
+  @ResolveField(() => [Article])
+  async phrases(@Parent() article: Article) {
+    return this.wordService.getPhrases(article);
+  }
 }
