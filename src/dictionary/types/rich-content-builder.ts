@@ -3,6 +3,7 @@ import {
   RichContentTextSegment,
   RichContentSegmentType,
   RichContentArticleSegment,
+  RichContent,
 } from '../models';
 
 export class RichContentBuilder {
@@ -13,6 +14,7 @@ export class RichContentBuilder {
       | string
       | RichContentSegment
       | RichContentSegment[]
+      | RichContent
       | RichContentBuilder,
   ): RichContentBuilder {
     if (typeof segment === 'string') {
@@ -45,6 +47,12 @@ export class RichContentBuilder {
       return this;
     }
 
+    if (segment instanceof RichContent) {
+      segment.richContent.forEach((segment) => this.append(segment));
+
+      return this;
+    }
+
     if (
       segment.type === RichContentSegmentType.Text &&
       segment.content.length === 0
@@ -68,12 +76,8 @@ export class RichContentBuilder {
     return this;
   }
 
-  public build(): RichContentSegment[] {
-    return this.segments.slice();
-  }
-
-  public toString(): string {
-    return this.segments.reduce((acc, segment) => acc + segment.content, '');
+  public build(): RichContent {
+    return new RichContent(this.segments);
   }
 
   public forEachArticleSegment(

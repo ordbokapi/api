@@ -15,6 +15,7 @@ import {
   Lemma,
   Dictionary,
   ArticleRelationship,
+  RichContent,
 } from '../models';
 
 @Resolver(() => Article)
@@ -67,5 +68,10 @@ export class ArticleResolver {
   @ResolveField(() => [Article])
   async phrases(@Parent() article: Article) {
     return this.wordService.getPhrases(article);
+  }
+
+  @ResolveField(() => [RichContent], { nullable: true })
+  async etymology(@Parent() article: Article) {
+    return this.wordService.getEtymology(article);
   }
 }

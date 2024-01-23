@@ -4,6 +4,7 @@ import { Definition } from './definition.model';
 import { WordClass } from './word-class.model';
 import { Gender } from './gender.model';
 import { Lemma } from './lemma.model';
+import { RichContent } from './rich-content';
 
 @ObjectType({
   description:
@@ -51,4 +52,10 @@ export class Article {
       'Liste over artiklar som inkluderar denne artikkelen som ein del av eit uttrykk.',
   })
   phrases?: Article[];
+
+  @Field(() => [RichContent], {
+    nullable: true,
+    description: 'Liste over etymologiske opphav til ordet i artikkelen.',
+  })
+  etymology?: RichContent[];
 }

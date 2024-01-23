@@ -22,6 +22,7 @@ import {
   ArticleGraphEdge,
   ArticleRelationshipType,
   PhraseArticleRelationship,
+  RichContent,
 } from '../models';
 import {
   OrdboekeneApiService,
@@ -314,6 +315,19 @@ export class WordService {
     );
 
     return this.transformPhrases(article, data);
+  }
+
+  async getEtymology(article: Article): Promise<RichContent[]> {
+    await this.loadConcepts();
+
+    this.logger.debug(`Getting etymology for article: ${article.id}`);
+
+    const data = await this.ordboekeneApiService.article(
+      article.id,
+      article.dictionary,
+    );
+
+    return this.transformEtymology(article, data);
   }
 
   async getArticleGraph(
@@ -770,8 +784,7 @@ export class WordService {
       case 'compound_list': {
         const richContent = this.formatElement(dictionary, element);
 
-        definition.content.push(richContent.toString());
-        definition.richContent.push(richContent.build());
+        definition.content.push(richContent.build());
 
         const constructorRanges = this.getRelationshipConstructors(
           element as ArticleElement & {
@@ -809,8 +822,7 @@ export class WordService {
       case 'example': {
         const richContent = this.formatElement(dictionary, element);
 
-        definition.examples.push(richContent.toString());
-        definition.richExamples.push(richContent.build());
+        definition.examples.push(richContent.build());
         break;
       }
 
@@ -931,6 +943,18 @@ export class WordService {
     }
 
     return relationships;
+  }
+
+  private transformEtymology(article: Article, data: any): RichContent[] {
+    const content: RichContent[] = [];
+
+    for (const element of data?.body?.etymology ?? []) {
+      if (element.type_ === 'etymology_language') {
+        content.push(this.formatElement(article.dictionary, element).build());
+      }
+    }
+
+    return content;
   }
 
   private async walkArticleGraph(
