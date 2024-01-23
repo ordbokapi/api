@@ -32,8 +32,9 @@ export class ArticleGraphEdge {
   sourceDefinitionId?: number;
 
   @Field(() => Int, {
+    nullable: true,
     description:
       'Indeks for definisjonen der artikkelrelasjonen er definert, unik i forhold til artikkelen.',
   })
-  sourceDefinitionIndex: number;
+  sourceDefinitionIndex?: number;
 }
