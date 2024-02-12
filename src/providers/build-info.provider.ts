@@ -9,7 +9,7 @@ export class BuildInfoProvider {
     const logger = new Logger(BuildInfoProvider.name);
 
     try {
-      this.#buildId = readFileSync('.git/ORIG_HEAD', 'utf8')
+      this.#buildId = readFileSync('dist/BUILD_HEAD', 'utf8')
         .trim()
         .substring(0, 7);
     } catch (error) {

@@ -15,7 +15,7 @@ import * as resolvers from './resolvers';
     BuildInfoProvider,
     WordService,
     OrdboekeneApiService,
-    MemcachedProvider,
+    ...(process.env.MEMCACHEDCLOUD_SERVERS ? [MemcachedProvider] : []),
     CacheSerializationProvider,
     {
       provide: 'ICacheProvider',

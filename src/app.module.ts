@@ -5,10 +5,8 @@ import { ApolloDriver, ApolloDriverConfig } from '@nestjs/apollo';
 import { ApolloServerPluginLandingPageLocalDefault } from '@apollo/server/plugin/landingPage/default';
 import { ApolloServerPluginInlineTrace } from '@apollo/server/plugin/inlineTrace';
 import { AppController } from './app.controller';
-import { AppService } from './app.service';
 import { DictionaryModule } from './dictionary/dictionary.module';
 import { RequestLoggerMiddleware } from './request-logger.middleware';
-import { MemcachedProvider, BuildInfoProvider } from './providers';
 
 @Module({
   imports: [
@@ -55,7 +53,6 @@ import { MemcachedProvider, BuildInfoProvider } from './providers';
     DictionaryModule,
   ],
   controllers: [AppController],
-  providers: [AppService, BuildInfoProvider, MemcachedProvider],
 })
 export class AppModule implements NestModule {
   configure(consumer: MiddlewareConsumer): void {
