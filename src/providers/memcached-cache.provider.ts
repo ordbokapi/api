@@ -144,9 +144,11 @@ export class MemcachedCacheProvider implements ICacheProvider {
     );
 
     try {
-      const serialized = await this.cacheSerializationProvider.serialize(
-        await value, // value may be a promise
-      );
+      const serialized = await this.cacheSerializationProvider.serialize({
+        data: await value, // value may be a promise
+        setAt: now,
+        bucket,
+      });
       await this.memcachedProvider.client?.set(key, serialized, {
         expires: ttlSeconds.min,
       });
