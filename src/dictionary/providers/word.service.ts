@@ -53,7 +53,14 @@ type ArticleTextElement = {
 
 type ArticleElement =
   | {
-      type_: 'entity' | 'language' | 'relation';
+      type_:
+        | 'domain'
+        | 'entity'
+        | 'grammar'
+        | 'language'
+        | 'relation'
+        | 'rhetoric'
+        | 'temporal';
       id: string;
     }
   | {
@@ -541,9 +548,13 @@ export class WordService {
     const richContent = new RichContentBuilder();
 
     switch (element.type_) {
+      case 'domain':
       case 'entity':
+      case 'grammar':
       case 'language':
-      case 'relation': {
+      case 'relation':
+      case 'rhetoric':
+      case 'temporal': {
         const conceptId = element.id;
         const concept = this.concepts[dictionary].concepts[conceptId];
 
