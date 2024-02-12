@@ -873,7 +873,13 @@ export class WordService {
         continue;
       }
 
-      const definition = new Definition({ id: def.id });
+      // if the current element is an example and we have a definition at the
+      // end of the array of definitions we're building, then add the example
+      // to the last definition instead of creating a new one
+      const definition =
+        definitions.length > 0 && def.type_ === 'example'
+          ? definitions[definitions.length - 1]
+          : new Definition({ id: def.id });
 
       if (def.elements) {
         for (const element of def.elements) {
