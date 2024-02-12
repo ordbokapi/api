@@ -1,6 +1,6 @@
 import { Injectable, Logger, Inject } from '@nestjs/common';
 import { Dictionary } from '../models';
-import { ICacheProvider, TTLBucket } from '../../providers';
+import { BuildInfoProvider, ICacheProvider, TTLBucket } from '../../providers';
 import { createHash } from 'crypto';
 
 export enum OrdboekeneApiSearchType {
@@ -19,6 +19,7 @@ export class OrdboekeneApiService {
 
   constructor(
     @Inject('ICacheProvider') private cacheProvider: ICacheProvider,
+    private buildInfo: BuildInfoProvider,
   ) {}
 
   suggest(
@@ -154,7 +155,7 @@ export class OrdboekeneApiService {
   }
 
   private generateCacheKey(url: string): string {
-    return `ordboekene_api_${createHash('sha1').update(url).digest('hex')}`;
+    return `ordboekene_api_${this.buildInfo.buildId}_${createHash('sha1').update(url).digest('hex')}`;
   }
 
   private getSearchTypeParam(searchType?: OrdboekeneApiSearchType): string {

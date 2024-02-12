@@ -1,6 +1,7 @@
 import { Module } from '@nestjs/common';
 import { WordService, OrdboekeneApiService } from './providers';
 import {
+  BuildInfoProvider,
   MemcachedProvider,
   InMemoryCacheProvider,
   MemcachedCacheProvider,
@@ -11,6 +12,7 @@ import * as resolvers from './resolvers';
 @Module({
   providers: [
     ...Object.values(resolvers),
+    BuildInfoProvider,
     WordService,
     OrdboekeneApiService,
     MemcachedProvider,
