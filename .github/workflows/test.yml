@@ -1,0 +1,39 @@
+name: Test
+
+on:
+  pull_request:
+    branches:
+      - main
+  push:
+    branches:
+      - main
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 21
+          cache: 'yarn'
+
+      - name: Install dependencies
+        run: yarn --immutable
+
+      - name: Build
+        run: yarn build
+
+      - name: Test (E2E)
+        # Make sure to output results to a file so we can parse them later
+        run: yarn test:e2e --ci --reporters=default --reporters=jest-junit
+
+      - name: Report test results
+        uses: dorny/test-reporter@v1
+        if: success() || failure()
+        with:
+          name: End-to-end tests
+          path: junit.xml
+          reporter: jest-junit

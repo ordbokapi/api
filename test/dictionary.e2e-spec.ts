@@ -1,9 +1,9 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { INestApplication } from '@nestjs/common';
 import * as request from 'supertest';
-import { AppModule } from './../src/app.module';
+import { AppModule } from '../src/app.module';
 
-describe('AppController (e2e)', () => {
+describe('DictionaryModule (e2e)', () => {
   let app: INestApplication;
 
   beforeEach(async () => {
@@ -15,10 +15,10 @@ describe('AppController (e2e)', () => {
     await app.init();
   });
 
-  it('/ (GET) should redirect to /graphql', () => {
+  it('/graphql (GET) should return HTML (Apollo Sandbox)', () => {
     return request(app.getHttpServer())
-      .get('/')
-      .expect(302)
-      .expect('Location', '/graphql');
+      .get('/graphql')
+      .set('Accept', 'text/html')
+      .expect(200);
   });
 });
