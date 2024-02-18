@@ -21,4 +21,9 @@ export class Lemma {
     description: 'Liste av bøyingsparadigme assosiert med lemmaet.',
   })
   paradigms: Paradigm[];
+
+  @Field(() => Boolean, {
+    description: 'Om lemmaet er eit verb med kløyvd infinitiv.',
+  })
+  splitInfinitive: boolean;
 }

@@ -435,6 +435,7 @@ export class WordService {
         lemma: lemma.lemma,
         meaning: lemma.hgno,
         paradigms: [],
+        splitInfinitive: Boolean(lemma.split_inf),
       };
 
       lemma.paradigm_info?.forEach((paradigmInfo: any) => {
