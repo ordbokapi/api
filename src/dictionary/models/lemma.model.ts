@@ -23,7 +23,8 @@ export class Lemma {
   paradigms: Paradigm[];
 
   @Field(() => Boolean, {
-    description: 'Om lemmaet er eit verb med kløyvd infinitiv.',
+    description:
+      'Om lemmaet er eit verb med kløyvd infinitiv med «-a» som ending.',
   })
   splitInfinitive: boolean;
 }
