@@ -1,9 +1,10 @@
 import { copyFile, mkdir, writeFile, readFile } from 'fs/promises';
+import * as process from 'process';
 
 await mkdir('dist', { recursive: true });
 
 try {
-  await copyFile('.git/ORIG_HEAD', 'dist/BUILD_HEAD');
+  await copyFile('../../.git/ORIG_HEAD', 'dist/BUILD_HEAD');
 
   console.log(
     `Build head ${await readFile('dist/BUILD_HEAD', 'utf8')} written to dist/BUILD_HEAD`,

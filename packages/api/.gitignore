@@ -1,0 +1,5 @@
+dist
+error-test.mjs
+stress-test-words.txt
+stress-test.mjs
+src/schema.gql

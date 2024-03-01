@@ -48,9 +48,3 @@ junit.xml
 !.vscode/tasks.json
 !.vscode/launch.json
 !.vscode/extensions.json
-
-src/schema.gql
-
-error-test.mjs
-stress-test.mjs
-stress-test-words.txt
