@@ -16,6 +16,10 @@ try {
   await fs.access(rootEnvPath);
 } catch (err) {
   if (err.code === 'ENOENT') {
+    if (process.env.NODE_ENV === 'production') {
+      process.exit(0); // don't create .env in production
+    }
+
     await import('./writeenv.mjs');
   } else {
     throw err;
