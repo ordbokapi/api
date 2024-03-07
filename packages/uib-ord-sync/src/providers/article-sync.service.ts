@@ -64,49 +64,43 @@ export class ArticleSyncService {
     );
 
     const idSet: Set<number> = new Set();
+    let queuedTotal = 0;
 
-    const promises = articleList.reduce((promises, rawMetadata, index) => {
+    for (let index = 0; index < articleList.length; index++) {
+      const rawMetadata = articleList[index];
       const metadata = convertRawArticleMetadata(rawMetadata);
       const existing = existingMetadata.get(metadata.articleId);
       idSet.add(metadata.articleId);
 
       !prod &&
         process.stdout.write(
-          `[${dictionary}] Processing article ${index} of ${articleList.length}\r`,
+          `[${dictionary}] Processing article ${index + 1} of ${articleList.length}\r`,
         );
 
-      // skip if the article is already up to date
       if (
         existing &&
         existing.revision === metadata.revision &&
         Math.abs(existing.updatedAt.getTime() - metadata.updatedAt.getTime()) <
-          1000 // allow for 1s error margin due to millisecond parsing precision
+          1000 // allow for 1 second difference due to millisecond precision
       ) {
-        return promises;
+        continue;
       }
 
-      // skip if the article is already in the queue
       if (jobs.has(metadata.articleId)) {
-        return promises;
+        continue;
       }
 
-      // queue the article fetch job
-      promises.push(
-        (async () => {
-          await queue.add(JobQueue.FetchArticle, {
-            dictionary,
-            metadata,
-          });
-          this.#logger.verbose(
-            `[${dictionary}] Queued article fetch for ${metadata.articleId} (${metadata.primaryLemma})`,
-          );
-        })(),
+      await queue.add(JobQueue.FetchArticle, {
+        dictionary,
+        metadata,
+      });
+
+      queuedTotal++;
+
+      this.#logger.verbose(
+        `[${dictionary}] Queued article fetch for ${metadata.articleId} (${metadata.primaryLemma})`,
       );
-
-      return promises;
-    }, [] as Promise<void>[]);
-
-    await Promise.all(promises);
+    }
 
     // remove articles that no longer exist
     for (const [id, metadata] of existingMetadata) {
@@ -121,7 +115,7 @@ export class ArticleSyncService {
     }
 
     this.#logger.log(
-      `[${dictionary}] Queued ${promises.length} article fetch jobs`,
+      `[${dictionary}] Queued ${queuedTotal} article fetch jobs`,
     );
   }
 
