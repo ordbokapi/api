@@ -1,0 +1,12 @@
+{
+  "name": "run-on-tsc-build",
+  "version": "1.0.0",
+  "description": "Run a command when tsc --build --watch finishes building",
+  "main": "index.js",
+  "bin": "index.js",
+  "type": "module",
+  "private": true,
+  "dependencies": {
+    "tree-kill": "^1.2.2"
+  }
+}

@@ -16,7 +16,9 @@
     "noImplicitAny": true,
     "strictBindCallApply": true,
     "forceConsistentCasingInFileNames": true,
-    "noFallthroughCasesInSwitch": true
+    "noFallthroughCasesInSwitch": true,
+    "composite": true,
+    "rootDir": "./src"
   },
-  "references": [{ "path": "../common" }]
+  "include": ["src/**/*.ts"]
 }
