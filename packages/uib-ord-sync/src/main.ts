@@ -5,7 +5,7 @@ import { isProd } from 'ordbokapi-common';
 async function main() {
   await NestFactory.createApplicationContext(AppModule, {
     logger: isProd()
-      ? ['warn', 'error', 'fatal']
+      ? ['log', 'warn', 'error', 'fatal']
       : ['verbose', 'debug', 'log', 'warn', 'error', 'fatal'],
   });
 }

@@ -65,9 +65,12 @@ export class ArticleSyncService {
 
     const idSet: Set<number> = new Set();
     let queuedTotal = 0;
+    let index = -1;
 
-    for (let index = 0; index < articleList.length; index++) {
-      const rawMetadata = articleList[index];
+    while (articleList.length > 0) {
+      index++;
+
+      const rawMetadata = articleList.pop()!;
       const metadata = convertRawArticleMetadata(rawMetadata);
       const existing = existingMetadata.get(metadata.articleId);
       idSet.add(metadata.articleId);
