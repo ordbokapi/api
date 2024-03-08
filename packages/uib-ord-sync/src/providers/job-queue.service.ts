@@ -28,7 +28,7 @@ export type JobPayload = {
   };
   [JobQueue.FetchArticle]: {
     dictionary: UiBDictionary;
-    metadata: ArticleMetadata;
+    metadata: Partial<ArticleMetadata> & Pick<ArticleMetadata, 'articleId'>;
   };
 };
 
@@ -72,8 +72,8 @@ export class JobQueueService {
     const worker = new Worker(queue, handler, {
       connection: this.redis.getIORedis(),
       concurrency: 20,
-      removeOnComplete: { count: 100, age: 1000 * 60 * 60 * 24 /* 1 day */ },
-      removeOnFail: { count: 500, age: 1000 * 60 * 60 * 24 * 7 /* 1 week */ },
+      removeOnComplete: { count: 1000, age: 1000 * 60 * 60 * 24 /* 1 day */ },
+      removeOnFail: { count: 5000, age: 1000 * 60 * 60 * 24 * 7 /* 1 week */ },
     }) as Worker<JobPayload[NameType], ResultType, NameType>;
 
     worker.on('error', (error) => {

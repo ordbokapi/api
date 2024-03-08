@@ -143,6 +143,32 @@ export class UibRedisService {
   }
 
   /**
+   * Fetches articles from the given dictionary.
+   * @param dictionary The dictionary to fetch the articles from.
+   * @param articleIds The IDs of the articles to fetch.
+   * @returns A map of article IDs to article data.
+   */
+  async getArticlesFromDictionary(
+    dictionary: UiBDictionary,
+    articleIds: number[],
+  ): Promise<Map<number, RawArticle>> {
+    const articleList = await this.redis.client.json.mGet(
+      articleIds.map((id) => uibKeys.article(dictionary, id)),
+      '$',
+    );
+
+    const articles = new Map<number, RawArticle>();
+
+    for (let i = 0; i < articleIds.length; i++) {
+      if (articleList[i] !== null) {
+        articles.set(articleIds[i], articleList[i] as RawArticle);
+      }
+    }
+
+    return articles;
+  }
+
+  /**
    * Sets the article with the given ID in the given dictionary.
    * @param transaction The transaction to use.
    * @param dictionary The dictionary to set the article in.
@@ -186,6 +212,42 @@ export class UibRedisService {
     for (const articleId in articleList) {
       const articleData = JSON.parse(articleList[articleId]);
       metadataMap.set(Number.parseInt(articleId, 10), {
+        ...articleData,
+        updatedAt: new Date(articleData.updatedAt),
+      });
+    }
+
+    return metadataMap;
+  }
+
+  /**
+   * Fetches the article metadata for the given dictionary and article IDs.
+   * @param dictionary The dictionary to fetch the article metadata for.
+   * @param articleIds The IDs of the articles to fetch the metadata for.
+   * @returns A map of article IDs to article metadata.
+   */
+  async getArticleMetadata(
+    dictionary: UiBDictionary,
+    articleIds: number[],
+  ): Promise<ArticleMetadataMap> {
+    if (articleIds.length === 0) {
+      return new Map();
+    }
+
+    const articleList = await this.redis.client.hmGet(
+      uibKeys.dictionaryArticles(dictionary),
+      articleIds.map((id) => id.toString()),
+    );
+
+    const metadataMap: ArticleMetadataMap = new Map();
+
+    for (let i = 0; i < articleIds.length; i++) {
+      if (articleList[i] === null) {
+        continue;
+      }
+
+      const articleData = JSON.parse(articleList[i]);
+      metadataMap.set(articleIds[i], {
         ...articleData,
         updatedAt: new Date(articleData.updatedAt),
       });

@@ -42,9 +42,11 @@ export function convertRawArticleMetadata([
     revision,
     // necessary because the UiB API returns oddtimestamps without timezones
     // e.g. 2024-03-05 08:52:00.275423
-    updatedAt: DateTime.fromISO(updatedAt.replace(' ', 'T'), {
-      zone: 'Europe/Oslo',
-    }).toJSDate(),
+    updatedAt: updatedAt
+      ? DateTime.fromISO(updatedAt.replace(' ', 'T'), {
+          zone: 'Europe/Oslo',
+        }).toJSDate()
+      : new Date(),
   };
 }
 

@@ -151,7 +151,7 @@ Sample article JSON:
  * An element in an article that has associated text.
  */
 export type ArticleTextElement = {
-  content: string;
+  content: string | null;
   items: ArticleElement[];
 };
 
@@ -177,12 +177,12 @@ export type ArticleElement =
     }
   | {
       type_: 'quote_inset' | 'explanation' | 'etymology_language';
-      content: string;
+      content: string | null;
       items: ArticleElement[];
     }
   | {
       type_: 'definition';
-      elements: ArticleElement[];
+      elements?: ArticleElement[];
       id: number;
       sub_definition: boolean;
     }
@@ -238,7 +238,7 @@ export type ArticleElement =
         word_class: string;
       };
       intro: {
-        content: string;
+        content: string | null;
         items: ArticleElement[];
       };
       status: null | string;
@@ -249,7 +249,7 @@ export type ArticleElement =
  */
 export type RawArticle = {
   article_id: number;
-  submitted: string;
+  submitted?: string;
   suggest: string[];
   lemmas: {
     hgno: number;

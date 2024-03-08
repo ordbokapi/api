@@ -8,6 +8,7 @@ import {
   ArticleMetadata,
   RedisService,
   isProd,
+  RawArticle,
 } from 'ordbokapi-common';
 
 /**
@@ -67,6 +68,8 @@ export class ArticleSyncService {
     let queuedTotal = 0;
     let index = -1;
 
+    const jobData: Parameters<typeof queue.addBulk>[0] = [];
+
     while (articleList.length > 0) {
       index++;
 
@@ -93,16 +96,12 @@ export class ArticleSyncService {
         continue;
       }
 
-      await queue.add(JobQueue.FetchArticle, {
-        dictionary,
-        metadata,
+      jobData.push({
+        name: `sync-${dictionary}-${metadata.articleId}`,
+        data: { dictionary, metadata },
       });
 
       queuedTotal++;
-
-      this.#logger.verbose(
-        `[${dictionary}] Queued article fetch for ${metadata.articleId} (${metadata.primaryLemma})`,
-      );
     }
 
     // remove articles that no longer exist
@@ -117,8 +116,88 @@ export class ArticleSyncService {
       );
     }
 
+    if (jobData.length === 0) {
+      this.#logger.verbose(`[${dictionary}] No articles to queue`);
+      return;
+    }
+
+    await queue.addBulk(jobData);
+
     this.#logger.log(
       `[${dictionary}] Queued ${queuedTotal} article fetch jobs`,
+    );
+  }
+
+  /**
+   * Iteratively walks over article JSON, looking for any object that refers to
+   * another article. Then checks to see if that article is in the database, or
+   * if it has been queued for fetching. If not, it queues a job to fetch the
+   * article.
+   */
+  async #queueRelatedArticles(
+    dictionary: UiBDictionary,
+    articleId: number,
+    article: RawArticle,
+  ): Promise<void> {
+    const articleIds = new Set<number>();
+
+    const walk = (obj: any) => {
+      if (obj && typeof obj === 'object') {
+        if (
+          (obj.type_ === 'article_ref' || obj.type_ === 'sub_article') &&
+          typeof obj.article_id === 'number'
+        ) {
+          articleIds.add(obj.article_id);
+        }
+
+        for (const key in obj) {
+          walk(obj[key]);
+        }
+      }
+    };
+
+    walk(article);
+
+    if (articleIds.size === 0) {
+      return;
+    }
+
+    const metadataMap = await this.data.getArticleMetadata(
+      dictionary,
+      Array.from(articleIds),
+    );
+    const queue = this.queues.get(JobQueue.FetchArticle);
+    const jobs = (await queue.getJobs(['delayed', 'wait', 'active'])).reduce(
+      (jobs, job) => {
+        if (job.data.dictionary === dictionary) {
+          jobs.add(job.data.metadata.articleId);
+        }
+        return jobs;
+      },
+      new Set<number>(),
+    );
+
+    const jobData: Parameters<typeof queue.addBulk>[0] = [];
+
+    for (const id of articleIds) {
+      if (metadataMap.has(id) || jobs.has(id)) {
+        continue;
+      }
+
+      jobData.push({
+        name: `sync-${dictionary}-${id}`,
+        data: { dictionary, metadata: { articleId: id } },
+      });
+    }
+
+    if (jobData.length === 0) {
+      return;
+    }
+
+    await queue.addBulk(jobData);
+
+    this.#logger.verbose(
+      `[${dictionary}] Queued ${jobData.length} related article fetch jobs for ${articleId}`,
     );
   }
 
@@ -129,7 +208,8 @@ export class ArticleSyncService {
    */
   async #syncArticle(
     dictionary: UiBDictionary,
-    metadata: ArticleMetadata,
+    // make all but the articleId property optional
+    metadata: Partial<ArticleMetadata> & Pick<ArticleMetadata, 'articleId'>,
   ): Promise<void> {
     this.#logger.verbose(
       `[${dictionary}] Fetching article ${metadata.articleId} (${metadata.primaryLemma})`,
@@ -137,18 +217,33 @@ export class ArticleSyncService {
 
     const article = await this.api.fetchArticle(dictionary, metadata.articleId);
 
+    const isComplete = Boolean(
+      metadata.primaryLemma && metadata.revision && metadata.updatedAt,
+    );
+
+    const completeMetadata = isComplete
+      ? (metadata as ArticleMetadata)
+      : convertRawArticleMetadata([
+          metadata.articleId,
+          article.lemmas[0]?.lemma ?? '',
+          0,
+          article.submitted ?? '',
+        ]);
+
     this.#logger.verbose(
-      `[${dictionary}] Fetched article ${metadata.articleId} (${metadata.primaryLemma})`,
+      `[${dictionary}] Fetched article ${metadata.articleId} (${completeMetadata.primaryLemma})`,
     );
 
     await this.redis.tx((tx) => {
       this.data.setArticle(tx, dictionary, metadata.articleId, article);
-      this.data.setArticleMetadata(tx, dictionary, metadata);
+      this.data.setArticleMetadata(tx, dictionary, completeMetadata);
     });
 
     this.#logger.debug(
-      `[${dictionary}] Synced article ${metadata.articleId} (${metadata.primaryLemma})`,
+      `[${dictionary}] Synced article ${metadata.articleId} (${completeMetadata.primaryLemma})`,
     );
+
+    await this.#queueRelatedArticles(dictionary, metadata.articleId, article);
   }
 
   /**

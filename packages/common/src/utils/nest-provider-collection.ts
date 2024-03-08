@@ -15,11 +15,11 @@ export type ClassExportsArray<T extends Record<string, any>> = Array<
 /**
  * An iterable collection of Nest.js providers.
  */
-export class NestProviderCollection<T extends Provider[]> {
+export class NestProviderCollection<T extends Provider[] = never[]> {
   readonly #providers: T;
 
-  constructor(providers: Iterable<T[number]>) {
-    this.#providers = Array.from(providers) as T;
+  constructor(providers?: Iterable<T[number]>) {
+    this.#providers = providers ? (Array.from(providers) as T) : ([] as any);
   }
 
   /**
