@@ -11,9 +11,9 @@ import {
 } from './providers';
 import {
   BuildInfoProvider,
-  MemcachedProvider,
+  // MemcachedProvider,
   InMemoryCacheProvider,
-  MemcachedCacheProvider,
+  // MemcachedCacheProvider,
   CacheSerializationProvider,
 } from '../providers';
 import * as resolvers from './resolvers';
@@ -24,13 +24,17 @@ import * as resolvers from './resolvers';
     .concat(NestProviderCollection.fromInjectables(commonProviders))
     .concat(NestProviderCollection.fromInjectables(resolvers))
     .concat([BuildInfoProvider, WordService, OrdboekeneApiService])
-    .addIf(process.env.MEMCACHEDCLOUD_SERVERS, MemcachedProvider)
+    // .addIf(process.env.MEMCACHEDCLOUD_SERVERS, MemcachedProvider)
     .add(CacheSerializationProvider)
+    // .add({
+    //   provide: 'ICacheProvider',
+    //   useClass: process.env.MEMCACHEDCLOUD_SERVERS
+    //     ? MemcachedCacheProvider
+    //     : InMemoryCacheProvider,
+    // })
     .add({
       provide: 'ICacheProvider',
-      useClass: process.env.MEMCACHEDCLOUD_SERVERS
-        ? MemcachedCacheProvider
-        : InMemoryCacheProvider,
+      useClass: InMemoryCacheProvider,
     })
     .add(CacheWrapperService)
     .toArray(),
