@@ -1,3 +1,4 @@
+import { Injectable } from '@nestjs/common';
 import { Resolver, Query, Args, Info } from '@nestjs/graphql';
 import { GraphQLResolveInfo } from 'graphql';
 import {
@@ -6,6 +7,7 @@ import {
 } from '../providers';
 import { Dictionary, Suggestions, Word, WordClass } from '../models';
 
+@Injectable()
 @Resolver(() => Word)
 export class SuggestionsResolver {
   constructor(private wordService: WordService) {}
@@ -22,7 +24,7 @@ export class SuggestionsResolver {
     word: string,
     @Args('dictionaries', {
       type: () => [Dictionary],
-      defaultValue: [Dictionary.Bokmaalsordboka, Dictionary.Nynorskordboka],
+      defaultValue: Object.values(Dictionary),
       description:
         'Liste over ordbøker som skal brukast for å generera forslag. Standardverdiane er Bokmålsordboka og Nynorskordboka.',
     })

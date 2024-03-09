@@ -1,5 +1,14 @@
 import { Module } from '@nestjs/common';
-import { WordService, OrdboekeneApiService } from './providers';
+import { ConfigModule } from '@nestjs/config';
+import {
+  NestProviderCollection,
+  providers as commonProviders,
+} from 'ordbokapi-common';
+import {
+  WordService,
+  OrdboekeneApiService,
+  CacheWrapperService,
+} from './providers';
 import {
   BuildInfoProvider,
   MemcachedProvider,
@@ -10,20 +19,20 @@ import {
 import * as resolvers from './resolvers';
 
 @Module({
-  providers: [
-    ...Object.values(resolvers),
-    BuildInfoProvider,
-    WordService,
-    OrdboekeneApiService,
-    ...(process.env.MEMCACHEDCLOUD_SERVERS ? [MemcachedProvider] : []),
-    CacheSerializationProvider,
-    {
+  imports: [ConfigModule],
+  providers: new NestProviderCollection()
+    .concat(NestProviderCollection.fromInjectables(commonProviders))
+    .concat(NestProviderCollection.fromInjectables(resolvers))
+    .concat([BuildInfoProvider, WordService, OrdboekeneApiService])
+    .addIf(process.env.MEMCACHEDCLOUD_SERVERS, MemcachedProvider)
+    .add(CacheSerializationProvider)
+    .add({
       provide: 'ICacheProvider',
       useClass: process.env.MEMCACHEDCLOUD_SERVERS
         ? MemcachedCacheProvider
         : InMemoryCacheProvider,
-    },
-  ],
-  exports: [WordService],
+    })
+    .add(CacheWrapperService)
+    .toArray(),
 })
 export class DictionaryModule {}

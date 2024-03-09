@@ -23,12 +23,25 @@ import {
   ArticleRelationshipType,
   PhraseArticleRelationship,
   RichContent,
+  toUibDictionary,
+  fromUibDictionary,
 } from '../models';
 import {
   OrdboekeneApiService,
   OrdboekeneApiSearchType as ApiSearchType,
 } from './ordboekene-api.service';
 import { TwoWayMap, RichContentBuilder } from '../types';
+import {
+  UiBDictionary,
+  UibRedisService,
+  ArticleElement,
+  ArticleTextElement,
+  UiBArticleIdentifier,
+  SanitizationService,
+  UnionIterable,
+  ArticleIndex,
+} from 'ordbokapi-common';
+import { Asyncify, CacheWrapperService } from './cache-wrapper.service';
 
 const wordClassMap = new TwoWayMap([
   ['NOUN', WordClass.Substantiv],
@@ -46,101 +59,19 @@ const wordClassMap = new TwoWayMap([
   ['EXPR', WordClass.Uttrykk],
 ]);
 
-type ArticleTextElement = {
-  content: string;
-  items: ArticleElement[];
-};
-
-type ArticleElement =
-  | {
-      type_:
-        | 'domain'
-        | 'entity'
-        | 'grammar'
-        | 'language'
-        | 'relation'
-        | 'rhetoric'
-        | 'temporal';
-      id: string;
-    }
-  | {
-      type_: 'usage';
-      items: [];
-      text: string;
-    }
-  | {
-      type_: 'quote_inset' | 'explanation' | 'etymology_language';
-      content: string;
-      items: ArticleElement[];
-    }
-  | {
-      type_: 'definition';
-      elements: ArticleElement[];
-      id: number;
-      sub_definition: boolean;
-    }
-  | {
-      type_: 'example';
-      quote: ArticleTextElement;
-      explanation: ArticleTextElement;
-    }
-  | {
-      type_: 'compound_list';
-      elements: ArticleElement[];
-      intro: ArticleTextElement;
-    }
-  | {
-      type_: 'article_ref';
-      article_id: number;
-      lemmas: {
-        type_: 'lemma';
-        hgno: number;
-        id: number;
-        lemma: string;
-      }[];
-      definition_id: number;
-      definition_order: number;
-    }
-  | {
-      type_: 'sub_article';
-      article_id: number;
-      lemmas: string[];
-      article: {
-        type_: 'article';
-        article_id: number;
-        lemmas: {
-          type_: 'lemma';
-          hgno: number;
-          id: number;
-          lemma: string;
-        }[];
-        body: {
-          pronunciation: ArticleElement[];
-          definitions: ArticleElement[];
-        };
-        article_type: string;
-        author: string;
-        dict_id: string;
-        frontpage: boolean;
-        latest_status: number;
-        owner: string;
-        properties: {
-          edit_state: string;
-        };
-        version: number;
-        word_class: string;
-      };
-      intro: {
-        content: string;
-        items: ArticleElement[];
-      };
-      status: null | string;
-    };
-
 @Injectable()
 export class WordService {
   private readonly logger = new Logger(WordService.name);
-  constructor(private ordboekeneApiService: OrdboekeneApiService) {}
+  readonly #uibData: Asyncify<UibRedisService>;
+
+  constructor(
+    private ordboekeneApiService: OrdboekeneApiService,
+    uibData: UibRedisService,
+    cacheWrapper: CacheWrapperService,
+    private readonly sanitizer: SanitizationService,
+  ) {
+    this.#uibData = cacheWrapper.createProxy(uibData);
+  }
 
   private concepts: { [Dictionary: string]: any } = {};
 
@@ -176,12 +107,14 @@ export class WordService {
 
     this.logger.debug(`Getting articles for word: ${word}`);
 
-    const data = await this.ordboekeneApiService.articles(
-      word,
-      dictionaries,
-      ApiSearchType.Exact,
-      wordClass ? wordClassMap.getReverse(wordClass) : undefined,
-    );
+    // const data = await this.ordboekeneApiService.articles(
+    //   word,
+    //   dictionaries,
+    //   ApiSearchType.Exact,
+    //   wordClass ? wordClassMap.getReverse(wordClass) : undefined,
+    // );
+
+    // console.log(data);
 
     // Example API response:
 
@@ -191,30 +124,63 @@ export class WordService {
 
     // {"meta": {"bm": {"total": 0}, "nn": {"total": 0}}, "articles": {"bm": [], "nn": []}}
 
-    const foundDictionaries: Dictionary[] = [];
+    // const foundDictionaries: Dictionary[] = [];
 
-    if (data.meta.bm?.total) {
-      foundDictionaries.push(Dictionary.Bokmaalsordboka);
+    // for (const dict of Object.values(UiBDictionary)) {
+    //   if (data.meta[dict]?.total) {
+    //     foundDictionaries.push(fromUibDictionary(dict));
+    //   }
+    // }
+
+    // if (foundDictionaries.length === 0) {
+    //   return undefined;
+    // }
+
+    // const wordObject: Word = {
+    //   word,
+    //   dictionaries: foundDictionaries,
+    //   articles: Object.entries(data.articles).flatMap(
+    //     ([dictParam, ids]: [string, number[]]) =>
+    //       ids.map((id: number) => ({
+    //         id,
+    //         dictionary: this.getDictionary(dictParam),
+    //       })),
+    //   ),
+    // };
+
+    const sanitized = this.sanitizer.sanitize(word);
+    const articles: UnionIterable<UiBArticleIdentifier> = new UnionIterable();
+
+    let query = `((@${ArticleIndex.LemmaExact}:{${sanitized}}) | (@${ArticleIndex.InflectionExact}:{${sanitized}}))`;
+
+    if (wordClass) {
+      query += ` (@${ArticleIndex.ParadigmTags}:{${wordClassMap.getReverse(wordClass)}})`;
     }
 
-    if (data.meta.nn?.total) {
-      foundDictionaries.push(Dictionary.Nynorskordboka);
+    for (const dict of dictionaries) {
+      const { total, results } = await this.#uibData.search(
+        query,
+        toUibDictionary(dict),
+      );
+
+      if (total > 0) {
+        articles.concat(results);
+      }
     }
 
-    if (foundDictionaries.length === 0) {
+    if (articles.size === 0) {
       return undefined;
     }
 
     const wordObject: Word = {
       word,
-      dictionaries: foundDictionaries,
-      articles: Object.entries(data.articles).flatMap(
-        ([dictParam, ids]: [string, number[]]) =>
-          ids.map((id: number) => ({
-            id,
-            dictionary: this.getDictionary(dictParam),
-          })),
-      ),
+      dictionaries,
+      articles: [
+        ...articles.map((article) => ({
+          id: article.id,
+          dictionary: fromUibDictionary(article.dictionary),
+        })),
+      ],
     };
 
     return wordObject;
@@ -225,10 +191,19 @@ export class WordService {
 
     this.logger.debug(`Getting definitions for article: ${article.id}`);
 
-    const data = await this.ordboekeneApiService.article(
+    // const data = await this.ordboekeneApiService.article(
+    //   article.id,
+    //   article.dictionary,
+    // );
+
+    const data = await this.#uibData.getArticle(
+      toUibDictionary(article.dictionary),
       article.id,
-      article.dictionary,
     );
+
+    if (!data) {
+      return [];
+    }
 
     this.transformArticleResponse(article, data);
 
@@ -240,10 +215,19 @@ export class WordService {
 
     this.logger.debug(`Getting relationships for article: ${article.id}`);
 
-    const data = await this.ordboekeneApiService.article(
+    // const data = await this.ordboekeneApiService.article(
+    //   article.id,
+    //   article.dictionary,
+    // );
+
+    const data = await this.#uibData.getArticle(
+      toUibDictionary(article.dictionary),
       article.id,
-      article.dictionary,
     );
+
+    if (!data) {
+      return [];
+    }
 
     return this.transformRelationships(article, data);
   }
@@ -251,12 +235,20 @@ export class WordService {
   async getArticle(
     articleId: number,
     dictionary: Dictionary,
-  ): Promise<Article> {
+  ): Promise<Article | undefined> {
     await this.loadConcepts();
 
     this.logger.debug(`Getting article: ${articleId}`);
 
-    const data = await this.ordboekeneApiService.article(articleId, dictionary);
+    // const data = await this.ordboekeneApiService.article(articleId, dictionary);
+    const data = await this.#uibData.getArticle(
+      toUibDictionary(dictionary),
+      articleId,
+    );
+
+    if (!data) {
+      return undefined;
+    }
 
     this.logger.debug(`Received article: ${articleId}`);
 
@@ -277,12 +269,17 @@ export class WordService {
 
     this.logger.debug(`Getting word class for article: ${article.id}`);
 
-    const data = await this.ordboekeneApiService.article(
+    // const data = await this.ordboekeneApiService .article(
+    //   article.id,
+    //   article.dictionary,
+    // );
+
+    const data = await this.#uibData.getArticle(
+      toUibDictionary(article.dictionary),
       article.id,
-      article.dictionary,
     );
 
-    return this.transformWordClass(data);
+    return data ? this.transformWordClass(data) : undefined;
   }
 
   async getLemmas(article: Article): Promise<Lemma[] | undefined> {
@@ -290,12 +287,17 @@ export class WordService {
 
     this.logger.debug(`Getting lemmas for article: ${article.id}`);
 
-    const data = await this.ordboekeneApiService.article(
+    // const data = await this.ordboekeneApiService.article(
+    //   article.id,
+    //   article.dictionary,
+    // );
+
+    const data = await this.#uibData.getArticle(
+      toUibDictionary(article.dictionary),
       article.id,
-      article.dictionary,
     );
 
-    return this.transformLemmaInfo(data);
+    return data ? this.transformLemmaInfo(data) : undefined;
   }
 
   async getGender(article: Article): Promise<Gender | undefined> {
@@ -303,12 +305,17 @@ export class WordService {
 
     this.logger.debug(`Getting gender for article: ${article.id}`);
 
-    const data = await this.ordboekeneApiService.article(
+    // const data = await this.ordboekeneApiService.article(
+    //   article.id,
+    //   article.dictionary,
+    // );
+
+    const data = await this.#uibData.getArticle(
+      toUibDictionary(article.dictionary),
       article.id,
-      article.dictionary,
     );
 
-    return this.transformGender(data);
+    return data ? this.transformGender(data) : undefined;
   }
 
   async getPhrases(article: Article): Promise<Article[]> {
@@ -316,12 +323,17 @@ export class WordService {
 
     this.logger.debug(`Getting phrases for article: ${article.id}`);
 
-    const data = await this.ordboekeneApiService.article(
+    // const data = await this.ordboekeneApiService.article(
+    //   article.id,
+    //   article.dictionary,
+    // );
+
+    const data = await this.#uibData.getArticle(
+      toUibDictionary(article.dictionary),
       article.id,
-      article.dictionary,
     );
 
-    return this.transformPhrases(article, data);
+    return data ? this.transformPhrases(article, data) : [];
   }
 
   async getEtymology(article: Article): Promise<RichContent[]> {
@@ -329,12 +341,17 @@ export class WordService {
 
     this.logger.debug(`Getting etymology for article: ${article.id}`);
 
-    const data = await this.ordboekeneApiService.article(
+    // const data = await this.ordboekeneApiService.article(
+    //   article.id,
+    //   article.dictionary,
+    // );
+
+    const data = await this.#uibData.getArticle(
+      toUibDictionary(article.dictionary),
       article.id,
-      article.dictionary,
     );
 
-    return this.transformEtymology(article, data);
+    return data ? this.transformEtymology(article, data) : [];
   }
 
   async getArticleGraph(
@@ -364,15 +381,11 @@ export class WordService {
   private getDictParam(dictionary: Dictionary | Dictionary[]): string {
     return Array.isArray(dictionary)
       ? dictionary.map((d) => this.getDictParam(d)).join(',')
-      : dictionary === Dictionary.Bokmaalsordboka
-        ? 'bm'
-        : 'nn';
+      : toUibDictionary(dictionary);
   }
 
   private getDictionary(dictParam: string): Dictionary {
-    return dictParam === 'bm'
-      ? Dictionary.Bokmaalsordboka
-      : Dictionary.Nynorskordboka;
+    return fromUibDictionary(dictParam as UiBDictionary);
   }
 
   private transformWordClass(article: any): WordClass | undefined {
@@ -495,25 +508,24 @@ export class WordService {
 
   private async loadConcepts() {
     await Promise.all(
-      [Dictionary.Bokmaalsordboka, Dictionary.Nynorskordboka].map(
-        async (dictionary) => {
-          if (this.concepts[dictionary]) {
-            return;
-          }
-          this.logger.debug(
-            `Requesting concept lookup table from ${dictionary} from API`,
+      Object.values(Dictionary).map(async (dictionary) => {
+        if (this.concepts[dictionary]) {
+          return;
+        }
+        this.logger.debug(
+          `Requesting concept lookup table from ${dictionary} from API`,
+        );
+        try {
+          this.concepts[dictionary] =
+            // await this.ordboekeneApiService.concepts(dictionary);
+            await this.#uibData.getConcepts(toUibDictionary(dictionary));
+        } catch (error) {
+          this.logger.error(
+            `Failed to fetch concepts from Ordbøkene API for ${dictionary}.`,
+            error,
           );
-          try {
-            this.concepts[dictionary] =
-              await this.ordboekeneApiService.concepts(dictionary);
-          } catch (error) {
-            this.logger.error(
-              `Failed to fetch concepts from Ordbøkene API for ${dictionary}.`,
-              error,
-            );
-          }
-        },
-      ),
+        }
+      }),
     );
   }
 
@@ -526,6 +538,10 @@ export class WordService {
     element: ArticleTextElement,
   ): RichContentBuilder {
     const richContent = new RichContentBuilder();
+
+    if (!element.content) {
+      return richContent;
+    }
 
     // Format the text element
     const segments = element.content.split('$');
@@ -626,13 +642,14 @@ export class WordService {
 
       case 'quote_inset':
       case 'explanation':
-      case 'etymology_language': {
+      case 'etymology_language':
+      case 'etymology_reference': {
         richContent.append(this.formatText(dictionary, element));
         break;
       }
 
       case 'definition': {
-        element.elements.forEach((item: any) =>
+        element.elements?.forEach((item: any) =>
           richContent.append(this.formatElement(dictionary, item)),
         );
         break;
@@ -736,7 +753,7 @@ export class WordService {
       return constructorRanges;
     }
 
-    if (element.content.match(/^(S(?:e|jå): )\$/)) {
+    if (element.content?.match(/^(S(?:e|jå): )\$/)) {
       constructorRanges.push({
         from: 0,
         constructor: SeeAlsoArticleRelationship,
@@ -748,7 +765,7 @@ export class WordService {
     // match first part of the explanation that only has references,
     // i.e. it only contains $ and surrounding whitespace or punctuation
     // e.g. "$, $, $: xxx $ xxx" -> "$, $, $:"
-    const match = element.content.match(/^(\s*\$\s*[,:;]?\s*)+/);
+    const match = element.content?.match(/^(\s*\$\s*[,:;]?\s*)+/);
     if (match) {
       // count the number of references
       const refCount = match[0].match(/\$/g)?.length ?? 0;
@@ -762,7 +779,7 @@ export class WordService {
       return constructorRanges;
     }
 
-    if (element.content.match(/^\s*ikkj?e \$(?:\b|$)/)) {
+    if (element.content?.match(/^\s*ikkj?e \$(?:\b|$)/)) {
       constructorRanges.push({
         from: 0,
         to: 1,
@@ -841,7 +858,7 @@ export class WordService {
       case 'definition': {
         const subDefinition = new Definition({ id: element.id });
 
-        for (const subElement of element.elements) {
+        for (const subElement of element.elements ?? []) {
           this.transformDefinitionElement(
             articleId,
             dictionary,
@@ -970,7 +987,10 @@ export class WordService {
     const content: RichContent[] = [];
 
     for (const element of data?.body?.etymology ?? []) {
-      if (element.type_ === 'etymology_language') {
+      if (
+        element.type_ === 'etymology_language' ||
+        element.type_ === 'etymology_reference'
+      ) {
         content.push(this.formatElement(article.dictionary, element).build());
       }
     }
@@ -1016,6 +1036,10 @@ export class WordService {
       articleIdSet.add(nodeId);
 
       const article = await this.getArticle(nodeId, dictionary);
+
+      if (!article) {
+        return;
+      }
 
       graph.nodes.push(article);
 

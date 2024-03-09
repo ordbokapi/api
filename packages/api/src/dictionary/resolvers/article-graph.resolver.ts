@@ -1,8 +1,10 @@
+import { Injectable } from '@nestjs/common';
 import { Resolver, Query, Args, Int, Info } from '@nestjs/graphql';
 import { WordService } from '../providers';
 import { Dictionary, Word, ArticleGraph, ArticleGraphEdge } from '../models';
 import { GraphQLResolveInfo } from 'graphql';
 
+@Injectable()
 @Resolver(() => Word)
 export class ArticleGraphResolver {
   constructor(private wordService: WordService) {}

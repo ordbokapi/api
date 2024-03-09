@@ -1,3 +1,4 @@
+import { Injectable } from '@nestjs/common';
 import {
   Resolver,
   ResolveField,
@@ -18,12 +19,14 @@ import {
   RichContent,
 } from '../models';
 
+@Injectable()
 @Resolver(() => Article)
 export class ArticleResolver {
   constructor(private wordService: WordService) {}
 
   @Query(() => Article, {
     description: 'Hentar artikkelen med eit gitt id.',
+    nullable: true,
   })
   async article(
     @Args('id', {

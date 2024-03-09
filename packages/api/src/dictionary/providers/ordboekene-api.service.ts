@@ -1,5 +1,5 @@
 import { Injectable, Logger, Inject } from '@nestjs/common';
-import { Dictionary } from '../models';
+import { Dictionary, toUibDictionary } from '../models';
 import { BuildInfoProvider, ICacheProvider, TTLBucket } from '../../providers';
 import { createHash } from 'crypto';
 
@@ -149,9 +149,7 @@ export class OrdboekeneApiService {
   private getDictParam(dictionary: Dictionary | Dictionary[]): string {
     return Array.isArray(dictionary)
       ? dictionary.map((d) => this.getDictParam(d)).join(',')
-      : dictionary === Dictionary.Bokmaalsordboka
-        ? 'bm'
-        : 'nn';
+      : toUibDictionary(dictionary);
   }
 
   private generateCacheKey(url: string): string {
