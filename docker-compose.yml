@@ -2,6 +2,8 @@ version: '3.8'
 services:
   redis:
     image: redis/redis-stack:7.2.0-v9
+    environment:
+      - REDIS_ARGS=--loglevel verbose
     ports:
       - '${REDIS_PORT}:6379'
       - '${REDIS_INSIGHT_PORT}:8001'

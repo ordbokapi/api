@@ -14,6 +14,8 @@ import {
   idForArticleKey,
   DeferredIterable,
   RawArticle,
+  UibArticle,
+  addUibArticleMetadata,
 } from '../types';
 
 /*
@@ -72,7 +74,7 @@ export interface FullSearchResult extends UiBArticleIdentifier {
   /**
    * The article data.
    */
-  data: RawArticle;
+  data: UibArticle;
 }
 
 /**
@@ -107,7 +109,7 @@ export class UibRedisService {
   async getArticle(
     dictionary: UiBDictionary,
     articleId: number,
-  ): Promise<RawArticle | null>;
+  ): Promise<UibArticle | null>;
   /**
    * Fetches the article with the given ID from the given dictionary.
    * @param identifier The identifier of the article to fetch.
@@ -115,7 +117,7 @@ export class UibRedisService {
    */
   async getArticle(
     identifier: UiBArticleIdentifier,
-  ): Promise<RawArticle | null>;
+  ): Promise<UibArticle | null>;
   /**
    * Fetches the article with the given ID from the given dictionary.
    * @param dictionaryOrIdentifier The dictionary to fetch the article from, or
@@ -127,11 +129,11 @@ export class UibRedisService {
   async getArticle(
     dictionaryOrIdentifier: UiBDictionary | UiBArticleIdentifier,
     articleId?: number,
-  ): Promise<RawArticle | null> {
+  ): Promise<UibArticle | null> {
     if (typeof dictionaryOrIdentifier === 'string') {
       return this.redis.client.json.get(
         uibKeys.article(dictionaryOrIdentifier, articleId!),
-      ) as Promise<RawArticle>;
+      ) as unknown as Promise<UibArticle>;
     }
 
     return this.redis.client.json.get(
@@ -139,7 +141,7 @@ export class UibRedisService {
         dictionaryOrIdentifier.dictionary,
         dictionaryOrIdentifier.id,
       ),
-    ) as Promise<RawArticle>;
+    ) as unknown as Promise<UibArticle>;
   }
 
   /**
@@ -151,17 +153,17 @@ export class UibRedisService {
   async getArticlesFromDictionary(
     dictionary: UiBDictionary,
     articleIds: number[],
-  ): Promise<Map<number, RawArticle>> {
+  ): Promise<Map<number, UibArticle>> {
     const articleList = await this.redis.client.json.mGet(
       articleIds.map((id) => uibKeys.article(dictionary, id)),
       '$',
     );
 
-    const articles = new Map<number, RawArticle>();
+    const articles = new Map<number, UibArticle>();
 
     for (let i = 0; i < articleIds.length; i++) {
       if (articleList[i] !== null) {
-        articles.set(articleIds[i], articleList[i] as RawArticle);
+        articles.set(articleIds[i], articleList[i] as unknown as UibArticle);
       }
     }
 
@@ -179,14 +181,14 @@ export class UibRedisService {
     transaction: RedisMulti,
     dictionary: UiBDictionary,
     articleId: number,
-    article: RawArticle,
+    article: RawArticle | UibArticle,
   ): void {
     this.#throwIfWritesNotAllowed();
 
     transaction.json.set(
       uibKeys.article(dictionary, articleId),
       '$',
-      article as RedisJSON,
+      addUibArticleMetadata(article) as unknown as RedisJSON,
     );
   }
 
@@ -507,7 +509,7 @@ export class UibRedisService {
       total,
       results: new DeferredIterable(documents).map(({ id, value }) => ({
         ...idForArticleKey(id),
-        data: value as unknown as RawArticle,
+        data: value as unknown as UibArticle,
       })),
     };
   }

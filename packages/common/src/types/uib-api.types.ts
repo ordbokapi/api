@@ -176,7 +176,11 @@ export type ArticleElement =
       text: string;
     }
   | {
-      type_: 'quote_inset' | 'explanation' | 'etymology_language';
+      type_:
+        | 'quote_inset'
+        | 'explanation'
+        | 'etymology_language'
+        | 'etymology_reference';
       content: string | null;
       items: ArticleElement[];
     }
@@ -247,7 +251,7 @@ export type ArticleElement =
 /**
  * The format of the raw data returned by the UiB API when fetching an article.
  */
-export type RawArticle = {
+export interface RawArticle {
   article_id: number;
   submitted?: string;
   suggest: string[];
@@ -275,4 +279,4 @@ export type RawArticle = {
     definitions: ArticleElement[];
   };
   to_index: string[];
-};
+}

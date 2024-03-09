@@ -1,5 +1,5 @@
 import { DateTime } from 'luxon';
-import { RawArticleMetadata, UiBDictionary } from './uib-api.types';
+import { RawArticle, RawArticleMetadata, UiBDictionary } from './uib-api.types';
 
 /**
  * Article metadata.
@@ -57,8 +57,14 @@ export enum ArticleIndex {
   /** The index for article lemmas. */
   Lemma = 'lemma',
 
+  /** The index for exact-matching the whole lemma. */
+  LemmaExact = 'lemma_exact',
+
   /** The index for suggestion terms for a given article. */
   Suggest = 'suggest',
+
+  /** The index for exact-matching the whole suggestion term. */
+  SuggestExact = 'suggest_exact',
 
   /** The index for article etymology text. */
   Etymology = 'etymology',
@@ -71,6 +77,9 @@ export enum ArticleIndex {
 
   /** The index for inflection word forms. */
   Inflection = 'inflection',
+
+  /** The index for exact-matching the whole inflection word form. */
+  InflectionExact = 'inflection_exact',
 
   /** The index for split infinitive attributes. */
   SplitInfinitive = 'split_infinitive',
@@ -139,3 +148,45 @@ export const idForArticleKey = (key: string): UiBArticleIdentifier => {
     id: Number.parseInt(articleId, 10),
   };
 };
+
+/**
+ * The format of article data as stored in Redis.
+ */
+export interface UibArticle extends RawArticle {
+  /** Additional metadata used for indexing and other purposes. */
+  __ordbokapi__: UibArticleMetadata;
+}
+
+/**
+ * Returns whether or not the given article is a processed UiB article.
+ */
+export function isUibArticle(article: RawArticle): article is UibArticle {
+  return '__ordbokapi__' in article;
+}
+
+/**
+ * Given a raw article, returns the article with additional metadata added.
+ */
+export function addUibArticleMetadata(article: RawArticle): UibArticle {
+  if (isUibArticle(article)) {
+    return article;
+  }
+
+  return {
+    ...article,
+    __ordbokapi__: {
+      hasSplitInf: article.lemmas?.some((lemma) => lemma?.split_inf),
+    },
+  };
+}
+
+/**
+ * Additional metadata used for indexing and other purposes.
+ */
+export interface UibArticleMetadata {
+  /**
+   * Whether or not any of the lemmas represent a verb with a split infinitive
+   * (kløyvd infinitiv).
+   */
+  hasSplitInf: boolean;
+}

@@ -1,4 +1,5 @@
 import type { InspectOptionsStylized } from 'util';
+import { UnionIterable } from './union-iterable.types';
 
 /**
  * A deferred iterable is an iterable that performs some operations on each
@@ -19,8 +20,18 @@ export class DeferredIterable<T> implements Iterable<T> {
   }
 
   /**
+   * Returns a new union iterable that is a union of this iterable and the
+   * given iterable.
+   * @param other The iterable to union with.
+   */
+  union<U>(other: Iterable<U>): UnionIterable<T | U> {
+    return new UnionIterable([this.#originalData, other] as Iterable<T | U>[]);
+  }
+
+  /**
    * Defer a map operation to be performed when the iterable is iterated over.
    * Returns a new deferred iterable.
+   * @param mapFn The map function to defer.
    */
   map<TMapped>(mapFn: (value: T) => TMapped): DeferredIterable<TMapped> {
     const newIterable = new DeferredIterable(this.#originalData);
