@@ -53,8 +53,6 @@ export class ArticleGraphResolver {
       }
     }
 
-    console.log(edgeFields);
-
     return this.wordService.getArticleGraph(
       articleId,
       dictionary,

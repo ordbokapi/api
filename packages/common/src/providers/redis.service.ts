@@ -85,5 +85,6 @@ export class RedisService {
    */
   async onModuleInit(): Promise<void> {
     await this.#client.connect();
+    await this.#client.ft.configSet('DEFAULT_DIALECT', '3');
   }
 }

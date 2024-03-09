@@ -8,6 +8,7 @@ import {
   WordService,
   OrdboekeneApiService,
   CacheWrapperService,
+  UibCacheService,
 } from './providers';
 import {
   BuildInfoProvider,
@@ -23,7 +24,12 @@ import * as resolvers from './resolvers';
   providers: new NestProviderCollection()
     .concat(NestProviderCollection.fromInjectables(commonProviders))
     .concat(NestProviderCollection.fromInjectables(resolvers))
-    .concat([BuildInfoProvider, WordService, OrdboekeneApiService])
+    .concat([
+      BuildInfoProvider,
+      WordService,
+      OrdboekeneApiService,
+      UibCacheService,
+    ])
     // .addIf(process.env.MEMCACHEDCLOUD_SERVERS, MemcachedProvider)
     .add(CacheSerializationProvider)
     // .add({

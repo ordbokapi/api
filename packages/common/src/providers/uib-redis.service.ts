@@ -1,16 +1,16 @@
 import { Injectable, Inject, Optional } from '@nestjs/common';
 import { RedisJSON } from '@redis/json/dist/commands';
-import { SearchOptions } from 'redis';
+import { SearchOptions as RedisSearchOptions } from 'redis';
 import { RedisService, RedisMulti } from './redis.service';
 import {
-  UiBDictionary,
+  UibDictionary,
   ArticleMetadata,
   RawConceptTable,
   RawWordClassList,
   RawWordSubclassList,
   ArticleMetadataMap,
   uibKeys,
-  UiBArticleIdentifier,
+  UibArticleIdentifier,
   idForArticleKey,
   DeferredIterable,
   RawArticle,
@@ -68,9 +68,14 @@ export interface SearchResults<T> {
 }
 
 /**
+ * Search options.
+ */
+export type SearchOptions = RedisSearchOptions;
+
+/**
  * Search result with an identifier and the article data.
  */
-export interface FullSearchResult extends UiBArticleIdentifier {
+export interface FullSearchResult extends UibArticleIdentifier {
   /**
    * The article data.
    */
@@ -107,7 +112,7 @@ export class UibRedisService {
    * @returns The article data, or null if the article does not exist.
    */
   async getArticle(
-    dictionary: UiBDictionary,
+    dictionary: UibDictionary,
     articleId: number,
   ): Promise<UibArticle | null>;
   /**
@@ -116,7 +121,7 @@ export class UibRedisService {
    * @returns The article data, or null if the article does not exist.
    */
   async getArticle(
-    identifier: UiBArticleIdentifier,
+    identifier: UibArticleIdentifier,
   ): Promise<UibArticle | null>;
   /**
    * Fetches the article with the given ID from the given dictionary.
@@ -127,7 +132,7 @@ export class UibRedisService {
    * @returns The article data, or null if the article does not exist.
    */
   async getArticle(
-    dictionaryOrIdentifier: UiBDictionary | UiBArticleIdentifier,
+    dictionaryOrIdentifier: UibDictionary | UibArticleIdentifier,
     articleId?: number,
   ): Promise<UibArticle | null> {
     if (typeof dictionaryOrIdentifier === 'string') {
@@ -151,7 +156,7 @@ export class UibRedisService {
    * @returns A map of article IDs to article data.
    */
   async getArticlesFromDictionary(
-    dictionary: UiBDictionary,
+    dictionary: UibDictionary,
     articleIds: number[],
   ): Promise<Map<number, UibArticle>> {
     const articleList = await this.redis.client.json.mGet(
@@ -179,7 +184,7 @@ export class UibRedisService {
    */
   setArticle(
     transaction: RedisMulti,
-    dictionary: UiBDictionary,
+    dictionary: UibDictionary,
     articleId: number,
     article: RawArticle | UibArticle,
   ): void {
@@ -203,7 +208,7 @@ export class UibRedisService {
    * exist.
    */
   async getAllArticleMetadata(
-    dictionary: UiBDictionary,
+    dictionary: UibDictionary,
   ): Promise<ArticleMetadataMap> {
     const articleList = await this.redis.client.hGetAll(
       uibKeys.dictionaryArticles(dictionary),
@@ -229,7 +234,7 @@ export class UibRedisService {
    * @returns A map of article IDs to article metadata.
    */
   async getArticleMetadata(
-    dictionary: UiBDictionary,
+    dictionary: UibDictionary,
     articleIds: number[],
   ): Promise<ArticleMetadataMap> {
     if (articleIds.length === 0) {
@@ -266,7 +271,7 @@ export class UibRedisService {
    */
   setAllArticleMetadata(
     transaction: RedisMulti,
-    dictionary: UiBDictionary,
+    dictionary: UibDictionary,
     metadataMap: ArticleMetadataMap,
   ): void {
     this.#throwIfWritesNotAllowed();
@@ -290,7 +295,7 @@ export class UibRedisService {
    */
   setArticleMetadata(
     transaction: RedisMulti,
-    dictionary: UiBDictionary,
+    dictionary: UibDictionary,
     metadata: ArticleMetadata,
   ): void {
     this.#throwIfWritesNotAllowed();
@@ -314,7 +319,7 @@ export class UibRedisService {
    * @returns The concepts, or null if the concepts do not exist.
    */
   async getConcepts(
-    dictionary: UiBDictionary,
+    dictionary: UibDictionary,
   ): Promise<RawConceptTable | null> {
     return this.redis.client.json.get(
       uibKeys.dictionaryConcepts(dictionary),
@@ -329,7 +334,7 @@ export class UibRedisService {
    */
   setConcepts(
     transaction: RedisMulti,
-    dictionary: UiBDictionary,
+    dictionary: UibDictionary,
     concepts: RawConceptTable,
   ): void {
     this.#throwIfWritesNotAllowed();
@@ -351,7 +356,7 @@ export class UibRedisService {
    * @returns The word classes, or null if the word classes do not exist.
    */
   async getWordClasses(
-    dictionary: UiBDictionary,
+    dictionary: UibDictionary,
   ): Promise<RawWordClassList | null> {
     return this.redis.client.json.get(
       uibKeys.dictionaryWordClasses(dictionary),
@@ -366,7 +371,7 @@ export class UibRedisService {
    */
   setWordClasses(
     transaction: RedisMulti,
-    dictionary: UiBDictionary,
+    dictionary: UibDictionary,
     wordClasses: RawWordClassList,
   ): void {
     this.#throwIfWritesNotAllowed();
@@ -388,7 +393,7 @@ export class UibRedisService {
    * @returns The word subclasses, or null if the word subclasses do not exist.
    */
   async getWordSubclasses(
-    dictionary: UiBDictionary,
+    dictionary: UibDictionary,
   ): Promise<RawWordSubclassList | null> {
     return this.redis.client.json.get(
       uibKeys.dictionaryWordSubclasses(dictionary),
@@ -403,7 +408,7 @@ export class UibRedisService {
    */
   setWordSubclasses(
     transaction: RedisMulti,
-    dictionary: UiBDictionary,
+    dictionary: UibDictionary,
     wordSubclasses: RawWordSubclassList,
   ): void {
     this.#throwIfWritesNotAllowed();
@@ -445,9 +450,9 @@ export class UibRedisService {
    */
   async search(
     query: string,
-    dictionary?: UiBDictionary,
+    dictionary?: UibDictionary,
     options?: SearchOptions,
-  ): Promise<SearchResults<UiBArticleIdentifier>> {
+  ): Promise<SearchResults<UibArticleIdentifier>> {
     const { total, documents } = await this.redis.client.ft.searchNoContent(
       uibKeys.articleIndex(dictionary),
       query,
@@ -468,7 +473,7 @@ export class UibRedisService {
    * @returns The search result with all articles fetched.
    */
   async fetchArticles(
-    searchResult: SearchResults<UiBArticleIdentifier>,
+    searchResult: SearchResults<UibArticleIdentifier>,
   ): Promise<SearchResults<FullSearchResult>> {
     return {
       total: searchResult.total,
@@ -496,7 +501,7 @@ export class UibRedisService {
    */
   async searchWithData(
     query: string,
-    dictionary?: UiBDictionary,
+    dictionary?: UibDictionary,
     options?: SearchOptions,
   ): Promise<SearchResults<FullSearchResult>> {
     const { total, documents } = await this.redis.client.ft.search(
@@ -509,7 +514,7 @@ export class UibRedisService {
       total,
       results: new DeferredIterable(documents).map(({ id, value }) => ({
         ...idForArticleKey(id),
-        data: value as unknown as UibArticle,
+        data: value[0] as unknown as UibArticle,
       })),
     };
   }

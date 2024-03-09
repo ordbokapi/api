@@ -1,7 +1,7 @@
 /**
  * Dictionaries supported by the UiB API.
  */
-export enum UiBDictionary {
+export enum UibDictionary {
   /** The Bokmål dictionary. */
   Bokmål = 'bm',
 
@@ -126,7 +126,7 @@ export enum ConceptClass {
  */
 export type RawConceptTable = {
   /** The ID of the dictionary the concept table is for. */
-  id: UiBDictionary;
+  id: UibDictionary;
 
   /** The name of the dictionary the concept table is for. */
   name: string;

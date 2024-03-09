@@ -2,7 +2,7 @@ import { Injectable, Logger } from '@nestjs/common';
 import { JobQueueService, JobQueue } from './job-queue.service';
 import {
   UibApiService,
-  UiBDictionary,
+  UibDictionary,
   UibRedisService,
   convertRawArticleMetadata,
   ArticleMetadata,
@@ -32,7 +32,7 @@ export class ArticleSyncService {
    * @param dictionary The dictionary to fetch the article list for. If not
    * provided, the article list for all dictionaries will be fetched.
    */
-  async #syncArticles(dictionary: UiBDictionary): Promise<void> {
+  async #syncArticles(dictionary: UibDictionary): Promise<void> {
     const prod = isProd();
 
     this.#logger.verbose(`[${dictionary}] Fetching article list`);
@@ -135,7 +135,7 @@ export class ArticleSyncService {
    * article.
    */
   async #queueRelatedArticles(
-    dictionary: UiBDictionary,
+    dictionary: UibDictionary,
     articleId: number,
     article: RawArticle,
   ): Promise<void> {
@@ -207,7 +207,7 @@ export class ArticleSyncService {
    * @param metadata The article metadata.
    */
   async #syncArticle(
-    dictionary: UiBDictionary,
+    dictionary: UibDictionary,
     // make all but the articleId property optional
     metadata: Partial<ArticleMetadata> & Pick<ArticleMetadata, 'articleId'>,
   ): Promise<void> {
@@ -251,7 +251,7 @@ export class ArticleSyncService {
    * and updates the dictionary data in Redis.
    * @param dictionary The dictionary to fetch the metadata for.
    */
-  async #syncDictionaryMetadata(dictionary: UiBDictionary): Promise<void> {
+  async #syncDictionaryMetadata(dictionary: UibDictionary): Promise<void> {
     this.#logger.verbose(`[${dictionary}] Fetching dictionary metadata`);
 
     const concepts = await this.api.fetchConceptTable(dictionary);
@@ -274,7 +274,7 @@ export class ArticleSyncService {
    * sync.
    */
   async #initialSync(): Promise<void> {
-    for (const dictionary of Object.values(UiBDictionary)) {
+    for (const dictionary of Object.values(UibDictionary)) {
       const metadata = await this.data.getAllArticleMetadata(dictionary);
 
       if (metadata.size === 0) {
@@ -328,7 +328,7 @@ export class ArticleSyncService {
       },
     );
 
-    for (const dictionary of Object.values(UiBDictionary)) {
+    for (const dictionary of Object.values(UibDictionary)) {
       await this.queues
         .get(JobQueue.FetchArticleList)
         .removeRepeatableByKey(`sync-${dictionary}`);

@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import {
-  type UiBDictionary,
+  type UibDictionary,
   type RawArticleList,
   type RawWordClassList,
   type RawWordSubclassList,
@@ -31,7 +31,7 @@ export class UibApiService {
   /**
    * Fetches the list of articles for the given dictionary.
    */
-  async fetchArticleList(dictionary: UiBDictionary): Promise<RawArticleList> {
+  async fetchArticleList(dictionary: UibDictionary): Promise<RawArticleList> {
     return this.#getJson(`${this.#baseUrl}${dictionary}/fil/article.json`);
   }
 
@@ -39,7 +39,7 @@ export class UibApiService {
    * Fetches the word class list for the given dictionary.
    */
   async fetchWordClassList(
-    dictionary: UiBDictionary,
+    dictionary: UibDictionary,
   ): Promise<RawWordClassList> {
     return this.#getJson(`${this.#baseUrl}${dictionary}/fil/word_class.json`);
   }
@@ -48,7 +48,7 @@ export class UibApiService {
    * Fetches the word subclass list for the given dictionary.
    */
   async fetchWordSubclassList(
-    dictionary: UiBDictionary,
+    dictionary: UibDictionary,
   ): Promise<RawWordSubclassList> {
     return this.#getJson(
       `${this.#baseUrl}${dictionary}/fil/sub_word_class.json`,
@@ -59,7 +59,7 @@ export class UibApiService {
    * Fetches the article with the given ID from the given dictionary.
    */
   async fetchArticle(
-    dictionary: UiBDictionary,
+    dictionary: UibDictionary,
     articleId: number,
   ): Promise<RawArticle> {
     return this.#getJson(
@@ -70,7 +70,7 @@ export class UibApiService {
   /**
    * Fetches the concept table for the given dictionary.
    */
-  async fetchConceptTable(dictionary: UiBDictionary): Promise<RawConceptTable> {
+  async fetchConceptTable(dictionary: UibDictionary): Promise<RawConceptTable> {
     return this.#getJson(`${this.#baseUrl}${dictionary}/concepts.json`);
   }
 }

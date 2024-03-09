@@ -32,16 +32,15 @@ import {
 } from './ordboekene-api.service';
 import { TwoWayMap, RichContentBuilder } from '../types';
 import {
-  UiBDictionary,
-  UibRedisService,
+  UibDictionary,
   ArticleElement,
   ArticleTextElement,
-  UiBArticleIdentifier,
+  UibArticleIdentifier,
   SanitizationService,
   UnionIterable,
   ArticleIndex,
 } from 'ordbokapi-common';
-import { Asyncify, CacheWrapperService } from './cache-wrapper.service';
+import { UibCacheService } from './uib-cache.service';
 
 const wordClassMap = new TwoWayMap([
   ['NOUN', WordClass.Substantiv],
@@ -62,16 +61,12 @@ const wordClassMap = new TwoWayMap([
 @Injectable()
 export class WordService {
   private readonly logger = new Logger(WordService.name);
-  readonly #uibData: Asyncify<UibRedisService>;
 
   constructor(
     private ordboekeneApiService: OrdboekeneApiService,
-    uibData: UibRedisService,
-    cacheWrapper: CacheWrapperService,
     private readonly sanitizer: SanitizationService,
-  ) {
-    this.#uibData = cacheWrapper.createProxy(uibData);
-  }
+    private readonly uib: UibCacheService,
+  ) {}
 
   private concepts: { [Dictionary: string]: any } = {};
 
@@ -103,53 +98,10 @@ export class WordService {
     dictionaries: Dictionary[],
     wordClass?: WordClass,
   ): Promise<Word | undefined> {
-    await this.loadConcepts();
-
     this.logger.debug(`Getting articles for word: ${word}`);
 
-    // const data = await this.ordboekeneApiService.articles(
-    //   word,
-    //   dictionaries,
-    //   ApiSearchType.Exact,
-    //   wordClass ? wordClassMap.getReverse(wordClass) : undefined,
-    // );
-
-    // console.log(data);
-
-    // Example API response:
-
-    // {"meta": {"bm": {"total": 1}, "nn": {"total": 2}}, "articles": {"bm": [60110], "nn": [77999, 78000]}}
-
-    // or, if not found:
-
-    // {"meta": {"bm": {"total": 0}, "nn": {"total": 0}}, "articles": {"bm": [], "nn": []}}
-
-    // const foundDictionaries: Dictionary[] = [];
-
-    // for (const dict of Object.values(UiBDictionary)) {
-    //   if (data.meta[dict]?.total) {
-    //     foundDictionaries.push(fromUibDictionary(dict));
-    //   }
-    // }
-
-    // if (foundDictionaries.length === 0) {
-    //   return undefined;
-    // }
-
-    // const wordObject: Word = {
-    //   word,
-    //   dictionaries: foundDictionaries,
-    //   articles: Object.entries(data.articles).flatMap(
-    //     ([dictParam, ids]: [string, number[]]) =>
-    //       ids.map((id: number) => ({
-    //         id,
-    //         dictionary: this.getDictionary(dictParam),
-    //       })),
-    //   ),
-    // };
-
     const sanitized = this.sanitizer.sanitize(word);
-    const articles: UnionIterable<UiBArticleIdentifier> = new UnionIterable();
+    const articles: UnionIterable<UibArticleIdentifier> = new UnionIterable();
 
     let query = `((@${ArticleIndex.LemmaExact}:{${sanitized}}) | (@${ArticleIndex.InflectionExact}:{${sanitized}}))`;
 
@@ -158,12 +110,9 @@ export class WordService {
     }
 
     for (const dict of dictionaries) {
-      const { total, results } = await this.#uibData.search(
-        query,
-        toUibDictionary(dict),
-      );
+      const results = await this.uib.search(query, toUibDictionary(dict));
 
-      if (total > 0) {
+      if (results.length > 0) {
         articles.concat(results);
       }
     }
@@ -187,16 +136,9 @@ export class WordService {
   }
 
   async getDefinitions(article: Article): Promise<Definition[]> {
-    await this.loadConcepts();
-
     this.logger.debug(`Getting definitions for article: ${article.id}`);
 
-    // const data = await this.ordboekeneApiService.article(
-    //   article.id,
-    //   article.dictionary,
-    // );
-
-    const data = await this.#uibData.getArticle(
+    const data = await this.uib.getArticle(
       toUibDictionary(article.dictionary),
       article.id,
     );
@@ -211,16 +153,9 @@ export class WordService {
   }
 
   async getRelationships(article: Article): Promise<ArticleRelationship[]> {
-    await this.loadConcepts();
-
     this.logger.debug(`Getting relationships for article: ${article.id}`);
 
-    // const data = await this.ordboekeneApiService.article(
-    //   article.id,
-    //   article.dictionary,
-    // );
-
-    const data = await this.#uibData.getArticle(
+    const data = await this.uib.getArticle(
       toUibDictionary(article.dictionary),
       article.id,
     );
@@ -236,12 +171,9 @@ export class WordService {
     articleId: number,
     dictionary: Dictionary,
   ): Promise<Article | undefined> {
-    await this.loadConcepts();
-
     this.logger.debug(`Getting article: ${articleId}`);
 
-    // const data = await this.ordboekeneApiService.article(articleId, dictionary);
-    const data = await this.#uibData.getArticle(
+    const data = await this.uib.getArticle(
       toUibDictionary(dictionary),
       articleId,
     );
@@ -265,16 +197,9 @@ export class WordService {
   }
 
   async getWordClass(article: Article): Promise<WordClass | undefined> {
-    await this.loadConcepts();
-
     this.logger.debug(`Getting word class for article: ${article.id}`);
 
-    // const data = await this.ordboekeneApiService .article(
-    //   article.id,
-    //   article.dictionary,
-    // );
-
-    const data = await this.#uibData.getArticle(
+    const data = await this.uib.getArticle(
       toUibDictionary(article.dictionary),
       article.id,
     );
@@ -283,16 +208,9 @@ export class WordService {
   }
 
   async getLemmas(article: Article): Promise<Lemma[] | undefined> {
-    await this.loadConcepts();
-
     this.logger.debug(`Getting lemmas for article: ${article.id}`);
 
-    // const data = await this.ordboekeneApiService.article(
-    //   article.id,
-    //   article.dictionary,
-    // );
-
-    const data = await this.#uibData.getArticle(
+    const data = await this.uib.getArticle(
       toUibDictionary(article.dictionary),
       article.id,
     );
@@ -301,16 +219,9 @@ export class WordService {
   }
 
   async getGender(article: Article): Promise<Gender | undefined> {
-    await this.loadConcepts();
-
     this.logger.debug(`Getting gender for article: ${article.id}`);
 
-    // const data = await this.ordboekeneApiService.article(
-    //   article.id,
-    //   article.dictionary,
-    // );
-
-    const data = await this.#uibData.getArticle(
+    const data = await this.uib.getArticle(
       toUibDictionary(article.dictionary),
       article.id,
     );
@@ -319,16 +230,9 @@ export class WordService {
   }
 
   async getPhrases(article: Article): Promise<Article[]> {
-    await this.loadConcepts();
-
     this.logger.debug(`Getting phrases for article: ${article.id}`);
 
-    // const data = await this.ordboekeneApiService.article(
-    //   article.id,
-    //   article.dictionary,
-    // );
-
-    const data = await this.#uibData.getArticle(
+    const data = await this.uib.getArticle(
       toUibDictionary(article.dictionary),
       article.id,
     );
@@ -337,16 +241,9 @@ export class WordService {
   }
 
   async getEtymology(article: Article): Promise<RichContent[]> {
-    await this.loadConcepts();
-
     this.logger.debug(`Getting etymology for article: ${article.id}`);
 
-    // const data = await this.ordboekeneApiService.article(
-    //   article.id,
-    //   article.dictionary,
-    // );
-
-    const data = await this.#uibData.getArticle(
+    const data = await this.uib.getArticle(
       toUibDictionary(article.dictionary),
       article.id,
     );
@@ -360,8 +257,6 @@ export class WordService {
     depth: number,
     edgeFields: (keyof ArticleGraphEdge)[],
   ): Promise<ArticleGraph> {
-    await this.loadConcepts();
-
     this.logger.debug(
       `Getting article graph for article ${articleId} in ${dictionary}`,
     );
@@ -385,7 +280,7 @@ export class WordService {
   }
 
   private getDictionary(dictParam: string): Dictionary {
-    return fromUibDictionary(dictParam as UiBDictionary);
+    return fromUibDictionary(dictParam as UibDictionary);
   }
 
   private transformWordClass(article: any): WordClass | undefined {
@@ -506,29 +401,6 @@ export class WordService {
           : undefined;
   }
 
-  private async loadConcepts() {
-    await Promise.all(
-      Object.values(Dictionary).map(async (dictionary) => {
-        if (this.concepts[dictionary]) {
-          return;
-        }
-        this.logger.debug(
-          `Requesting concept lookup table from ${dictionary} from API`,
-        );
-        try {
-          this.concepts[dictionary] =
-            // await this.ordboekeneApiService.concepts(dictionary);
-            await this.#uibData.getConcepts(toUibDictionary(dictionary));
-        } catch (error) {
-          this.logger.error(
-            `Failed to fetch concepts from Ordbøkene API for ${dictionary}.`,
-            error,
-          );
-        }
-      }),
-    );
-  }
-
   //#endregion
 
   //#region Data transformation methods
@@ -573,10 +445,13 @@ export class WordService {
       case 'rhetoric':
       case 'temporal': {
         const conceptId = element.id;
-        const concept = this.concepts[dictionary].concepts[conceptId];
+        const concept = this.uib.getConcept(
+          toUibDictionary(dictionary),
+          conceptId,
+        );
 
         if (concept) {
-          return concept.expansion;
+          richContent.append(concept.expansion);
         } else {
           this.logger.warn(
             `Fann ikkje concept ${conceptId} i ${dictionary} (prøvde å formattera ${element.type_})`,

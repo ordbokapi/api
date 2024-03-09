@@ -1,6 +1,6 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { Processor, Queue, Worker } from 'bullmq';
-import { ArticleMetadata, RedisService, UiBDictionary } from 'ordbokapi-common';
+import { ArticleMetadata, RedisService, UibDictionary } from 'ordbokapi-common';
 
 /**
  * Job queues.
@@ -21,13 +21,13 @@ export enum JobQueue {
  */
 export type JobPayload = {
   [JobQueue.FetchArticleList]: {
-    dictionary: UiBDictionary;
+    dictionary: UibDictionary;
   };
   [JobQueue.FetchDictionaryMetadata]: {
-    dictionary: UiBDictionary;
+    dictionary: UibDictionary;
   };
   [JobQueue.FetchArticle]: {
-    dictionary: UiBDictionary;
+    dictionary: UibDictionary;
     metadata: Partial<ArticleMetadata> & Pick<ArticleMetadata, 'articleId'>;
   };
 };

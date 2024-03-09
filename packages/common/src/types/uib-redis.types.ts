@@ -1,5 +1,6 @@
 import { DateTime } from 'luxon';
-import { RawArticle, RawArticleMetadata, UiBDictionary } from './uib-api.types';
+import { RawArticle, RawArticleMetadata, UibDictionary } from './uib-api.types';
+import { isObject } from '../utils';
 
 /**
  * Article metadata.
@@ -111,40 +112,56 @@ dictionary:<dictionaryId>:word_subclasses - (JSON) word subclass data
  * Helper functions for getting keys for the UiB data stored in Redis.
  */
 export const uibKeys = {
-  articleIndex: (dictionary?: UiBDictionary) =>
+  articleIndex: (dictionary?: UibDictionary) =>
     `idx:article${dictionary ? `:${dictionary}` : ''}`,
-  article: (dictionary: UiBDictionary, articleId: number) =>
+  article: (dictionary: UibDictionary, articleId: number) =>
     `article:${dictionary}:${articleId}`,
-  dictionaryArticles: (dictionary: UiBDictionary) =>
+  dictionaryArticles: (dictionary: UibDictionary) =>
     `dictionary:${dictionary}:articles`,
-  dictionaryConcepts: (dictionary: UiBDictionary) =>
+  dictionaryConcepts: (dictionary: UibDictionary) =>
     `dictionary:${dictionary}:concepts`,
-  dictionaryWordClasses: (dictionary: UiBDictionary) =>
+  dictionaryWordClasses: (dictionary: UibDictionary) =>
     `dictionary:${dictionary}:word_classes`,
-  dictionaryWordSubclasses: (dictionary: UiBDictionary) =>
+  dictionaryWordSubclasses: (dictionary: UibDictionary) =>
     `dictionary:${dictionary}:word_subclasses`,
 };
 
 /**
  * Identifies a particular article in the database.
  */
-export interface UiBArticleIdentifier {
+export interface UibArticleIdentifier {
   /** The dictionary ID. */
-  dictionary: UiBDictionary;
+  dictionary: UibDictionary;
 
   /** The article ID. */
   id: number;
 }
 
 /**
+ * Returns whether or not the given value is a UiB article identifier.
+ */
+export function isUibArticleIdentifier(
+  value: unknown,
+): value is UibArticleIdentifier {
+  return (
+    isObject(value) &&
+    'dictionary' in value &&
+    typeof value.dictionary === 'string' &&
+    Object.values(UibDictionary).includes(value.dictionary as UibDictionary) &&
+    'id' in value &&
+    typeof value.id === 'number'
+  );
+}
+
+/**
  * Takes a key and returns the corresponding article identifier.
  * @param key The key.
  */
-export const idForArticleKey = (key: string): UiBArticleIdentifier => {
+export const idForArticleKey = (key: string): UibArticleIdentifier => {
   const [_, dictionary, articleId] = key.split(':');
 
   return {
-    dictionary: dictionary as UiBDictionary,
+    dictionary: dictionary as UibDictionary,
     id: Number.parseInt(articleId, 10),
   };
 };

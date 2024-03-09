@@ -1,5 +1,5 @@
 import { registerEnumType } from '@nestjs/graphql';
-import { UiBDictionary } from 'ordbokapi-common';
+import { UibDictionary } from 'ordbokapi-common';
 
 export enum Dictionary {
   Bokmaalsordboka = 'Bokmålsordboka',
@@ -7,24 +7,24 @@ export enum Dictionary {
   NorskOrdbok = 'Norsk Ordbok',
 }
 
-export const toUibDictionary = (dictionary: Dictionary): UiBDictionary => {
+export const toUibDictionary = (dictionary: Dictionary): UibDictionary => {
   switch (dictionary) {
     case Dictionary.Bokmaalsordboka:
-      return UiBDictionary.Bokmål;
+      return UibDictionary.Bokmål;
     case Dictionary.Nynorskordboka:
-      return UiBDictionary.Nynorsk;
+      return UibDictionary.Nynorsk;
     case Dictionary.NorskOrdbok:
-      return UiBDictionary.Norsk;
+      return UibDictionary.Norsk;
   }
 };
 
-export const fromUibDictionary = (dictionary: UiBDictionary): Dictionary => {
+export const fromUibDictionary = (dictionary: UibDictionary): Dictionary => {
   switch (dictionary) {
-    case UiBDictionary.Bokmål:
+    case UibDictionary.Bokmål:
       return Dictionary.Bokmaalsordboka;
-    case UiBDictionary.Nynorsk:
+    case UibDictionary.Nynorsk:
       return Dictionary.Nynorskordboka;
-    case UiBDictionary.Norsk:
+    case UibDictionary.Norsk:
       return Dictionary.NorskOrdbok;
   }
 };

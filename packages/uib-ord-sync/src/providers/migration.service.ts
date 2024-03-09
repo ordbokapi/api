@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import {
   RedisMulti,
   RedisService,
-  UiBDictionary,
+  UibDictionary,
   uibKeys,
   ArticleIndex,
   versionKey,
@@ -65,7 +65,7 @@ const versions: Version[] = [
 
         This migration creates the FT indices for the article data.
         */
-        const createIndex = (dictionary?: UiBDictionary) =>
+        const createIndex = (dictionary?: UibDictionary) =>
           transaction.ft.create(
             uibKeys.articleIndex(dictionary),
             {
@@ -111,7 +111,7 @@ const versions: Version[] = [
 
         createIndex();
 
-        for (const dictionary of Object.values(UiBDictionary)) {
+        for (const dictionary of Object.values(UibDictionary)) {
           createIndex(dictionary);
         }
       },
@@ -121,7 +121,7 @@ const versions: Version[] = [
     version: 2, // Add exact match indices
     migrations: [
       (transaction) => {
-        const alterIndex = (dictionary?: UiBDictionary) =>
+        const alterIndex = (dictionary?: UibDictionary) =>
           // modify the index to add additional aliases for exact matching
           // the entirety of the TEXT fields
           transaction.ft.alter(uibKeys.articleIndex(dictionary), {
@@ -144,7 +144,7 @@ const versions: Version[] = [
 
         alterIndex();
 
-        for (const dictionary of Object.values(UiBDictionary)) {
+        for (const dictionary of Object.values(UibDictionary)) {
           alterIndex(dictionary);
         }
       },
