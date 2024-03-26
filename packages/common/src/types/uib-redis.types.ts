@@ -112,17 +112,32 @@ dictionary:<dictionaryId>:word_subclasses - (JSON) word subclass data
  * Helper functions for getting keys for the UiB data stored in Redis.
  */
 export const uibKeys = {
-  articleIndex: (dictionary?: UibDictionary) =>
-    `idx:article${dictionary ? `:${dictionary}` : ''}`,
-  article: (dictionary: UibDictionary, articleId: number) =>
+  articleIndex: (
+    dictionary?: UibDictionary,
+  ): `idx:article:${UibDictionary}` | `idx:article` =>
+    `idx:article${dictionary ? `:${dictionary}` : ''}` as
+      | `idx:article:${UibDictionary}`
+      | `idx:article`,
+  article: (
+    dictionary: UibDictionary,
+    articleId: number,
+  ): `article:${UibDictionary}:${number}` =>
     `article:${dictionary}:${articleId}`,
-  dictionaryArticles: (dictionary: UibDictionary) =>
+  dictionaryArticles: (
+    dictionary: UibDictionary,
+  ): `dictionary:${UibDictionary}:articles` =>
     `dictionary:${dictionary}:articles`,
-  dictionaryConcepts: (dictionary: UibDictionary) =>
+  dictionaryConcepts: (
+    dictionary: UibDictionary,
+  ): `dictionary:${UibDictionary}:concepts` =>
     `dictionary:${dictionary}:concepts`,
-  dictionaryWordClasses: (dictionary: UibDictionary) =>
+  dictionaryWordClasses: (
+    dictionary: UibDictionary,
+  ): `dictionary:${UibDictionary}:word_classes` =>
     `dictionary:${dictionary}:word_classes`,
-  dictionaryWordSubclasses: (dictionary: UibDictionary) =>
+  dictionaryWordSubclasses: (
+    dictionary: UibDictionary,
+  ): `dictionary:${UibDictionary}:word_subclasses` =>
     `dictionary:${dictionary}:word_subclasses`,
 };
 

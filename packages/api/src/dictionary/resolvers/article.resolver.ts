@@ -43,6 +43,20 @@ export class ArticleResolver {
     return this.wordService.getArticle(id, dictionary);
   }
 
+  @Query(() => Article, {
+    description: 'Hentar ein tilfeldig artikkel frå ordboka.',
+    nullable: true,
+  })
+  async randomArticle(
+    @Args('dictionary', {
+      type: () => Dictionary,
+      description: 'Ordboka som artikkelen skal hentast frå.',
+    })
+    dictionary: Dictionary,
+  ) {
+    return this.wordService.getRandomArticle(dictionary);
+  }
+
   @ResolveField(() => [Definition])
   async definitions(@Parent() article: Article) {
     return this.wordService.getDefinitions(article);

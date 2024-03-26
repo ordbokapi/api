@@ -176,6 +176,19 @@ export class UibRedisService {
   }
 
   /**
+   * Gets a random article ID from the given dictionary.
+   * @param dictionary The dictionary to get the random article ID from.
+   * @returns The random article ID.
+   */
+  async getRandomArticleId(dictionary: UibDictionary): Promise<number | null> {
+    const articleId = await this.redis.client.hRandField(
+      uibKeys.dictionaryArticles(dictionary),
+    );
+
+    return articleId !== null ? Number.parseInt(articleId, 10) : null;
+  }
+
+  /**
    * Sets the article with the given ID in the given dictionary.
    * @param transaction The transaction to use.
    * @param dictionary The dictionary to set the article in.

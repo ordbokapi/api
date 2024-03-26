@@ -39,6 +39,7 @@ import {
   SanitizationService,
   UnionIterable,
   ArticleIndex,
+  UibRedisService,
 } from 'ordbokapi-common';
 import { UibCacheService } from './uib-cache.service';
 
@@ -65,10 +66,9 @@ export class WordService {
   constructor(
     private ordboekeneApiService: OrdboekeneApiService,
     private readonly sanitizer: SanitizationService,
+    private readonly data: UibRedisService,
     private readonly uib: UibCacheService,
   ) {}
-
-  private concepts: { [Dictionary: string]: any } = {};
 
   //#region Public methods
 
@@ -269,6 +269,36 @@ export class WordService {
       Math.min(depth, 3),
       edgeFields,
     );
+  }
+
+  async getRandomArticle(dictionary: Dictionary): Promise<Article | undefined> {
+    this.logger.debug(`Getting random article from ${dictionary}`);
+
+    const randomId = await this.data.getRandomArticleId(
+      toUibDictionary(dictionary),
+    );
+
+    if (randomId === null) {
+      return undefined;
+    }
+
+    const data = await this.uib.getArticle(
+      toUibDictionary(dictionary),
+      randomId,
+    );
+
+    if (!data) {
+      return undefined;
+    }
+
+    const article: Article = {
+      id: data.article_id,
+      dictionary,
+    };
+
+    this.transformArticleResponse(article, data);
+
+    return article;
   }
 
   //#endregion
