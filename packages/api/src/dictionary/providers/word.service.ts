@@ -109,6 +109,8 @@ export class WordService {
       query += ` (@${ArticleIndex.ParadigmTags}:{${wordClassMap.getReverse(wordClass)}})`;
     }
 
+    this.logger.debug(`Query: ${query}`);
+
     for (const dict of dictionaries) {
       const results = await this.uib.search(query, toUibDictionary(dict));
 

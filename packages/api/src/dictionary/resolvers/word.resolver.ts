@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
-import { Resolver, Query, Args, Parent, ResolveField } from '@nestjs/graphql';
+import { Resolver, Query, Args } from '@nestjs/graphql';
 import { WordService } from '../providers';
-import { Dictionary, Article, Word, WordClass } from '../models';
+import { Dictionary, Word, WordClass } from '../models';
 
 @Injectable()
 @Resolver(() => Word)
@@ -35,21 +35,5 @@ export class WordResolver {
     wordClass: WordClass | undefined,
   ) {
     return this.wordService.getWord(word, dictionaries, wordClass);
-  }
-
-  @ResolveField(() => [Article], { nullable: true })
-  async articles(
-    @Parent() word: Word,
-    @Args('wordClass', {
-      type: () => WordClass,
-      nullable: true,
-      description:
-        'Begrensar artiklane til å berre gjelda ord med denne ordklassen.',
-    })
-    wordClass: WordClass | undefined,
-  ) {
-    return (
-      await this.wordService.getWord(word.word, word.dictionaries, wordClass)
-    )?.articles;
   }
 }
