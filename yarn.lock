@@ -3071,18 +3071,17 @@ __metadata:
   linkType: hard
 
 "bullmq@npm:^5.4.2":
-  version: 5.4.2
-  resolution: "bullmq@npm:5.4.2"
+  version: 5.4.6
+  resolution: "bullmq@npm:5.4.6"
   dependencies:
     cron-parser: "npm:^4.6.0"
     ioredis: "npm:^5.3.2"
-    lodash: "npm:^4.17.21"
     msgpackr: "npm:^1.10.1"
     node-abort-controller: "npm:^3.1.1"
     semver: "npm:^7.5.4"
     tslib: "npm:^2.0.0"
     uuid: "npm:^9.0.0"
-  checksum: 10c0/01687a41bbacb646ab9cac181181c0cf18362f23b250c332125e0a701dacefb48ff20b030e095f24bd5e471f29d514bcc02779fd1f1c3cb830a3a5f1d0a39d75
+  checksum: 10c0/b98108fc87744b2cea95592c73aa39d4514deb87a80c61217d26c9cdb718d857674577d64970c48382b367829c60bfd5937800d77721df9aa2d02fd1096dc168
   languageName: node
   linkType: hard
 
