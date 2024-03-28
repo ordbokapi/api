@@ -1427,8 +1427,8 @@ __metadata:
   linkType: hard
 
 "@nestjs/common@npm:^10.3.3":
-  version: 10.3.3
-  resolution: "@nestjs/common@npm:10.3.3"
+  version: 10.3.7
+  resolution: "@nestjs/common@npm:10.3.7"
   dependencies:
     iterare: "npm:1.2.1"
     tslib: "npm:2.6.2"
@@ -1443,7 +1443,7 @@ __metadata:
       optional: true
     class-validator:
       optional: true
-  checksum: 10c0/e0873b24169eb04d59ce95375740a73d2fc03c06799d7d316d462f4be798ccb4a68b3100bb704b7644e8c28deb3503612350cce8d25f4bf4a318a3ce01bbec0e
+  checksum: 10c0/d25fba11d553f32a1c80e16da85ff05739eba5678d752feac159ba4ff6c4129d254bd289c95d64106e5c13d78e716a1f3673e6db7897bbcd569fbef49d4f9ec0
   languageName: node
   linkType: hard
 
@@ -1463,8 +1463,8 @@ __metadata:
   linkType: hard
 
 "@nestjs/core@npm:^10.3.3":
-  version: 10.3.3
-  resolution: "@nestjs/core@npm:10.3.3"
+  version: 10.3.7
+  resolution: "@nestjs/core@npm:10.3.7"
   dependencies:
     "@nuxtjs/opencollective": "npm:0.3.2"
     fast-safe-stringify: "npm:2.1.1"
@@ -1486,7 +1486,7 @@ __metadata:
       optional: true
     "@nestjs/websockets":
       optional: true
-  checksum: 10c0/691b3e6dd1aa9bd6e4af56a6d434b05c492984a1d656810e987819f49c1565cc8a01276bf01c6d4baa4aefa74a94027335b892eb285c4c8d9d58e5a593632f4c
+  checksum: 10c0/961cf1b0f157cd8f9aaab3bfe4d2247f41e104a5b1c669764146061915d8206a261cf1833deb5bf37d35d97c74a5288f0de092a5ce247dab34b7ad39e7910d03
   languageName: node
   linkType: hard
 
@@ -1548,30 +1548,30 @@ __metadata:
   linkType: hard
 
 "@nestjs/platform-express@npm:^10.3.3":
-  version: 10.3.3
-  resolution: "@nestjs/platform-express@npm:10.3.3"
+  version: 10.3.7
+  resolution: "@nestjs/platform-express@npm:10.3.7"
   dependencies:
     body-parser: "npm:1.20.2"
     cors: "npm:2.8.5"
-    express: "npm:4.18.2"
+    express: "npm:4.19.2"
     multer: "npm:1.4.4-lts.1"
     tslib: "npm:2.6.2"
   peerDependencies:
     "@nestjs/common": ^10.0.0
     "@nestjs/core": ^10.0.0
-  checksum: 10c0/cff06e604e7258681c188460f3ad3dfa215657844d58fa0f5e94a844639f9b785b1a649d5fc4824ac5b1ae4e95ef9e2a701d1d5222f1e0e04a2911ae5ef2ccd3
+  checksum: 10c0/281ce6149bb9c7288dda3eabe6d3732d6874c9c47ad923a74022659ec765c1c76d1c05323d6f570faf6f976014b7bc8dabd328e4e86e0db9e4f0f1752c6df7d1
   languageName: node
   linkType: hard
 
 "@nestjs/platform-fastify@npm:^10.3.3":
-  version: 10.3.3
-  resolution: "@nestjs/platform-fastify@npm:10.3.3"
+  version: 10.3.7
+  resolution: "@nestjs/platform-fastify@npm:10.3.7"
   dependencies:
     "@fastify/cors": "npm:9.0.1"
     "@fastify/formbody": "npm:7.4.0"
     "@fastify/middie": "npm:8.3.0"
-    fastify: "npm:4.26.0"
-    light-my-request: "npm:5.11.0"
+    fastify: "npm:4.26.2"
+    light-my-request: "npm:5.12.0"
     path-to-regexp: "npm:3.2.0"
     tslib: "npm:2.6.2"
   peerDependencies:
@@ -1584,7 +1584,7 @@ __metadata:
       optional: true
     "@fastify/view":
       optional: true
-  checksum: 10c0/44d296d138f4a1323d2590c237daa183cd5aaeb2dcf357ac63ec0df81fd8efa1f3e1447cf58ef8a9d4e770970a8934e4c98b44c2fe188684b68188ef57b73a67
+  checksum: 10c0/9dfa316209235de79a3df78ba8372145a47b72280bb423b71c54937f55d5cf9c10be5978e6caa023bd2a569077830f2878caa29c27ad372a14f4c791fad09c27
   languageName: node
   linkType: hard
 
@@ -1604,8 +1604,8 @@ __metadata:
   linkType: hard
 
 "@nestjs/testing@npm:^10.3.3":
-  version: 10.3.3
-  resolution: "@nestjs/testing@npm:10.3.3"
+  version: 10.3.7
+  resolution: "@nestjs/testing@npm:10.3.7"
   dependencies:
     tslib: "npm:2.6.2"
   peerDependencies:
@@ -1618,7 +1618,7 @@ __metadata:
       optional: true
     "@nestjs/platform-express":
       optional: true
-  checksum: 10c0/3e63abb62d3fe36d6a0f4c9bf24a3f7d719779d04430e1632c50a5af993e776e7606dbfa793e5965041ecf04f71cee237b272755bece692fd5cd9b9d47cbff1f
+  checksum: 10c0/1599e457dd43666903ae367c7941e3b6821006f895dca422ccf9411a9e8bf6280fcd99fbd7bdd887efbb616d85bf49b8baf84a1ef35d761ce6f16cbf31fd607b
   languageName: node
   linkType: hard
 
@@ -2816,7 +2816,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"avvio@npm:^8.2.1, avvio@npm:^8.3.0":
+"avvio@npm:^8.3.0":
   version: 8.3.0
   resolution: "avvio@npm:8.3.0"
   dependencies:
@@ -2940,26 +2940,6 @@ __metadata:
     inherits: "npm:^2.0.4"
     readable-stream: "npm:^3.4.0"
   checksum: 10c0/02847e1d2cb089c9dc6958add42e3cdeaf07d13f575973963335ac0fdece563a50ac770ac4c8fa06492d2dd276f6cc3b7f08c7cd9c7a7ad0f8d388b2a28def5f
-  languageName: node
-  linkType: hard
-
-"body-parser@npm:1.20.1":
-  version: 1.20.1
-  resolution: "body-parser@npm:1.20.1"
-  dependencies:
-    bytes: "npm:3.1.2"
-    content-type: "npm:~1.0.4"
-    debug: "npm:2.6.9"
-    depd: "npm:2.0.0"
-    destroy: "npm:1.2.0"
-    http-errors: "npm:2.0.0"
-    iconv-lite: "npm:0.4.24"
-    on-finished: "npm:2.4.1"
-    qs: "npm:6.11.0"
-    raw-body: "npm:2.5.1"
-    type-is: "npm:~1.6.18"
-    unpipe: "npm:1.0.0"
-  checksum: 10c0/a202d493e2c10a33fb7413dac7d2f713be579c4b88343cd814b6df7a38e5af1901fc31044e04de176db56b16d9772aa25a7723f64478c20f4d91b1ac223bf3b8
   languageName: node
   linkType: hard
 
@@ -3490,14 +3470,14 @@ __metadata:
   languageName: node
   linkType: hard
 
-"cookie@npm:0.5.0, cookie@npm:^0.5.0":
+"cookie@npm:0.5.0":
   version: 0.5.0
   resolution: "cookie@npm:0.5.0"
   checksum: 10c0/c01ca3ef8d7b8187bae434434582288681273b5a9ed27521d4d7f9f7928fe0c920df0decd9f9d3bbd2d14ac432b8c8cf42b98b3bdd5bfe0e6edddeebebe8b61d
   languageName: node
   linkType: hard
 
-"cookie@npm:^0.6.0":
+"cookie@npm:0.6.0, cookie@npm:^0.6.0":
   version: 0.6.0
   resolution: "cookie@npm:0.6.0"
   checksum: 10c0/f2318b31af7a31b4ddb4a678d024514df5e705f9be5909a192d7f116cfb6d45cbacf96a473fa733faa95050e7cff26e7832bb3ef94751592f1387b71c8956686
@@ -4164,16 +4144,16 @@ __metadata:
   languageName: node
   linkType: hard
 
-"express@npm:4.18.2":
-  version: 4.18.2
-  resolution: "express@npm:4.18.2"
+"express@npm:4.19.2":
+  version: 4.19.2
+  resolution: "express@npm:4.19.2"
   dependencies:
     accepts: "npm:~1.3.8"
     array-flatten: "npm:1.1.1"
-    body-parser: "npm:1.20.1"
+    body-parser: "npm:1.20.2"
     content-disposition: "npm:0.5.4"
     content-type: "npm:~1.0.4"
-    cookie: "npm:0.5.0"
+    cookie: "npm:0.6.0"
     cookie-signature: "npm:1.0.6"
     debug: "npm:2.6.9"
     depd: "npm:2.0.0"
@@ -4199,7 +4179,7 @@ __metadata:
     type-is: "npm:~1.6.18"
     utils-merge: "npm:1.0.1"
     vary: "npm:~1.1.2"
-  checksum: 10c0/75af556306b9241bc1d7bdd40c9744b516c38ce50ae3210658efcbf96e3aed4ab83b3432f06215eae5610c123bc4136957dc06e50dfc50b7d4d775af56c4c59c
+  checksum: 10c0/e82e2662ea9971c1407aea9fc3c16d6b963e55e3830cd0ef5e00b533feda8b770af4e3be630488ef8a752d7c75c4fcefb15892868eeaafe7353cb9e3e269fdcb
   languageName: node
   linkType: hard
 
@@ -4360,31 +4340,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"fastify@npm:4.26.0":
-  version: 4.26.0
-  resolution: "fastify@npm:4.26.0"
-  dependencies:
-    "@fastify/ajv-compiler": "npm:^3.5.0"
-    "@fastify/error": "npm:^3.4.0"
-    "@fastify/fast-json-stringify-compiler": "npm:^4.3.0"
-    abstract-logging: "npm:^2.0.1"
-    avvio: "npm:^8.2.1"
-    fast-content-type-parse: "npm:^1.1.0"
-    fast-json-stringify: "npm:^5.8.0"
-    find-my-way: "npm:^8.0.0"
-    light-my-request: "npm:^5.11.0"
-    pino: "npm:^8.17.0"
-    process-warning: "npm:^3.0.0"
-    proxy-addr: "npm:^2.0.7"
-    rfdc: "npm:^1.3.0"
-    secure-json-parse: "npm:^2.7.0"
-    semver: "npm:^7.5.4"
-    toad-cache: "npm:^3.3.0"
-  checksum: 10c0/6fa63caef229b3773c0702b5832e4df4a69aa54b16afb896794987bcdb68f2f874c7724c438a181a3dace58319ca5229669292e1ad3217a623b4d70a56970ad9
-  languageName: node
-  linkType: hard
-
-"fastify@npm:^4.26.2":
+"fastify@npm:4.26.2, fastify@npm:^4.26.2":
   version: 4.26.2
   resolution: "fastify@npm:4.26.2"
   dependencies:
@@ -5998,18 +5954,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"light-my-request@npm:5.11.0":
-  version: 5.11.0
-  resolution: "light-my-request@npm:5.11.0"
-  dependencies:
-    cookie: "npm:^0.5.0"
-    process-warning: "npm:^2.0.0"
-    set-cookie-parser: "npm:^2.4.1"
-  checksum: 10c0/ad5512b5216f2095409b54daf901f714f76004e4c8acdaa1ec3aa2ffde7ddf11ac249f02a87344d766bbad59eb2732acfe3ee5bb7e8ad5fc71057ef0d4d3be25
-  languageName: node
-  linkType: hard
-
-"light-my-request@npm:^5.11.0":
+"light-my-request@npm:5.12.0, light-my-request@npm:^5.11.0":
   version: 5.12.0
   resolution: "light-my-request@npm:5.12.0"
   dependencies:
@@ -7175,13 +7120,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"process-warning@npm:^2.0.0":
-  version: 2.3.2
-  resolution: "process-warning@npm:2.3.2"
-  checksum: 10c0/6bccf187f604dd63067ae8b5a08f658d1cc5df4948a51525691a564ad9250575802c094dd5d1b69f015934fe5df6d925f2e607d7a589918069129b07a777aa7b
-  languageName: node
-  linkType: hard
-
 "process-warning@npm:^3.0.0":
   version: 3.0.0
   resolution: "process-warning@npm:3.0.0"
@@ -7292,18 +7230,6 @@ __metadata:
   version: 1.2.1
   resolution: "range-parser@npm:1.2.1"
   checksum: 10c0/96c032ac2475c8027b7a4e9fe22dc0dfe0f6d90b85e496e0f016fbdb99d6d066de0112e680805075bd989905e2123b3b3d002765149294dce0c1f7f01fcc2ea0
-  languageName: node
-  linkType: hard
-
-"raw-body@npm:2.5.1":
-  version: 2.5.1
-  resolution: "raw-body@npm:2.5.1"
-  dependencies:
-    bytes: "npm:3.1.2"
-    http-errors: "npm:2.0.0"
-    iconv-lite: "npm:0.4.24"
-    unpipe: "npm:1.0.0"
-  checksum: 10c0/5dad5a3a64a023b894ad7ab4e5c7c1ce34d3497fc7138d02f8c88a3781e68d8a55aa7d4fd3a458616fa8647cc228be314a1c03fb430a07521de78b32c4dd09d2
   languageName: node
   linkType: hard
 
