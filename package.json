@@ -23,7 +23,7 @@
     "redis:clear": "yarn redis:stop && node -e \"require('fs').rmSync('.redis', { recursive: true, force: true })\""
   },
   "devDependencies": {
-    "eslint": "^8.57.0",
+    "eslint": "^9.0.0",
     "prettier": "^3.2.5",
     "typescript": "^5.4.2"
   },
