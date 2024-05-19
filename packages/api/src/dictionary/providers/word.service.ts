@@ -40,6 +40,7 @@ import {
   UnionIterable,
   ArticleIndex,
   UibRedisService,
+  SearchOptions,
 } from 'ordbokapi-common';
 import { UibCacheService } from './uib-cache.service';
 
@@ -71,27 +72,6 @@ export class WordService {
   ) {}
 
   //#region Public methods
-
-  async getSuggestions(
-    word: string,
-    dictionaries: Dictionary[],
-    searchType?: ApiSearchType,
-    maxCount?: number,
-    wordClass?: WordClass,
-  ): Promise<Suggestions> {
-    this.logger.debug(`Getting suggestions for word: ${word}`);
-
-    const data = await this.ordboekeneApiService.suggest(
-      word,
-      dictionaries,
-      maxCount,
-      searchType,
-      wordClass ? wordClassMap.getReverse(wordClass) : undefined,
-    );
-    this.logger.debug(`Received suggestions: ${JSON.stringify(data)}`);
-
-    return this.transformSuggestionsResponse(data);
-  }
 
   async getWord(
     word: string,
@@ -135,6 +115,218 @@ export class WordService {
     };
 
     return wordObject;
+  }
+
+  async getSuggestions(
+    word: string,
+    dictionaries: Dictionary[],
+    searchType?: ApiSearchType,
+    maxCount?: number,
+    wordClass?: WordClass,
+  ): Promise<Suggestions> {
+    this.logger.debug(`Getting suggestions for word: ${word}`);
+
+    const searchOptions: SearchOptions | undefined = maxCount
+      ? { LIMIT: { from: 0, size: maxCount } }
+      : undefined;
+
+    const result = new Suggestions();
+
+    if (!searchType || searchType & ApiSearchType.Exact) {
+      let exactQuery = `((@${ArticleIndex.LemmaExact}:{${word}})`;
+
+      if (wordClass) {
+        exactQuery += ` | (@${ArticleIndex.ParadigmTags}:{${wordClassMap.getReverse(wordClass)}})`;
+      }
+
+      exactQuery += ')';
+
+      const exactResults = (
+        await Promise.all(
+          dictionaries.map((dict) =>
+            this.uib.search(exactQuery, toUibDictionary(dict), searchOptions),
+          ),
+        )
+      ).flat();
+
+      const exactMap = new Map<
+        string,
+        { dictionaries: Set<Dictionary>; articles: Article[] }
+      >();
+
+      for (const article of exactResults) {
+        const dict = fromUibDictionary(article.dictionary);
+        const key = article.data.lemmas[0].lemma;
+
+        let entry = exactMap.get(key);
+
+        if (!entry) {
+          entry = { dictionaries: new Set(), articles: [] };
+          exactMap.set(key, entry);
+        }
+
+        entry.dictionaries.add(dict);
+        entry.articles.push({
+          id: article.id,
+          dictionary: dict,
+        });
+      }
+
+      result.exact = Array.from(exactMap.entries()).map(([key, value]) => ({
+        word: key,
+        dictionaries: Array.from(value.dictionaries),
+        articles: value.articles,
+      }));
+    }
+
+    if (!searchType || searchType & ApiSearchType.Inflection) {
+      let inflectionQuery = `(@${ArticleIndex.InflectionExact}:{${word}})`;
+
+      if (wordClass) {
+        inflectionQuery += ` (@${ArticleIndex.ParadigmTags}:{${wordClassMap.getReverse(wordClass)}})`;
+      }
+
+      const inflectionResults = (
+        await Promise.all(
+          dictionaries.map((dict) =>
+            this.uib.search(
+              inflectionQuery,
+              toUibDictionary(dict),
+              searchOptions,
+            ),
+          ),
+        )
+      ).flat();
+
+      const inflectionMap = new Map<
+        string,
+        { dictionaries: Set<Dictionary>; articles: Article[] }
+      >();
+
+      for (const article of inflectionResults) {
+        const dict = fromUibDictionary(article.dictionary);
+        const key = article.data.lemmas[0].lemma;
+
+        let entry = inflectionMap.get(key);
+
+        if (!entry) {
+          entry = { dictionaries: new Set(), articles: [] };
+          inflectionMap.set(key, entry);
+        }
+
+        entry.dictionaries.add(dict);
+        entry.articles.push({
+          id: article.id,
+          dictionary: dict,
+        });
+      }
+
+      result.inflections = Array.from(inflectionMap.entries()).map(
+        ([key, value]) => ({
+          word: key,
+          dictionaries: Array.from(value.dictionaries),
+          articles: value.articles,
+        }),
+      );
+    }
+
+    if (!searchType || searchType & ApiSearchType.Freetext) {
+      let freetextQuery = `(@${ArticleIndex.Lemma}:${word})`;
+
+      if (wordClass) {
+        freetextQuery += ` (@${ArticleIndex.ParadigmTags}:{${wordClassMap.getReverse(wordClass)}})`;
+      }
+
+      const freetextResults = (
+        await Promise.all(
+          dictionaries.map((dict) =>
+            this.uib.search(
+              freetextQuery,
+              toUibDictionary(dict),
+              searchOptions,
+            ),
+          ),
+        )
+      ).flat();
+
+      const freetextMap = new Map<
+        string,
+        { dictionaries: Set<Dictionary>; articles: Article[] }
+      >();
+
+      for (const article of freetextResults) {
+        const dict = fromUibDictionary(article.dictionary);
+        const key = article.data.lemmas[0].lemma;
+
+        let entry = freetextMap.get(key);
+
+        if (!entry) {
+          entry = { dictionaries: new Set(), articles: [] };
+          freetextMap.set(key, entry);
+        }
+
+        entry.dictionaries.add(dict);
+        entry.articles.push({
+          id: article.id,
+          dictionary: dict,
+        });
+      }
+
+      result.freetext = Array.from(freetextMap.entries()).map(
+        ([key, value]) => ({
+          word: key,
+          dictionaries: Array.from(value.dictionaries),
+          articles: value.articles,
+        }),
+      );
+    }
+
+    if (!searchType || searchType & ApiSearchType.Similar) {
+      let similarQuery = `(@${ArticleIndex.Lemma}:%${word}%)`;
+
+      if (wordClass) {
+        similarQuery += ` (@${ArticleIndex.ParadigmTags}:{${wordClassMap.getReverse(wordClass)}})`;
+      }
+
+      const similarResults = (
+        await Promise.all(
+          dictionaries.map((dict) =>
+            this.uib.search(similarQuery, toUibDictionary(dict), searchOptions),
+          ),
+        )
+      ).flat();
+
+      const similarMap = new Map<
+        string,
+        { dictionaries: Set<Dictionary>; articles: Article[] }
+      >();
+
+      for (const article of similarResults) {
+        const dict = fromUibDictionary(article.dictionary);
+        const key = article.data.lemmas[0].lemma;
+
+        let entry = similarMap.get(key);
+
+        if (!entry) {
+          entry = { dictionaries: new Set(), articles: [] };
+          similarMap.set(key, entry);
+        }
+
+        entry.dictionaries.add(dict);
+        entry.articles.push({
+          id: article.id,
+          dictionary: dict,
+        });
+      }
+
+      result.similar = Array.from(similarMap.entries()).map(([key, value]) => ({
+        word: key,
+        dictionaries: Array.from(value.dictionaries),
+        articles: value.articles,
+      }));
+    }
+
+    return result;
   }
 
   async getDefinitions(article: Article): Promise<Definition[]> {
@@ -577,22 +769,6 @@ export class WordService {
     }
 
     return richContent;
-  }
-
-  private transformSuggestionsResponse(data: any): Suggestions {
-    // Transform the response into an array of Word models
-
-    // Example API response:
-    // {"q": "tekst", "cnt": 8, "cmatch": 1, "a": {"exact": [["tekst", ["bm", "nn"]], ["teksta", ["nn"]]], "inflect": [["tekste", ["bm", "nn"]], ["takast", ["nn"]]], "freetext": [["tekst", ["bm", "nn"]], ["teksta", ["nn"]]], "similar": [["tekst-TV", ["bm"]], ["tekst-tv", ["bm"]]]}}
-
-    const suggestions = new Suggestions();
-
-    suggestions.exact = this.mapSuggestionsToWords(data.a?.exact);
-    suggestions.inflections = this.mapSuggestionsToWords(data.a?.inflect);
-    suggestions.freetext = this.mapSuggestionsToWords(data.a?.freetext);
-    suggestions.similar = this.mapSuggestionsToWords(data.a?.similar);
-
-    return suggestions;
   }
 
   private mapSuggestionsToWords(rawWords: any) {
