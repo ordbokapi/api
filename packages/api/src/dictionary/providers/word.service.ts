@@ -126,6 +126,7 @@ export class WordService {
   ): Promise<Suggestions> {
     this.logger.debug(`Getting suggestions for word: ${word}`);
 
+    const sanitized = this.sanitizer.sanitize(word);
     const searchOptions: SearchOptions | undefined = maxCount
       ? { LIMIT: { from: 0, size: maxCount } }
       : undefined;
@@ -133,7 +134,7 @@ export class WordService {
     const result = new Suggestions();
 
     if (!searchType || searchType & ApiSearchType.Exact) {
-      let exactQuery = `((@${ArticleIndex.LemmaExact}:{${word}})`;
+      let exactQuery = `((@${ArticleIndex.LemmaExact}:{${sanitized}})`;
 
       if (wordClass) {
         exactQuery += ` | (@${ArticleIndex.ParadigmTags}:{${wordClassMap.getReverse(wordClass)}})`;
@@ -180,7 +181,7 @@ export class WordService {
     }
 
     if (!searchType || searchType & ApiSearchType.Inflection) {
-      let inflectionQuery = `(@${ArticleIndex.InflectionExact}:{${word}})`;
+      let inflectionQuery = `(@${ArticleIndex.InflectionExact}:{${sanitized}})`;
 
       if (wordClass) {
         inflectionQuery += ` (@${ArticleIndex.ParadigmTags}:{${wordClassMap.getReverse(wordClass)}})`;
@@ -231,7 +232,7 @@ export class WordService {
     }
 
     if (!searchType || searchType & ApiSearchType.Freetext) {
-      let freetextQuery = `(@${ArticleIndex.Lemma}:${word})`;
+      let freetextQuery = `(@${ArticleIndex.Lemma}:${sanitized})`;
 
       if (wordClass) {
         freetextQuery += ` (@${ArticleIndex.ParadigmTags}:{${wordClassMap.getReverse(wordClass)}})`;
@@ -282,7 +283,7 @@ export class WordService {
     }
 
     if (!searchType || searchType & ApiSearchType.Similar) {
-      let similarQuery = `(@${ArticleIndex.Lemma}:%${word}%)`;
+      let similarQuery = `(@${ArticleIndex.Lemma}:%${sanitized}%)`;
 
       if (wordClass) {
         similarQuery += ` (@${ArticleIndex.ParadigmTags}:{${wordClassMap.getReverse(wordClass)}})`;
