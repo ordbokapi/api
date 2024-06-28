@@ -3071,18 +3071,17 @@ __metadata:
   linkType: hard
 
 "bullmq@npm:^5.4.2":
-  version: 5.4.2
-  resolution: "bullmq@npm:5.4.2"
+  version: 5.8.3
+  resolution: "bullmq@npm:5.8.3"
   dependencies:
     cron-parser: "npm:^4.6.0"
-    ioredis: "npm:^5.3.2"
-    lodash: "npm:^4.17.21"
+    ioredis: "npm:^5.4.1"
     msgpackr: "npm:^1.10.1"
     node-abort-controller: "npm:^3.1.1"
     semver: "npm:^7.5.4"
     tslib: "npm:^2.0.0"
     uuid: "npm:^9.0.0"
-  checksum: 10c0/01687a41bbacb646ab9cac181181c0cf18362f23b250c332125e0a701dacefb48ff20b030e095f24bd5e471f29d514bcc02779fd1f1c3cb830a3a5f1d0a39d75
+  checksum: 10c0/eda00735591f095e964462dac395f3b2592a7bd9846781c489806226c3ec77573e7a2fb06d95073306f5807819d2dfadb603d204db065bf8b19c683e45c6cc78
   languageName: node
   linkType: hard
 
@@ -5133,6 +5132,23 @@ __metadata:
     redis-parser: "npm:^3.0.0"
     standard-as-callback: "npm:^2.1.0"
   checksum: 10c0/0dd2b5b8004e891f5b62edf18ac223194f1f5204698ec827c903e789ea05b0b36f73395491749ec63c66470485bdfb228ccdf1714fbf631a0f78f33211f2c883
+  languageName: node
+  linkType: hard
+
+"ioredis@npm:^5.4.1":
+  version: 5.4.1
+  resolution: "ioredis@npm:5.4.1"
+  dependencies:
+    "@ioredis/commands": "npm:^1.1.1"
+    cluster-key-slot: "npm:^1.1.0"
+    debug: "npm:^4.3.4"
+    denque: "npm:^2.1.0"
+    lodash.defaults: "npm:^4.2.0"
+    lodash.isarguments: "npm:^3.1.0"
+    redis-errors: "npm:^1.2.0"
+    redis-parser: "npm:^3.0.0"
+    standard-as-callback: "npm:^2.1.0"
+  checksum: 10c0/5d28b7c89a3cab5b76d75923d7d4ce79172b3a1ca9be690133f6e8e393a7a4b4ffd55513e618bbb5504fed80d9e1395c9d9531a7c5c5c84aa4c4e765cca75456
   languageName: node
   linkType: hard
 
