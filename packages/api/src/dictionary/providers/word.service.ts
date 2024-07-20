@@ -283,7 +283,10 @@ export class WordService {
     }
 
     if (!searchType || searchType & ApiSearchType.Similar) {
-      let similarQuery = `(@${ArticleIndex.Lemma}:%${sanitized}%)`;
+      let similarQuery = `(@${ArticleIndex.Lemma}:${sanitized
+        .split(' ')
+        .map((s) => `%${s}%`)
+        .join(' ')})`;
 
       if (wordClass) {
         similarQuery += ` (@${ArticleIndex.ParadigmTags}:{${wordClassMap.getReverse(wordClass)}})`;
