@@ -1780,14 +1780,14 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@redis/client@npm:1.5.14":
-  version: 1.5.14
-  resolution: "@redis/client@npm:1.5.14"
+"@redis/client@npm:1.5.17":
+  version: 1.5.17
+  resolution: "@redis/client@npm:1.5.17"
   dependencies:
     cluster-key-slot: "npm:1.1.2"
     generic-pool: "npm:3.9.0"
     yallist: "npm:4.0.0"
-  checksum: 10c0/e8036ef1bce676891a492c198251238b3eb19eb7120ff974291f2a4e8cea97ac0f4aabbc0c59f40a923dcb43456e4e2a29b7287bd6a91535330e5e4631d9b176
+  checksum: 10c0/967ea3e00b5471de4f5b9aeec4fcc29ad6890deccea197731e891c99edc8ed1e43ad02480a4ed6aac50b29bf337421d893f2d8393271a27d510c644fe92647a7
   languageName: node
   linkType: hard
 
@@ -7407,16 +7407,16 @@ __metadata:
   linkType: hard
 
 "redis@npm:^4.6.13":
-  version: 4.6.13
-  resolution: "redis@npm:4.6.13"
+  version: 4.6.15
+  resolution: "redis@npm:4.6.15"
   dependencies:
     "@redis/bloom": "npm:1.2.0"
-    "@redis/client": "npm:1.5.14"
+    "@redis/client": "npm:1.5.17"
     "@redis/graph": "npm:1.1.1"
     "@redis/json": "npm:1.0.6"
     "@redis/search": "npm:1.1.6"
     "@redis/time-series": "npm:1.0.5"
-  checksum: 10c0/5fbbf61fc244ca0d0eeca648e470de92d30a494f724f17fac434a7b2713425fc67be31736e17dc53798eba7d236cdfb66e330034ccced51f0faa1a3df1711d5d
+  checksum: 10c0/6c8e3fd5af8154686c2a4320728a1f032f11fea1d57b66ad6dc7ef9e3e67fc9656d5d52445bb38b574cfc8598e88703178f1d42d388cfd392c2e7a66631aa189
   languageName: node
   linkType: hard
 
