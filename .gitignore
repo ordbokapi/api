@@ -57,3 +57,5 @@ junit.xml
 # Env
 .env
 packages/*/.env
+
+scripts
