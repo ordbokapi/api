@@ -22,25 +22,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@angular-devkit/core@npm:17.1.2":
-  version: 17.1.2
-  resolution: "@angular-devkit/core@npm:17.1.2"
-  dependencies:
-    ajv: "npm:8.12.0"
-    ajv-formats: "npm:2.1.1"
-    jsonc-parser: "npm:3.2.0"
-    picomatch: "npm:3.0.1"
-    rxjs: "npm:7.8.1"
-    source-map: "npm:0.7.4"
-  peerDependencies:
-    chokidar: ^3.5.2
-  peerDependenciesMeta:
-    chokidar:
-      optional: true
-  checksum: 10c0/2e589c681126238a6d1ff2c256d4b18c64da86303ebae1545bc8f9923b9d282752fc03972c5c2cf8b48bdd3452c301124ee7acc7ab98a8f9d703618b1aeb44d2
-  languageName: node
-  linkType: hard
-
 "@angular-devkit/core@npm:17.3.8":
   version: 17.3.8
   resolution: "@angular-devkit/core@npm:17.3.8"
@@ -73,19 +54,6 @@ __metadata:
   bin:
     schematics: bin/schematics.js
   checksum: 10c0/bbd7692e0ac2b8f9a5fda8ccafd94a08475e6b4a304580a581dabbeb7b8c8db1934c7ae3eab7bed059862170c62045133800fcfe12cfb8f57700aba3a6aebf37
-  languageName: node
-  linkType: hard
-
-"@angular-devkit/schematics@npm:17.1.2":
-  version: 17.1.2
-  resolution: "@angular-devkit/schematics@npm:17.1.2"
-  dependencies:
-    "@angular-devkit/core": "npm:17.1.2"
-    jsonc-parser: "npm:3.2.0"
-    magic-string: "npm:0.30.5"
-    ora: "npm:5.4.1"
-    rxjs: "npm:7.8.1"
-  checksum: 10c0/30db52fe227f84798598e9880ad6a7afaa5763b352168f3801efc87dea1c16d55426ccd6563b305415e5db0006c2fa00041df70986a873a24b0a3172aa1f84e2
   languageName: node
   linkType: hard
 
@@ -1617,24 +1585,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@nestjs/schematics@npm:^10.0.1":
-  version: 10.1.1
-  resolution: "@nestjs/schematics@npm:10.1.1"
-  dependencies:
-    "@angular-devkit/core": "npm:17.1.2"
-    "@angular-devkit/schematics": "npm:17.1.2"
-    comment-json: "npm:4.2.3"
-    jsonc-parser: "npm:3.2.1"
-    pluralize: "npm:8.0.0"
-  peerDependencies:
-    typescript: ">=4.8.2"
-  checksum: 10c0/fa264dc1a4366876b47badbc895ee234ccc6de112484aa5ba45a0a03e67f429f73036d4e9108bb21ad1c30fe30652cbe9cc773c00b3a092c5f2a1499895241ca
-  languageName: node
-  linkType: hard
-
-"@nestjs/schematics@npm:^10.1.2":
-  version: 10.1.2
-  resolution: "@nestjs/schematics@npm:10.1.2"
+"@nestjs/schematics@npm:^10.0.1, @nestjs/schematics@npm:^10.1.2":
+  version: 10.1.3
+  resolution: "@nestjs/schematics@npm:10.1.3"
   dependencies:
     "@angular-devkit/core": "npm:17.3.8"
     "@angular-devkit/schematics": "npm:17.3.8"
@@ -1643,7 +1596,7 @@ __metadata:
     pluralize: "npm:8.0.0"
   peerDependencies:
     typescript: ">=4.8.2"
-  checksum: 10c0/a73b31c07d63a152da717cde3314d7baf3962e0b0485fb7b36b93f89c79f3a3d02a4899f10513ba5e5f17dd75f6237d93178e89664dd2730e6231e809f30d139
+  checksum: 10c0/c35bc8e71cada038fb823730fac9a89cac8cfb9fad0aaf8ff947191b4b866c974c0bd5a17adc0b227dd48a3636265c1d434c90a6125c933ec2ba23ce29876bf9
   languageName: node
   linkType: hard
 
@@ -5987,13 +5940,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"jsonc-parser@npm:3.2.0":
-  version: 3.2.0
-  resolution: "jsonc-parser@npm:3.2.0"
-  checksum: 10c0/5a12d4d04dad381852476872a29dcee03a57439574e4181d91dca71904fcdcc5e8e4706c0a68a2c61ad9810e1e1c5806b5100d52d3e727b78f5cdc595401045b
-  languageName: node
-  linkType: hard
-
 "jsonc-parser@npm:3.2.1":
   version: 3.2.1
   resolution: "jsonc-parser@npm:3.2.1"
@@ -6231,15 +6177,6 @@ __metadata:
   version: 3.4.4
   resolution: "luxon@npm:3.4.4"
   checksum: 10c0/02e26a0b039c11fd5b75e1d734c8f0332c95510f6a514a9a0991023e43fb233884da02d7f966823ffb230632a733fc86d4a4b1e63c3fbe00058b8ee0f8c728af
-  languageName: node
-  linkType: hard
-
-"magic-string@npm:0.30.5":
-  version: 0.30.5
-  resolution: "magic-string@npm:0.30.5"
-  dependencies:
-    "@jridgewell/sourcemap-codec": "npm:^1.4.15"
-  checksum: 10c0/38ac220ca7539e96da7ea2f38d85796bdf5c69b6bcae728c4bc2565084e6dc326b9174ee9770bea345cf6c9b3a24041b767167874fab5beca874d2356a9d1520
   languageName: node
   linkType: hard
 
@@ -7152,13 +7089,6 @@ __metadata:
   version: 1.0.0
   resolution: "picocolors@npm:1.0.0"
   checksum: 10c0/20a5b249e331c14479d94ec6817a182fd7a5680debae82705747b2db7ec50009a5f6648d0621c561b0572703f84dbef0858abcbd5856d3c5511426afcb1961f7
-  languageName: node
-  linkType: hard
-
-"picomatch@npm:3.0.1":
-  version: 3.0.1
-  resolution: "picomatch@npm:3.0.1"
-  checksum: 10c0/70ec738569f1864658378b7abdab8939d15dae0718c1df994eae3346fd33daf6a3c1ff4e0c1a0cd1e2c0319130985b63a2cff34d192f2f2acbb78aca76111736
   languageName: node
   linkType: hard
 
