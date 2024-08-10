@@ -26,8 +26,8 @@
   "devDependencies": {
     "@types/luxon": "^3.4.2",
     "@types/node": "^20.14.11",
-    "@typescript-eslint/eslint-plugin": "^7.16.1",
-    "@typescript-eslint/parser": "^7.16.1",
+    "@typescript-eslint/eslint-plugin": "^8.0.0",
+    "@typescript-eslint/parser": "^8.0.0",
     "eslint": "^9.0.0",
     "prettier": "^3.3.3",
     "typescript": "^5.5.3"
