@@ -46,7 +46,7 @@
   },
   "volta": {
     "node": "22.6.0",
-    "yarn": "4.4.0"
+    "yarn": "4.4.1"
   },
-  "packageManager": "yarn@4.4.0"
+  "packageManager": "yarn@4.4.1"
 }
