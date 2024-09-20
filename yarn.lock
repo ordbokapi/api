@@ -6106,7 +6106,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"light-my-request@npm:6.0.0":
+"light-my-request@npm:6.0.0, light-my-request@npm:^6.0.0":
   version: 6.0.0
   resolution: "light-my-request@npm:6.0.0"
   dependencies:
@@ -6125,17 +6125,6 @@ __metadata:
     process-warning: "npm:^3.0.0"
     set-cookie-parser: "npm:^2.4.1"
   checksum: 10c0/2ec09501bad340c20e949b05923e21e8bcddc066b1f422d94e3bc9d26eed0ed1f201d599fb23704f32d1720f39f6861bc4cd1be278323c53ba4018f7557fe1a6
-  languageName: node
-  linkType: hard
-
-"light-my-request@npm:^6.0.0":
-  version: 6.0.0
-  resolution: "light-my-request@npm:6.0.0"
-  dependencies:
-    cookie: "npm:^0.6.0"
-    process-warning: "npm:^4.0.0"
-    set-cookie-parser: "npm:^2.6.0"
-  checksum: 10c0/521fde58b0e52d05cc38b23a7ef5b9b7ce35b9a943a4e5a27eb219de2ac08ff566bfaa194b8db3bf99cf0800adc5fe5ed9c0c604c18fce8a0d4554e2237ee89b
   languageName: node
   linkType: hard
 
