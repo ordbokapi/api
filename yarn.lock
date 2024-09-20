@@ -3025,8 +3025,8 @@ __metadata:
   linkType: hard
 
 "bullmq@npm:^5.10.3":
-  version: 5.12.12
-  resolution: "bullmq@npm:5.12.12"
+  version: 5.13.2
+  resolution: "bullmq@npm:5.13.2"
   dependencies:
     cron-parser: "npm:^4.6.0"
     ioredis: "npm:^5.4.1"
@@ -3035,7 +3035,7 @@ __metadata:
     semver: "npm:^7.5.4"
     tslib: "npm:^2.0.0"
     uuid: "npm:^9.0.0"
-  checksum: 10c0/f83007adce0f39c5b996bb614daab93d2cdf1e840d030e1f67007940c6fd1c3cfe9fa54da41670cfedb2b15ea31defaa0d2d4519cc4f2841d1811d60aa7867fe
+  checksum: 10c0/66140e155d0367b4e3bed45b6c51da54a2bf3bea54feca9311d69cc338899fac3f20add087ac219f630c326f3629b6eecdf1dea8f811285738448d9ec6c34f2f
   languageName: node
   linkType: hard
 
