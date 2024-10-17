@@ -45,7 +45,7 @@
     "testEnvironment": "node"
   },
   "volta": {
-    "node": "22.9.0",
+    "node": "22.10.0",
     "yarn": "4.5.0"
   },
   "packageManager": "yarn@4.5.0"
