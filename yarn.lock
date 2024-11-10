@@ -3155,17 +3155,17 @@ __metadata:
   linkType: hard
 
 "bullmq@npm:^5.10.3":
-  version: 5.15.0
-  resolution: "bullmq@npm:5.15.0"
+  version: 5.25.4
+  resolution: "bullmq@npm:5.25.4"
   dependencies:
     cron-parser: "npm:^4.6.0"
     ioredis: "npm:^5.4.1"
-    msgpackr: "npm:^1.10.1"
+    msgpackr: "npm:^1.11.2"
     node-abort-controller: "npm:^3.1.1"
     semver: "npm:^7.5.4"
     tslib: "npm:^2.0.0"
     uuid: "npm:^9.0.0"
-  checksum: 10c0/55e59b55d8d0aaf05d247e10a5d90b109330344b8abc09159495f7105cbc7ff200e153334805c8dc327c57e85e4a846446d5e5162aeed6429c56545d671478e5
+  checksum: 10c0/dc580f94d0fd9fe71dc318b7c6ed9effa75cb5f1ad5f14955cd619e49fdd0168eda87db6ace02d45b455c4f45c51270531399bbfd3c43b0a17245ed747b3fc7c
   languageName: node
   linkType: hard
 
@@ -6697,15 +6697,15 @@ __metadata:
   languageName: node
   linkType: hard
 
-"msgpackr@npm:^1.10.1":
-  version: 1.10.1
-  resolution: "msgpackr@npm:1.10.1"
+"msgpackr@npm:^1.11.2":
+  version: 1.11.2
+  resolution: "msgpackr@npm:1.11.2"
   dependencies:
     msgpackr-extract: "npm:^3.0.2"
   dependenciesMeta:
     msgpackr-extract:
       optional: true
-  checksum: 10c0/2e6ed91af89ec15d1e5595c5b837a4adcbb185b0fbd4773d728ced89ab4abbdd3401f6777b193d487d9807e1cb0cf3da1ba9a0bd2d5a553e22355cea84a36bab
+  checksum: 10c0/7d2e81ca82c397b2352d470d6bc8f4a967fe4fe14f8fc1fc9906b23009fdfb543999b1ad29c700b8861581e0b6bf903d6f0fefb69a09375cbca6d4d802e6c906
   languageName: node
   linkType: hard
 
