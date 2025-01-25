@@ -173,7 +173,7 @@ export function isUibArticleIdentifier(
  * @param key The key.
  */
 export const idForArticleKey = (key: string): UibArticleIdentifier => {
-  const [_, dictionary, articleId] = key.split(':');
+  const [, dictionary, articleId] = key.split(':');
 
   return {
     dictionary: dictionary as UibDictionary,
