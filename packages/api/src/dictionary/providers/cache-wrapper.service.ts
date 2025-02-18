@@ -65,14 +65,24 @@ export class CacheWrapperService {
   ): (...args: any[]) => any {
     return async (...args: any[]) => {
       const cacheKey = this.#getCacheKey(instance, key, args);
-      const cachedResult = await this.cacheProvider.get(cacheKey);
 
-      if (cachedResult) {
-        return cachedResult;
+      try {
+        const cachedResult = await this.cacheProvider.get(cacheKey);
+
+        if (cachedResult) {
+          return cachedResult;
+        }
+      } catch (err) {
+        this.logger.error(`Failed to retrieve cache for key: ${cacheKey}`, err);
       }
 
       const result = await fn.apply(instance, args);
-      await this.cacheProvider.set(cacheKey, result, TTLBucket.Short);
+
+      try {
+        await this.cacheProvider.set(cacheKey, result, TTLBucket.Short);
+      } catch (err) {
+        this.logger.error(`Failed to cache result for key: ${cacheKey}`, err);
+      }
 
       return result;
     };

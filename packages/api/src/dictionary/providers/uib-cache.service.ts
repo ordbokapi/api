@@ -52,10 +52,17 @@ export class UibCacheService {
       : { dictionary: identifierOrDictionary, id: id! };
 
     const cacheKey = this.#getArticleCacheKey(identifier);
-    const cached: UibArticle = await this.cache.get(cacheKey);
+    try {
+      const cached: UibArticle = await this.cache.get(cacheKey);
 
-    if (cached) {
-      return cached;
+      if (cached) {
+        return cached;
+      }
+    } catch (error) {
+      this.#logger.error(
+        `Failed to retrieve cache for key: ${cacheKey}`,
+        error,
+      );
     }
 
     const article = await this.data.getArticle(identifier);
@@ -64,7 +71,12 @@ export class UibCacheService {
       return null;
     }
 
-    await this.cache.set(cacheKey, article);
+    try {
+      await this.cache.set(cacheKey, article);
+    } catch (error) {
+      this.#logger.error(`Failed to cache article for key: ${cacheKey}`, error);
+    }
+
     return article;
   }
 
