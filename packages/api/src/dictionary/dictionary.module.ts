@@ -10,13 +10,7 @@ import {
   CacheWrapperService,
   UibCacheService,
 } from './providers';
-import {
-  BuildInfoProvider,
-  // MemcachedProvider,
-  InMemoryCacheProvider,
-  // MemcachedCacheProvider,
-  CacheSerializationProvider,
-} from '../providers';
+import { BuildInfoProvider, InMemoryCacheProvider } from '../providers';
 import * as resolvers from './resolvers';
 
 @Module({
@@ -30,14 +24,6 @@ import * as resolvers from './resolvers';
       OrdboekeneApiService,
       UibCacheService,
     ])
-    // .addIf(process.env.MEMCACHEDCLOUD_SERVERS, MemcachedProvider)
-    .add(CacheSerializationProvider)
-    // .add({
-    //   provide: 'ICacheProvider',
-    //   useClass: process.env.MEMCACHEDCLOUD_SERVERS
-    //     ? MemcachedCacheProvider
-    //     : InMemoryCacheProvider,
-    // })
     .add({
       provide: 'ICacheProvider',
       useClass: InMemoryCacheProvider,

@@ -32,6 +32,9 @@ jobs:
       - name: Build
         run: yarn build
 
+      - name: Test (API, Unit)
+        run: yarn workspace ordbokapi run test
+
       # - name: Test (E2E)
       #   # Make sure to output results to a file so we can parse them later
       #   run: yarn test:e2e --ci --reporters=default --reporters=jest-junit

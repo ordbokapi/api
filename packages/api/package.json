@@ -36,6 +36,7 @@
     "class-validator": "^0.14.1",
     "fastify": "^5.2.1",
     "graphql": "^16.10.0",
+    "lru-cache": "^11.0.2",
     "memjs": "^1.3.2",
     "ordbokapi-common": "workspace:^",
     "reflect-metadata": "^0.2.2",
@@ -50,6 +51,7 @@
     "@nestjs/testing": "^11.0.5",
     "@types/express": "^5.0.0",
     "@types/jest": "^29.5.14",
+    "@types/lru-cache": "^7.10.10",
     "@types/memjs": "^1.3.3",
     "@types/node": "^22.10.10",
     "@types/request-ip": "^0.0.41",
@@ -85,6 +87,9 @@
     },
     "collectCoverageFrom": [
       "**/*.(t|j)s"
+    ],
+    "setupFiles": [
+      "<rootDir>/../jest.setup.ts"
     ],
     "coverageDirectory": "../coverage",
     "testEnvironment": "node"
