@@ -886,15 +886,15 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@graphql-tools/merge@npm:9.0.17, @graphql-tools/merge@npm:^9.0.17":
-  version: 9.0.17
-  resolution: "@graphql-tools/merge@npm:9.0.17"
+"@graphql-tools/merge@npm:9.0.19, @graphql-tools/merge@npm:^9.0.19":
+  version: 9.0.19
+  resolution: "@graphql-tools/merge@npm:9.0.19"
   dependencies:
-    "@graphql-tools/utils": "npm:^10.7.2"
+    "@graphql-tools/utils": "npm:^10.8.1"
     tslib: "npm:^2.4.0"
   peerDependencies:
     graphql: ^14.0.0 || ^15.0.0 || ^16.0.0 || ^17.0.0
-  checksum: 10c0/5dc25bd8875adaa0c4c3efb928f514b8828b36b71aaba4aeef02c36975e6ab897168e9370b0955ad6c569d3671cea1c84b4c54646ae3287992f458641deea8a2
+  checksum: 10c0/0ae4f9203f647280f46f3313c142886a7606ffae1d31f9e6dc997a75cbb9d6a8cc615f4d0766d3102b06fc4ad6a10932a8d33e50b0fe7e8329b4512cf687dcaa
   languageName: node
   linkType: hard
 
@@ -910,17 +910,16 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@graphql-tools/schema@npm:10.0.16":
-  version: 10.0.16
-  resolution: "@graphql-tools/schema@npm:10.0.16"
+"@graphql-tools/schema@npm:10.0.18":
+  version: 10.0.18
+  resolution: "@graphql-tools/schema@npm:10.0.18"
   dependencies:
-    "@graphql-tools/merge": "npm:^9.0.17"
-    "@graphql-tools/utils": "npm:^10.7.2"
+    "@graphql-tools/merge": "npm:^9.0.19"
+    "@graphql-tools/utils": "npm:^10.8.1"
     tslib: "npm:^2.4.0"
-    value-or-promise: "npm:^1.0.12"
   peerDependencies:
     graphql: ^14.0.0 || ^15.0.0 || ^16.0.0 || ^17.0.0
-  checksum: 10c0/b783c9a3d8d7d77d659bffcee0e981e9a3755401bd5149d1c1ad53b6e9975eefd841b94768df2b17a02edfa78e1bd5494d08a365a5bb801174b8c09012932a3d
+  checksum: 10c0/2ba99f1be8ae4fa20710f151060e593ea13a68f789b016c74a49bd2ebcfed5571a936e94467f3ed048d3bf38d2373a5f14b4176c0c89f254adcbdee68bbaddcb
   languageName: node
   linkType: hard
 
@@ -938,9 +937,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@graphql-tools/utils@npm:10.7.2, @graphql-tools/utils@npm:^10.7.2":
-  version: 10.7.2
-  resolution: "@graphql-tools/utils@npm:10.7.2"
+"@graphql-tools/utils@npm:10.8.1, @graphql-tools/utils@npm:^10.8.1":
+  version: 10.8.1
+  resolution: "@graphql-tools/utils@npm:10.8.1"
   dependencies:
     "@graphql-typed-document-node/core": "npm:^3.1.1"
     cross-inspect: "npm:1.0.1"
@@ -948,7 +947,7 @@ __metadata:
     tslib: "npm:^2.4.0"
   peerDependencies:
     graphql: ^14.0.0 || ^15.0.0 || ^16.0.0 || ^17.0.0
-  checksum: 10c0/1e73eaf482437e2d20c1241d3fd422587a7cba93bc67d1572974053788fda22cca745f2e3048150a0af5b0cd9132b7ee49b661ada7a4a0e40e4732afcb53c549
+  checksum: 10c0/c3011af1f7de800f7044721ce52bb709edda5aaf71b7734a4b1a2169485f61ca7d400534671c48eaeedc0a2e7b3cacecc5c0c81c84d8c3872dc442500cf4a959
   languageName: node
   linkType: hard
 
@@ -1566,8 +1565,8 @@ __metadata:
   linkType: hard
 
 "@nestjs/apollo@npm:^13.0.2":
-  version: 13.0.2
-  resolution: "@nestjs/apollo@npm:13.0.2"
+  version: 13.0.3
+  resolution: "@nestjs/apollo@npm:13.0.3"
   dependencies:
     "@apollo/server-plugin-landing-page-graphql-playground": "npm:4.0.1"
     iterall: "npm:1.3.0"
@@ -1589,7 +1588,7 @@ __metadata:
       optional: true
     "@as-integrations/fastify":
       optional: true
-  checksum: 10c0/0683d81cdadc29ee7428e7f1859676209ff619af658aac388c372c7c6495e6d2671383c776d856bfa6253f4b5f78a14b43db2153464137567d4a1ac0dcce633f
+  checksum: 10c0/cfa847e47faff37effcadbb6061732c1abbee4129ba7be5eaec7f2bfcbe4d5f888f940cfd09d0dabfc1cd4ae6095d01505e5514cd0b7dd5140b71ccbe76f06e8
   languageName: node
   linkType: hard
 
@@ -1694,17 +1693,17 @@ __metadata:
   linkType: hard
 
 "@nestjs/graphql@npm:^13.0.2":
-  version: 13.0.2
-  resolution: "@nestjs/graphql@npm:13.0.2"
+  version: 13.0.3
+  resolution: "@nestjs/graphql@npm:13.0.3"
   dependencies:
-    "@graphql-tools/merge": "npm:9.0.17"
-    "@graphql-tools/schema": "npm:10.0.16"
-    "@graphql-tools/utils": "npm:10.7.2"
+    "@graphql-tools/merge": "npm:9.0.19"
+    "@graphql-tools/schema": "npm:10.0.18"
+    "@graphql-tools/utils": "npm:10.8.1"
     "@nestjs/mapped-types": "npm:2.1.0"
     chokidar: "npm:4.0.3"
     fast-glob: "npm:3.3.3"
     graphql-tag: "npm:2.12.6"
-    graphql-ws: "npm:6.0.1"
+    graphql-ws: "npm:6.0.4"
     lodash: "npm:4.17.21"
     normalize-path: "npm:3.0.0"
     subscriptions-transport-ws: "npm:0.11.0"
@@ -1728,7 +1727,7 @@ __metadata:
       optional: true
     ts-morph:
       optional: true
-  checksum: 10c0/cfee28ecf71f8278b3a069f0f94166f0cbb4658ae45f76ca75a0bfc505a9da9c508bf4fbf56141ea814e4f99da835d6c8ff96e803b8752efbbf40c0af08f870e
+  checksum: 10c0/afae8da96892eef05f3a40af88f3d7c9c4ba2f8f129ab12a8207c5e52cbf1494b5ee59470fc469d381b1c115dbbb31a5a4f4acf77b7c9465aa4a5192d505fad8
   languageName: node
   linkType: hard
 
@@ -4823,9 +4822,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"graphql-ws@npm:6.0.1":
-  version: 6.0.1
-  resolution: "graphql-ws@npm:6.0.1"
+"graphql-ws@npm:6.0.4":
+  version: 6.0.4
+  resolution: "graphql-ws@npm:6.0.4"
   peerDependencies:
     "@fastify/websocket": ^10 || ^11
     graphql: ^15.10.1 || ^16
@@ -4838,7 +4837,7 @@ __metadata:
       optional: true
     ws:
       optional: true
-  checksum: 10c0/b7be6516532aa0a4b5604a53b8e1f3392b7335f77ebedb20dfa15371124742a4a5cf9347e06f7c220647e46c8ea330a222476b2b1425560de5bc387ab9eced59
+  checksum: 10c0/ed17502300c702d42820ca2acc593d82acbcbec91fa93e588dc008d07d7b6914b4b22062f1ee181cff6ac62f69ea0052555ee75f270601311b943a6b7ef709dc
   languageName: node
   linkType: hard
 
