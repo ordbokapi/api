@@ -26,9 +26,8 @@ Options:
   // Get log level from command parameters or environment variable
   let minLogLevel = process.argv.includes('--log-level')
     ? process.argv[process.argv.indexOf('--log-level') + 1]
-    : process.env.NODE_ENV === 'production'
-      ? 'warn'
-      : 'verbose';
+    : process.env.LOG_LEVEL ||
+      (process.env.NODE_ENV === 'production' ? 'warn' : 'verbose');
 
   // Validate and normalize the log level
   if (!logLevels.includes(minLogLevel as LogLevel)) {
