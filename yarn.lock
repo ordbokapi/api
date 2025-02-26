@@ -34,19 +34,38 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@angular-devkit/schematics-cli@npm:19.1.7":
-  version: 19.1.7
-  resolution: "@angular-devkit/schematics-cli@npm:19.1.7"
+"@angular-devkit/core@npm:19.1.8":
+  version: 19.1.8
+  resolution: "@angular-devkit/core@npm:19.1.8"
   dependencies:
-    "@angular-devkit/core": "npm:19.1.7"
-    "@angular-devkit/schematics": "npm:19.1.7"
+    ajv: "npm:8.17.1"
+    ajv-formats: "npm:3.0.1"
+    jsonc-parser: "npm:3.3.1"
+    picomatch: "npm:4.0.2"
+    rxjs: "npm:7.8.1"
+    source-map: "npm:0.7.4"
+  peerDependencies:
+    chokidar: ^4.0.0
+  peerDependenciesMeta:
+    chokidar:
+      optional: true
+  checksum: 10c0/482e971983e1825e8d04b8030a24eebb7877b8217d2fee7772a4d53d81fe36d9fdbfbdac6f0c742f5b00e0c8bc22e293c4b9f50d2ba0edf6b1eada4305dabab6
+  languageName: node
+  linkType: hard
+
+"@angular-devkit/schematics-cli@npm:19.1.8":
+  version: 19.1.8
+  resolution: "@angular-devkit/schematics-cli@npm:19.1.8"
+  dependencies:
+    "@angular-devkit/core": "npm:19.1.8"
+    "@angular-devkit/schematics": "npm:19.1.8"
     "@inquirer/prompts": "npm:7.2.1"
     ansi-colors: "npm:4.1.3"
     symbol-observable: "npm:4.0.0"
     yargs-parser: "npm:21.1.1"
   bin:
     schematics: bin/schematics.js
-  checksum: 10c0/f39017e32a82de8017c8f24aea118d8a61b45cfe5852363fa274b9d07caac4b5c143fc73b4ae15ec2b7c987090ac10ebc1e79888ceac419ef46362b6ddef988f
+  checksum: 10c0/e29accf273288ab766d225ff66f3cd6d920bd9893fa35fb99f55c22d531f47d3c5c782905d88c4ec2b83536e725a7b0d0381fcafd57364e7d576e070fdb5db84
   languageName: node
   linkType: hard
 
@@ -60,6 +79,19 @@ __metadata:
     ora: "npm:5.4.1"
     rxjs: "npm:7.8.1"
   checksum: 10c0/93bc3ef07bc7a5f129a9eb7d19ad6e47253c177c07e217413a85a07729df54deda489b25122b2fcb82a6ce909f2c02bbe8e0e2b58ca0482001d7be73356d69bb
+  languageName: node
+  linkType: hard
+
+"@angular-devkit/schematics@npm:19.1.8":
+  version: 19.1.8
+  resolution: "@angular-devkit/schematics@npm:19.1.8"
+  dependencies:
+    "@angular-devkit/core": "npm:19.1.8"
+    jsonc-parser: "npm:3.3.1"
+    magic-string: "npm:0.30.17"
+    ora: "npm:5.4.1"
+    rxjs: "npm:7.8.1"
+  checksum: 10c0/0a6f8f9638f52038a7deb35930a67eda12bfd4732c86ac4c6f11f55728d244f1bb8c59afb5f1f0bb361789b94518313de9013941618126a48f65e0ad3366242d
   languageName: node
   linkType: hard
 
@@ -1765,15 +1797,15 @@ __metadata:
   linkType: hard
 
 "@nestjs/cli@npm:^11.0.2":
-  version: 11.0.4
-  resolution: "@nestjs/cli@npm:11.0.4"
+  version: 11.0.5
+  resolution: "@nestjs/cli@npm:11.0.5"
   dependencies:
-    "@angular-devkit/core": "npm:19.1.7"
-    "@angular-devkit/schematics": "npm:19.1.7"
-    "@angular-devkit/schematics-cli": "npm:19.1.7"
+    "@angular-devkit/core": "npm:19.1.8"
+    "@angular-devkit/schematics": "npm:19.1.8"
+    "@angular-devkit/schematics-cli": "npm:19.1.8"
     "@inquirer/prompts": "npm:7.3.2"
     "@nestjs/schematics": "npm:^11.0.1"
-    ansis: "npm:3.15.0"
+    ansis: "npm:3.16.0"
     chokidar: "npm:4.0.3"
     cli-table3: "npm:0.6.5"
     commander: "npm:4.1.1"
@@ -1797,7 +1829,7 @@ __metadata:
       optional: true
   bin:
     nest: bin/nest.js
-  checksum: 10c0/cc72eb6fc234164fd65fd6f4c46595a55f8c27982cc5fe7e6be59084faba296439abd94fee646225f403f78258febd4a6e7a1b716e9b856bf2a1321b39b062f1
+  checksum: 10c0/6184b079b966c49e2960b34a3565347e997d2b74f6877f4745ce453df0aab75e2c31a09fee74c77f3606373197a833b6dd7c247723a2c477ebb588245231b27b
   languageName: node
   linkType: hard
 
@@ -3047,10 +3079,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"ansis@npm:3.15.0":
-  version: 3.15.0
-  resolution: "ansis@npm:3.15.0"
-  checksum: 10c0/fb0cc48e82178fa067471a815a11712c79d4200017a0f6da275c7193db0603e2b4df9376465901f106041dc343b55b71e1d0071ceb06150ae7060bb22709c3e9
+"ansis@npm:3.16.0":
+  version: 3.16.0
+  resolution: "ansis@npm:3.16.0"
+  checksum: 10c0/09042a3d9ea59aecb859e7bec19aab8b608215d8bb56e9f81b063d8703d19f52323689d8fb4a3d31369ab326c326890ea78292fc986b214d7bbf28ca984e4afc
   languageName: node
   linkType: hard
 
