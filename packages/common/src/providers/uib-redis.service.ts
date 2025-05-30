@@ -1,6 +1,6 @@
 import { Injectable, Inject, Optional } from '@nestjs/common';
-import { RedisJSON } from '@redis/json/dist/commands';
-import { SearchOptions as RedisSearchOptions } from 'redis';
+import { RedisJSON } from '@redis/json/dist/lib/commands';
+import { FtSearchOptions as RedisSearchOptions } from 'redis';
 import { RedisService, RedisMulti } from './redis.service';
 import {
   UibDictionary,
@@ -262,11 +262,12 @@ export class UibRedisService {
     const metadataMap: ArticleMetadataMap = new Map();
 
     for (let i = 0; i < articleIds.length; i++) {
-      if (articleList[i] === null) {
+      const article = articleList[i];
+      if (article === null) {
         continue;
       }
 
-      const articleData = JSON.parse(articleList[i]);
+      const articleData = JSON.parse(article);
       metadataMap.set(articleIds[i], {
         ...articleData,
         updatedAt: new Date(articleData.updatedAt),
@@ -466,16 +467,32 @@ export class UibRedisService {
     dictionary?: UibDictionary,
     options?: SearchOptions,
   ): Promise<SearchResults<UibArticleIdentifier>> {
-    const { total, documents } = await this.redis.client.ft.searchNoContent(
+    const response = await this.redis.client.ft.searchNoContent(
       uibKeys.articleIndex(dictionary),
       query,
       options,
     );
 
+    if (
+      !response ||
+      !(typeof response === 'object') ||
+      !('total' in response) ||
+      !(typeof response.total === 'number') ||
+      !('documents' in response) ||
+      !Array.isArray(response.documents)
+    ) {
+      return {
+        total: 0,
+        results: new DeferredIterable<UibArticleIdentifier>([]),
+      };
+    }
+
+    const { total, documents } = response;
+
     return {
       total,
       results: new DeferredIterable(documents).map((key) =>
-        idForArticleKey(key),
+        idForArticleKey(key as string),
       ),
     };
   }
@@ -517,18 +534,37 @@ export class UibRedisService {
     dictionary?: UibDictionary,
     options?: SearchOptions,
   ): Promise<SearchResults<FullSearchResult>> {
-    const { total, documents } = await this.redis.client.ft.search(
+    const response = await this.redis.client.ft.search(
       uibKeys.articleIndex(dictionary),
       query,
       options,
     );
 
+    if (
+      !response ||
+      !(typeof response === 'object') ||
+      !('total' in response) ||
+      !(typeof response.total === 'number') ||
+      !('documents' in response) ||
+      !Array.isArray(response.documents)
+    ) {
+      return {
+        total: 0,
+        results: new DeferredIterable<FullSearchResult>([]),
+      };
+    }
+
+    const { total, documents } = response;
+
     return {
       total,
-      results: new DeferredIterable(documents).map(({ id, value }) => ({
-        ...idForArticleKey(id),
-        data: value[0] as unknown as UibArticle,
-      })),
+      results: new DeferredIterable(documents).map((obj) => {
+        const { id, value } = obj as { id: string; value: unknown };
+        return {
+          ...idForArticleKey(id),
+          data: value as UibArticle,
+        };
+      }),
     };
   }
 
