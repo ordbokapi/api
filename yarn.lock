@@ -2256,12 +2256,21 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@redis/json@npm:1.0.7, @redis/json@npm:^1.0.7":
+"@redis/json@npm:1.0.7":
   version: 1.0.7
   resolution: "@redis/json@npm:1.0.7"
   peerDependencies:
     "@redis/client": ^1.0.0
   checksum: 10c0/cef473711d66f7568a16edbd728acca7d237cfeaa15e0326b5b628dfab4afc0c76c7354e7f8efad6ecc64a1cb774e4aa060ee46497b633e18ba0a2f0aace1cc4
+  languageName: node
+  linkType: hard
+
+"@redis/json@npm:^5.0.0":
+  version: 5.1.1
+  resolution: "@redis/json@npm:5.1.1"
+  peerDependencies:
+    "@redis/client": ^5.1.1
+  checksum: 10c0/e4f5ac2a449b31a8b27d65b1006cc54f4755ea44524c67b08664a56133a8618d344a662f916e09988b47f963518861073d4c79610810a6d2f93ad9112dba2d7c
   languageName: node
   linkType: hard
 
@@ -6893,7 +6902,7 @@ __metadata:
     "@eslint/js": "npm:^9.19.0"
     "@nestjs/common": "npm:^11.0.5"
     "@nestjs/config": "npm:^4.0.0"
-    "@redis/json": "npm:^1.0.7"
+    "@redis/json": "npm:^5.0.0"
     "@types/luxon": "npm:^3.4.2"
     "@types/node": "npm:^22.10.10"
     "@typescript-eslint/eslint-plugin": "npm:^8.21.0"
