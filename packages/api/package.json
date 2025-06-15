@@ -63,6 +63,7 @@
     "globals": "^16.0.0",
     "jest": "^30.0.0",
     "jest-junit": "^16.0.0",
+    "jest-util": "^30.0.0",
     "prettier": "^3.4.2",
     "run-on-tsc-build": "workspace:^",
     "source-map-support": "^0.5.21",
