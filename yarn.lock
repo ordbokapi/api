@@ -312,14 +312,14 @@ __metadata:
   linkType: hard
 
 "@as-integrations/fastify@npm:^3.0.0":
-  version: 3.0.0
-  resolution: "@as-integrations/fastify@npm:3.0.0"
+  version: 3.1.0
+  resolution: "@as-integrations/fastify@npm:3.1.0"
   dependencies:
     fastify-plugin: "npm:^5.0.1"
   peerDependencies:
-    "@apollo/server": ^4.0.0
+    "@apollo/server": ^4.0.0 || ^5.0.0
     fastify: ^5.3.0
-  checksum: 10c0/df7aa63712fb5fc4d8e5217ab1dd9139866070c385ccb99f5432402754d068a82f55903b5c840718256874496731d6266becd309d48d0d9a381d3b15878cefe5
+  checksum: 10c0/b075cb7eb1a88827e25209bb907cb50e8515512b02052c2d55267a4f2e679ce38070a2ef7c84f2417396923d1d66bbb6cd098ace2a06f35f2f77521749eba72c
   languageName: node
   linkType: hard
 
