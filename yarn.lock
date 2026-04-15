@@ -2177,8 +2177,8 @@ __metadata:
   linkType: hard
 
 "@nestjs/cli@npm:^11.0.2":
-  version: 11.0.19
-  resolution: "@nestjs/cli@npm:11.0.19"
+  version: 11.0.21
+  resolution: "@nestjs/cli@npm:11.0.21"
   dependencies:
     "@angular-devkit/core": "npm:19.2.24"
     "@angular-devkit/schematics": "npm:19.2.24"
@@ -2208,7 +2208,7 @@ __metadata:
       optional: true
   bin:
     nest: bin/nest.js
-  checksum: 10c0/c0e6aa491b3aa00c3c841fbad4720b841c74cd04b63d5f3b7a555f2d48f4587832b700855c3a270f61519209984e2329132222585479913f91009d33c096bd9b
+  checksum: 10c0/1806e58004443fefbfa1773edd821430bea227b006e6280ab56587d07826d5c4db21e55ad0bb7a0a28115734a6e63c91a43414454d79c2e6329846fa22a72e7e
   languageName: node
   linkType: hard
 
