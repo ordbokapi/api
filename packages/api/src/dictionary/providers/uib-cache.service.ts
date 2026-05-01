@@ -1,6 +1,24 @@
+// SPDX-FileCopyrightText: Copyright (C) 2026 Adaline Simonian
+// SPDX-License-Identifier: AGPL-3.0-or-later
+//
+// This file is part of Ordbok API.
+//
+// Ordbok API is free software: you can redistribute it and/or modify it under
+// the terms of the GNU Affero General Public License as published by the Free
+// Software Foundation, either version 3 of the License, or (at your option) any
+// later version.
+//
+// Ordbok API is distributed in the hope that it will be useful, but WITHOUT ANY
+// WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR
+// A PARTICULAR PURPOSE. See the GNU Affero General Public License for more
+// details.
+//
+// You should have received a copy of the GNU Affero General Public License
+// along with Ordbok API. If not, see <https://www.gnu.org/licenses/>.
+
 import { Injectable, Inject, Logger } from '@nestjs/common';
 import {
-  UibRedisService,
+  UibDbService,
   UibArticleIdentifier,
   UibDictionary,
   UibArticle,
@@ -15,7 +33,7 @@ import * as crypto from 'crypto';
 @Injectable()
 export class UibCacheService {
   constructor(
-    private readonly data: UibRedisService,
+    private readonly data: UibDbService,
     @Inject('ICacheProvider') private readonly cache: ICacheProvider,
   ) {}
 
@@ -24,6 +42,15 @@ export class UibCacheService {
   #getArticleCacheKey(identifier: UibArticleIdentifier): string {
     return `article:${identifier.dictionary}:${identifier.id}`;
   }
+
+  #pendingArticles: Map<
+    UibDictionary,
+    Array<{
+      id: number;
+      resolve: (article: UibArticle | null) => void;
+      reject: (err: unknown) => void;
+    }>
+  > | null = null;
 
   /**
    * Gets an article. If the article is not in the cache, it will be fetched
@@ -65,19 +92,56 @@ export class UibCacheService {
       );
     }
 
-    const article = await this.data.getArticle(identifier);
-
-    if (!article) {
-      return null;
+    if (!this.#pendingArticles) {
+      this.#pendingArticles = new Map();
+      queueMicrotask(() => this.#flushArticles());
     }
 
-    try {
-      await this.cache.set(cacheKey, article);
-    } catch (error) {
-      this.#logger.error(`Failed to cache article for key: ${cacheKey}`, error);
+    if (!this.#pendingArticles.has(identifier.dictionary)) {
+      this.#pendingArticles.set(identifier.dictionary, []);
     }
 
-    return article;
+    return new Promise<UibArticle | null>((resolve, reject) => {
+      this.#pendingArticles!.get(identifier.dictionary)!.push({
+        id: identifier.id,
+        resolve,
+        reject,
+      });
+    });
+  }
+
+  async #flushArticles(): Promise<void> {
+    const pending = this.#pendingArticles!;
+    this.#pendingArticles = null;
+
+    await Promise.all(
+      [...pending].map(async ([dictionary, entries]) => {
+        try {
+          const ids = entries.map((e) => e.id);
+          const map = await this.data.getArticlesFromDictionary(
+            dictionary,
+            ids,
+          );
+
+          for (const entry of entries) {
+            const article = map.get(entry.id) ?? null;
+            entry.resolve(article);
+            if (article) {
+              Promise.resolve(
+                this.cache.set(
+                  this.#getArticleCacheKey({ dictionary, id: entry.id }),
+                  article,
+                ),
+              ).catch(() => {});
+            }
+          }
+        } catch (err) {
+          for (const entry of entries) {
+            entry.reject(err);
+          }
+        }
+      }),
+    );
   }
 
   /**
@@ -100,12 +164,33 @@ export class UibCacheService {
     await this.cache.set(cacheKey, article);
   }
 
-  #updateHashWithObject(obj: object, hash: crypto.Hash): crypto.Hash {
+  /**
+   * Fetch articles from a dictionary in batches to warm the cache.
+   */
+  async warmArticles(dictionary: UibDictionary, ids: number[]): Promise<void> {
+    await Promise.all(ids.map((id) => this.getArticle(dictionary, id)));
+  }
+
+  #updateHashWithObject(obj: unknown, hash: crypto.Hash): crypto.Hash {
     // Create a hash of the object in such a way that the same object will
     // always produce the same hash, regardless of the order of the keys.
 
-    // hash.update(JSON.stringify(obj)); // This is not good enough, because
-    // the order of the keys matters.
+    if (obj === null || obj === undefined) {
+      hash.update('null');
+      return hash;
+    }
+
+    if (typeof obj !== 'object') {
+      hash.update(String(obj));
+      return hash;
+    }
+
+    if (Array.isArray(obj)) {
+      for (const item of obj) {
+        this.#updateHashWithObject(item, hash);
+      }
+      return hash;
+    }
 
     const keys = Object.keys(obj).sort() as Array<keyof typeof obj>;
 
@@ -139,6 +224,38 @@ export class UibCacheService {
   }
 
   /**
+   * Performs a search, returning only identifiers.
+   */
+  async searchIdentifiers(
+    query: string,
+    dictionary?: UibDictionary,
+    options?: SearchOptions,
+  ): Promise<UibArticleIdentifier[]> {
+    const cacheKey = this.#getSearchCacheKey(query, dictionary, options);
+    const cached: UibArticleIdentifier[] = await this.cache.get(cacheKey);
+
+    if (cached) {
+      return cached;
+    }
+
+    const { total, results } = await this.data.search(
+      query,
+      dictionary,
+      options,
+    );
+
+    if (!total) {
+      return [];
+    }
+
+    const identifiers = Array.from(results);
+
+    await this.cache.set(cacheKey, identifiers);
+
+    return identifiers;
+  }
+
+  /**
    * Performs a search. If the search was already performed, the result will
    * be fetched from the cache. Otherwise, the search will be performed and
    * the result will be stored in the cache.
@@ -152,24 +269,32 @@ export class UibCacheService {
     const cached: UibArticleIdentifier[] = await this.cache.get(cacheKey);
 
     if (cached) {
-      const articles = await Promise.all(
-        cached.map(async (identifier): Promise<FullSearchResult | null> => {
-          const data = await this.getArticle(identifier);
+      // Batch fetches by dictionary.
+      const byDict = new Map<string, UibArticleIdentifier[]>();
+      for (const identifier of cached) {
+        const list = byDict.get(identifier.dictionary) ?? [];
+        list.push(identifier);
+        byDict.set(identifier.dictionary, list);
+      }
 
-          if (!data) {
-            return null;
+      const articles: FullSearchResult[] = [];
+      await Promise.all(
+        Array.from(byDict.entries()).map(async ([dict, identifiers]) => {
+          const ids = identifiers.map((i) => i.id);
+          const map = await this.data.getArticlesFromDictionary(
+            dict as any,
+            ids,
+          );
+          for (const identifier of identifiers) {
+            const data = map.get(identifier.id);
+            if (data) {
+              articles.push({ ...identifier, data });
+            }
           }
-
-          return {
-            ...identifier,
-            data,
-          };
         }),
       );
 
-      return articles.filter((article): article is FullSearchResult =>
-        Boolean(article),
-      );
+      return articles;
     }
 
     const { total, results } = await this.data.searchWithData(

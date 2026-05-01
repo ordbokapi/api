@@ -1,0 +1,18 @@
+version = 1
+
+[[annotations]]
+path = [
+  ".prettierrc",
+  ".vscode/**",
+  "**/*.json",
+  "yarn.lock",
+  "Procfile",
+  "packages/api/src/schema.gql",
+]
+SPDX-FileCopyrightText = "Copyright (C) 2026 Adaline Simonian"
+SPDX-License-Identifier = "AGPL-3.0-or-later"
+
+[[annotations]]
+path = ".yarn/**"
+SPDX-FileCopyrightText = "Copyright (c) Yarn Contributors"
+SPDX-License-Identifier = "BSD-2-Clause"

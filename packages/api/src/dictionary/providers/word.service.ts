@@ -1,3 +1,21 @@
+// SPDX-FileCopyrightText: Copyright (C) 2026 Adaline Simonian
+// SPDX-License-Identifier: AGPL-3.0-or-later
+//
+// This file is part of Ordbok API.
+//
+// Ordbok API is free software: you can redistribute it and/or modify it under
+// the terms of the GNU Affero General Public License as published by the Free
+// Software Foundation, either version 3 of the License, or (at your option) any
+// later version.
+//
+// Ordbok API is distributed in the hope that it will be useful, but WITHOUT ANY
+// WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR
+// A PARTICULAR PURPOSE. See the GNU Affero General Public License for more
+// details.
+//
+// You should have received a copy of the GNU Affero General Public License
+// along with Ordbok API. If not, see <https://www.gnu.org/licenses/>.
+
 import { Injectable, Logger } from '@nestjs/common';
 import {
   Word,
@@ -35,12 +53,10 @@ import {
   UibDictionary,
   ArticleElement,
   ArticleTextElement,
-  UibArticleIdentifier,
   SanitizationService,
-  UnionIterable,
-  ArticleIndex,
-  UibRedisService,
+  UibDbService,
   SearchOptions,
+  LightSearchResult,
 } from 'ordbokapi-common';
 import { UibCacheService } from './uib-cache.service';
 
@@ -60,6 +76,8 @@ const wordClassMap = new TwoWayMap([
   ['EXPR', WordClass.Uttrykk],
 ]);
 
+type SearchLabel = 'exact' | 'inflections' | 'freetext' | 'similar';
+
 @Injectable()
 export class WordService {
   private readonly logger = new Logger(WordService.name);
@@ -67,7 +85,7 @@ export class WordService {
   constructor(
     private ordboekeneApiService: OrdboekeneApiService,
     private readonly sanitizer: SanitizationService,
-    private readonly data: UibRedisService,
+    private readonly data: UibDbService,
     private readonly uib: UibCacheService,
   ) {}
 
@@ -81,37 +99,30 @@ export class WordService {
     this.logger.debug(`Getting articles for word: ${word}`);
 
     const sanitized = this.sanitizer.sanitize(word);
-    const articles: UnionIterable<UibArticleIdentifier> = new UnionIterable();
+    const filter = this.#buildExactFilter(sanitized, wordClass);
 
-    let query = `((@${ArticleIndex.LemmaExact}:{${sanitized}}) | (@${ArticleIndex.InflectionExact}:{${sanitized}}))`;
+    this.logger.debug(`Filter: ${filter}`);
 
-    if (wordClass) {
-      query += ` (@${ArticleIndex.ParadigmTags}:{${wordClassMap.getReverse(wordClass)}})`;
-    }
+    const queries = dictionaries.map((dict) => ({
+      query: '',
+      dictionary: toUibDictionary(dict),
+      options: { filter } as SearchOptions,
+    }));
 
-    this.logger.debug(`Query: ${query}`);
+    const batchResults = await this.data.batchSearchLight(queries);
+    const results = batchResults.flat();
 
-    for (const dict of dictionaries) {
-      const results = await this.uib.search(query, toUibDictionary(dict));
-
-      if (results.length > 0) {
-        articles.concat(results);
-      }
-    }
-
-    if (articles.size === 0) {
+    if (results.length === 0) {
       return undefined;
     }
 
     const wordObject: Word = {
       word,
       dictionaries,
-      articles: [
-        ...articles.map((article) => ({
-          id: article.id,
-          dictionary: fromUibDictionary(article.dictionary),
-        })),
-      ],
+      articles: results.map((hit) => ({
+        id: hit.id,
+        dictionary: fromUibDictionary(hit.dictionary),
+      })),
     };
 
     return wordObject;
@@ -130,239 +141,165 @@ export class WordService {
     const searchOptions: SearchOptions | undefined = maxCount
       ? { LIMIT: { from: 0, size: maxCount } }
       : undefined;
+    const queries: Array<{
+      query: string;
+      dictionary: UibDictionary;
+      options?: SearchOptions;
+    }> = [];
+    const queryLabels: SearchLabel[] = [];
 
-    const result = new Suggestions();
+    const addQueries = (
+      label: SearchLabel,
+      q: string,
+      filter: string | undefined,
+    ) => {
+      for (const dict of dictionaries) {
+        queries.push({
+          query: q,
+          dictionary: toUibDictionary(dict),
+          options: { ...searchOptions, filter },
+        });
+        queryLabels.push(label);
+      }
+    };
 
     if (!searchType || searchType & ApiSearchType.Exact) {
-      let exactQuery = `((@${ArticleIndex.LemmaExact}:{${sanitized}})`;
-
-      if (wordClass) {
-        exactQuery += ` | (@${ArticleIndex.ParadigmTags}:{${wordClassMap.getReverse(wordClass)}})`;
-      }
-
-      exactQuery += ')';
-
-      const exactResults = (
-        await Promise.all(
-          dictionaries.map((dict) =>
-            this.uib.search(exactQuery, toUibDictionary(dict), searchOptions),
-          ),
-        )
-      ).flat();
-
-      const exactMap = new Map<
-        string,
-        { dictionaries: Set<Dictionary>; articles: Article[] }
-      >();
-
-      for (const article of exactResults) {
-        const dict = fromUibDictionary(article.dictionary);
-        const key = article.data.lemmas[0].lemma;
-
-        let entry = exactMap.get(key);
-
-        if (!entry) {
-          entry = { dictionaries: new Set(), articles: [] };
-          exactMap.set(key, entry);
-        }
-
-        entry.dictionaries.add(dict);
-        entry.articles.push({
-          id: article.id,
-          dictionary: dict,
-        });
-      }
-
-      result.exact = Array.from(exactMap.entries()).map(([key, value]) => ({
-        word: key,
-        dictionaries: Array.from(value.dictionaries),
-        articles: value.articles,
-      }));
+      addQueries(
+        'exact',
+        '',
+        this.#buildLemmaExactFilter(sanitized, wordClass),
+      );
     }
 
     if (!searchType || searchType & ApiSearchType.Inflection) {
-      let inflectionQuery = `(@${ArticleIndex.InflectionExact}:{${sanitized}})`;
-
-      if (wordClass) {
-        inflectionQuery += ` (@${ArticleIndex.ParadigmTags}:{${wordClassMap.getReverse(wordClass)}})`;
-      }
-
-      const inflectionResults = (
-        await Promise.all(
-          dictionaries.map((dict) =>
-            this.uib.search(
-              inflectionQuery,
-              toUibDictionary(dict),
-              searchOptions,
-            ),
-          ),
-        )
-      ).flat();
-
-      const inflectionMap = new Map<
-        string,
-        { dictionaries: Set<Dictionary>; articles: Article[] }
-      >();
-
-      for (const article of inflectionResults) {
-        const dict = fromUibDictionary(article.dictionary);
-        const key = article.data.lemmas[0].lemma;
-
-        let entry = inflectionMap.get(key);
-
-        if (!entry) {
-          entry = { dictionaries: new Set(), articles: [] };
-          inflectionMap.set(key, entry);
-        }
-
-        entry.dictionaries.add(dict);
-        entry.articles.push({
-          id: article.id,
-          dictionary: dict,
-        });
-      }
-
-      result.inflections = Array.from(inflectionMap.entries()).map(
-        ([key, value]) => ({
-          word: key,
-          dictionaries: Array.from(value.dictionaries),
-          articles: value.articles,
-        }),
+      addQueries(
+        'inflections',
+        '',
+        this.#buildInflectionExactFilter(sanitized, wordClass),
       );
     }
 
     if (!searchType || searchType & ApiSearchType.Freetext) {
-      let freetextQuery = `(@${ArticleIndex.Lemma}:${sanitized})`;
-
-      if (wordClass) {
-        freetextQuery += ` (@${ArticleIndex.ParadigmTags}:{${wordClassMap.getReverse(wordClass)}})`;
-      }
-
-      const freetextResults = (
-        await Promise.all(
-          dictionaries.map((dict) =>
-            this.uib.search(
-              freetextQuery,
-              toUibDictionary(dict),
-              searchOptions,
-            ),
-          ),
-        )
-      ).flat();
-
-      const freetextMap = new Map<
-        string,
-        { dictionaries: Set<Dictionary>; articles: Article[] }
-      >();
-
-      for (const article of freetextResults) {
-        const dict = fromUibDictionary(article.dictionary);
-        const key = article.data.lemmas[0].lemma;
-
-        let entry = freetextMap.get(key);
-
-        if (!entry) {
-          entry = { dictionaries: new Set(), articles: [] };
-          freetextMap.set(key, entry);
-        }
-
-        entry.dictionaries.add(dict);
-        entry.articles.push({
-          id: article.id,
-          dictionary: dict,
-        });
-      }
-
-      result.freetext = Array.from(freetextMap.entries()).map(
-        ([key, value]) => ({
-          word: key,
-          dictionaries: Array.from(value.dictionaries),
-          articles: value.articles,
-        }),
+      addQueries(
+        'freetext',
+        sanitized,
+        wordClass
+          ? `paradigm_tags = "${wordClassMap.getReverse(wordClass)}"`
+          : undefined,
       );
     }
 
     if (!searchType || searchType & ApiSearchType.Similar) {
-      let similarQuery = `(@${ArticleIndex.Lemma}:${sanitized
-        .split(' ')
-        .map((s) => `%${s}%`)
-        .join(' ')})`;
+      addQueries(
+        'similar',
+        sanitized,
+        wordClass
+          ? `paradigm_tags = "${wordClassMap.getReverse(wordClass)}"`
+          : undefined,
+      );
+    }
 
-      if (wordClass) {
-        similarQuery += ` (@${ArticleIndex.ParadigmTags}:{${wordClassMap.getReverse(wordClass)}})`;
-      }
+    const batchResults = await this.data.batchSearchLight(queries);
+    const grouped: Record<SearchLabel, LightSearchResult[]> = {
+      exact: [],
+      inflections: [],
+      freetext: [],
+      similar: [],
+    };
 
-      const similarResults = (
-        await Promise.all(
-          dictionaries.map((dict) =>
-            this.uib.search(similarQuery, toUibDictionary(dict), searchOptions),
-          ),
-        )
-      ).flat();
+    for (let i = 0; i < batchResults.length; i++) {
+      grouped[queryLabels[i]].push(...batchResults[i]);
+    }
 
-      const similarMap = new Map<
-        string,
-        { dictionaries: Set<Dictionary>; articles: Article[] }
-      >();
-
-      for (const article of similarResults) {
-        const dict = fromUibDictionary(article.dictionary);
-        const key = article.data.lemmas[0].lemma;
-
-        let entry = similarMap.get(key);
-
-        if (!entry) {
-          entry = { dictionaries: new Set(), articles: [] };
-          similarMap.set(key, entry);
-        }
-
-        entry.dictionaries.add(dict);
-        entry.articles.push({
-          id: article.id,
-          dictionary: dict,
-        });
-      }
-
-      result.similar = Array.from(similarMap.entries()).map(([key, value]) => ({
-        word: key,
-        dictionaries: Array.from(value.dictionaries),
-        articles: value.articles,
-      }));
+    const result = new Suggestions();
+    if (!searchType || searchType & ApiSearchType.Exact) {
+      result.exact = this.#groupLightResults(grouped.exact);
+    }
+    if (!searchType || searchType & ApiSearchType.Inflection) {
+      result.inflections = this.#groupLightResults(grouped.inflections);
+    }
+    if (!searchType || searchType & ApiSearchType.Freetext) {
+      result.freetext = this.#groupLightResults(grouped.freetext);
+    }
+    if (!searchType || searchType & ApiSearchType.Similar) {
+      result.similar = this.#groupLightResults(grouped.similar);
     }
 
     return result;
   }
 
-  async getDefinitions(article: Article): Promise<Definition[]> {
-    this.logger.debug(`Getting definitions for article: ${article.id}`);
+  #hydratePromises = new WeakMap<Article, Promise<boolean>>();
+  #rawData = new WeakMap<Article, any>();
 
-    const data = await this.uib.getArticle(
-      toUibDictionary(article.dictionary),
-      article.id,
-    );
+  async #hydrateArticle(article: Article): Promise<boolean> {
+    const existing = this.#hydratePromises.get(article);
 
-    if (!data) {
-      return [];
+    if (existing) {
+      return existing;
     }
 
-    this.transformArticleResponse(article, data);
+    const promise = (async () => {
+      if (article.definitions !== undefined) {
+        return true;
+      }
+
+      const data = await this.uib.getArticle(
+        toUibDictionary(article.dictionary),
+        article.id,
+      );
+
+      if (!data) {
+        return false;
+      }
+
+      this.#rawData.set(article, data);
+      this.transformArticleResponse(article, data);
+
+      article.lemmas = this.transformLemmaInfo(data);
+      article.gender = this.transformGender(data);
+      article.phrases = this.transformPhrases(article, data);
+      article.etymology = this.transformEtymology(article, data);
+
+      return true;
+    })();
+
+    this.#hydratePromises.set(article, promise);
+
+    return promise;
+  }
+
+  async getDefinitions(article: Article): Promise<Definition[]> {
+    if (!(await this.#hydrateArticle(article))) {
+      return [];
+    }
 
     return article.definitions!;
   }
 
   async getRelationships(article: Article): Promise<ArticleRelationship[]> {
-    this.logger.debug(`Getting relationships for article: ${article.id}`);
-
-    const data = await this.uib.getArticle(
-      toUibDictionary(article.dictionary),
-      article.id,
-    );
-
-    if (!data) {
+    if (!(await this.#hydrateArticle(article))) {
       return [];
     }
 
-    return this.transformRelationships(article, data);
+    const relationships = this.transformRelationships(
+      article,
+      this.#rawData.get(article),
+    );
+    const byDict = new Map<Dictionary, number[]>();
+
+    for (const rel of relationships) {
+      const ids = byDict.get(rel.article.dictionary) ?? [];
+      ids.push(rel.article.id);
+      byDict.set(rel.article.dictionary, ids);
+    }
+
+    await Promise.all(
+      Array.from(byDict.entries()).map(([dict, ids]) =>
+        this.uib.warmArticles(toUibDictionary(dict), ids),
+      ),
+    );
+
+    return relationships;
   }
 
   async getArticle(
@@ -371,82 +308,51 @@ export class WordService {
   ): Promise<Article | undefined> {
     this.logger.debug(`Getting article: ${articleId}`);
 
-    const data = await this.uib.getArticle(
-      toUibDictionary(dictionary),
-      articleId,
-    );
-
-    if (!data) {
-      return undefined;
-    }
-
-    this.logger.debug(`Received article: ${articleId}`);
-
     const article: Article = {
       id: articleId,
       dictionary,
     };
 
-    this.transformArticleResponse(article, data);
-
-    this.logger.debug(`Transformed article: ${articleId}`);
+    if (!(await this.#hydrateArticle(article))) {
+      return undefined;
+    }
 
     return article;
   }
 
   async getWordClass(article: Article): Promise<WordClass | undefined> {
-    this.logger.debug(`Getting word class for article: ${article.id}`);
-
-    const data = await this.uib.getArticle(
-      toUibDictionary(article.dictionary),
-      article.id,
-    );
-
-    return data ? this.transformWordClass(data) : undefined;
+    if (!(await this.#hydrateArticle(article))) {
+      return undefined;
+    }
+    return article.wordClass;
   }
 
   async getLemmas(article: Article): Promise<Lemma[] | undefined> {
-    this.logger.debug(`Getting lemmas for article: ${article.id}`);
-
-    const data = await this.uib.getArticle(
-      toUibDictionary(article.dictionary),
-      article.id,
-    );
-
-    return data ? this.transformLemmaInfo(data) : undefined;
+    if (!(await this.#hydrateArticle(article))) {
+      return undefined;
+    }
+    return article.lemmas;
   }
 
   async getGender(article: Article): Promise<Gender | undefined> {
-    this.logger.debug(`Getting gender for article: ${article.id}`);
-
-    const data = await this.uib.getArticle(
-      toUibDictionary(article.dictionary),
-      article.id,
-    );
-
-    return data ? this.transformGender(data) : undefined;
+    if (!(await this.#hydrateArticle(article))) {
+      return undefined;
+    }
+    return article.gender;
   }
 
   async getPhrases(article: Article): Promise<Article[]> {
-    this.logger.debug(`Getting phrases for article: ${article.id}`);
-
-    const data = await this.uib.getArticle(
-      toUibDictionary(article.dictionary),
-      article.id,
-    );
-
-    return data ? this.transformPhrases(article, data) : [];
+    if (!(await this.#hydrateArticle(article))) {
+      return [];
+    }
+    return article.phrases!;
   }
 
   async getEtymology(article: Article): Promise<RichContent[]> {
-    this.logger.debug(`Getting etymology for article: ${article.id}`);
-
-    const data = await this.uib.getArticle(
-      toUibDictionary(article.dictionary),
-      article.id,
-    );
-
-    return data ? this.transformEtymology(article, data) : [];
+    if (!(await this.#hydrateArticle(article))) {
+      return [];
+    }
+    return article.etymology!;
   }
 
   async getArticleGraph(
@@ -470,18 +376,7 @@ export class WordService {
   async getRandomArticle(dictionary: Dictionary): Promise<Article | undefined> {
     this.logger.debug(`Getting random article from ${dictionary}`);
 
-    const randomId = await this.data.getRandomArticleId(
-      toUibDictionary(dictionary),
-    );
-
-    if (randomId === null) {
-      return undefined;
-    }
-
-    const data = await this.uib.getArticle(
-      toUibDictionary(dictionary),
-      randomId,
-    );
+    const data = await this.data.getRandomArticle(toUibDictionary(dictionary));
 
     if (!data) {
       return undefined;
@@ -500,6 +395,81 @@ export class WordService {
   //#endregion
 
   //#region Private helper methods
+
+  /**
+   * Escape a string for use in a Meilisearch filter value.
+   */
+  #escapeFilterValue(value: string): string {
+    return value.replace(/\\/g, '\\\\').replace(/"/g, '\\"');
+  }
+
+  /**
+   * Build a Meilisearch filter for exact lemma or exact inflection match,
+   * optionally restricted to a word class.
+   */
+  #buildExactFilter(word: string, wordClass?: WordClass): string {
+    const escaped = this.#escapeFilterValue(word);
+    let filter = `(lemmas = "${escaped}" OR inflections = "${escaped}")`;
+    if (wordClass) {
+      filter += ` AND paradigm_tags = "${wordClassMap.getReverse(wordClass)}"`;
+    }
+    return filter;
+  }
+
+  #groupLightResults(results: LightSearchResult[]): Word[] {
+    const map = new Map<
+      string,
+      { dictionaries: Set<Dictionary>; articles: Article[] }
+    >();
+
+    for (const hit of results) {
+      const dict = fromUibDictionary(hit.dictionary);
+      const key = hit.lemmas[0];
+
+      let entry = map.get(key);
+
+      if (!entry) {
+        entry = { dictionaries: new Set(), articles: [] };
+        map.set(key, entry);
+      }
+
+      entry.dictionaries.add(dict);
+      entry.articles.push({
+        id: hit.id,
+        dictionary: dict,
+      });
+    }
+
+    return Array.from(map.entries()).map(([key, value]) => ({
+      word: key,
+      dictionaries: Array.from(value.dictionaries),
+      articles: value.articles,
+    }));
+  }
+
+  /**
+   * Build a Meilisearch filter for exact lemma match only.
+   */
+  #buildLemmaExactFilter(word: string, wordClass?: WordClass): string {
+    const escaped = this.#escapeFilterValue(word);
+    let filter = `lemmas = "${escaped}"`;
+    if (wordClass) {
+      filter += ` AND paradigm_tags = "${wordClassMap.getReverse(wordClass)}"`;
+    }
+    return filter;
+  }
+
+  /**
+   * Build a Meilisearch filter for exact inflection match only.
+   */
+  #buildInflectionExactFilter(word: string, wordClass?: WordClass): string {
+    const escaped = this.#escapeFilterValue(word);
+    let filter = `inflections = "${escaped}"`;
+    if (wordClass) {
+      filter += ` AND paradigm_tags = "${wordClassMap.getReverse(wordClass)}"`;
+    }
+    return filter;
+  }
 
   private getDictParam(dictionary: Dictionary | Dictionary[]): string {
     return Array.isArray(dictionary)
@@ -714,8 +684,11 @@ export class WordService {
               id: article.article_id,
               dictionary,
             },
-            definitionId: article.definition_id,
-            definitionIndex: article.definition_order - 1,
+            definitionId: article.definition_id ?? undefined,
+            definitionIndex:
+              article.definition_order != null
+                ? article.definition_order - 1
+                : undefined,
           }),
         );
 
@@ -1105,7 +1078,7 @@ export class WordService {
         .join('-');
     };
 
-    const graph = new ArticleGraph();
+    const graph = new ArticleGraph({ dictionary });
 
     const addEdge = (edge: ArticleGraphEdge) => {
       const key = computeEdgeKey(edge);

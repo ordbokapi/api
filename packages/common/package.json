@@ -10,31 +10,30 @@
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "dependencies": {
-    "@nestjs/common": "^11.0.5",
-    "@nestjs/config": "^4.0.0",
-    "@redis/json": "^5.0.0",
-    "ioredis": "^5.4.2",
-    "luxon": "^3.5.0",
-    "redis": "^5.0.0",
+    "@nestjs/common": "^11.1.19",
+    "@nestjs/config": "^4.0.4",
+    "drizzle-orm": "^0.45.2",
+    "meilisearch": "^0.58.0",
+    "pg": "^8.20.0",
     "reflect-metadata": "^0.2.2",
-    "rxjs": "^7.8.1"
+    "rxjs": "^7.8.2"
   },
   "peerDependencies": {
-    "@nestjs/common": "^11.0.5",
-    "@nestjs/config": "^4.0.0"
+    "@nestjs/common": "^11.1.19",
+    "@nestjs/config": "^4.0.4"
   },
   "devDependencies": {
-    "@eslint/eslintrc": "^3.2.0",
-    "@eslint/js": "^10.0.0",
-    "@types/luxon": "^3.4.2",
+    "@eslint/eslintrc": "^3.3.5",
+    "@eslint/js": "^10.0.1",
     "@types/node": "^24.0.0",
-    "@typescript-eslint/eslint-plugin": "^8.21.0",
-    "@typescript-eslint/parser": "^8.21.0",
-    "eslint": "^10.0.0",
-    "eslint-config-prettier": "^10.0.1",
-    "eslint-plugin-prettier": "^5.2.3",
-    "globals": "^17.0.0",
-    "prettier": "^3.4.2",
-    "typescript": "^5.7.3"
+    "@types/pg": "^8.20.0",
+    "@typescript-eslint/eslint-plugin": "^8.59.1",
+    "@typescript-eslint/parser": "^8.59.1",
+    "eslint": "^10.2.1",
+    "eslint-config-prettier": "^10.1.8",
+    "eslint-plugin-prettier": "^5.5.5",
+    "globals": "^17.5.0",
+    "prettier": "^3.8.3",
+    "typescript": "^6.0.3"
   }
 }

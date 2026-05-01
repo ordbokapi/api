@@ -18,14 +18,13 @@
   "scripts": {
     "build": "yarn workspaces foreach -ptA --exclude ordbokapi-monorepo run build",
     "mkenvlink": "node mkenvlink.mjs",
-    "redis:start": "docker-compose -f ./docker-compose.yml up -d",
-    "redis:stop": "docker-compose -f ./docker-compose.yml down",
-    "redis:clear": "yarn redis:stop && node -e \"require('fs').rmSync('.redis', { recursive: true, force: true })\""
+    "services:start": "docker-compose -f ./docker-compose.yml up -d",
+    "services:stop": "docker-compose -f ./docker-compose.yml down"
   },
   "devDependencies": {
-    "eslint": "^10.0.0",
-    "prettier": "^3.4.2",
-    "typescript": "^5.7.3"
+    "eslint": "^10.2.1",
+    "prettier": "^3.8.3",
+    "typescript": "^6.0.3"
   },
   "jest": {
     "moduleFileExtensions": [
@@ -45,7 +44,7 @@
     "testEnvironment": "node"
   },
   "volta": {
-    "node": "24.15.0",
+    "node": "24.14.1",
     "yarn": "4.14.1"
   },
   "packageManager": "yarn@4.14.1"
