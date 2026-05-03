@@ -39,8 +39,8 @@ services:
     volumes:
       - ./.meili:/meili_data
 
-  redis:
-    image: redis:7-alpine
+  valkey:
+    image: valkey/valkey:9
     ports:
       - '${REDIS_PORT}:6379'
     volumes:

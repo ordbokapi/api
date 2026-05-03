@@ -49,7 +49,7 @@ For å starte Ordbok API lokalt, fylg desse trinna:
 
 1. Klon kodelageret: `git clone https://github.com/ordbokapi/api.git`
 2. Opprett `.env` frå malen: `cp template.env .env` og fyll inn dei nødvendige verdiane.
-3. Start tenestene med Docker (PostgreSQL, MeiliSearch og Redis): `yarn services:start`
+3. Start tenestene med Docker (PostgreSQL, MeiliSearch og Valkey): `yarn services:start`
 4. Installer avhengnadar: `yarn install`
 5. Bygg prosjektet: `yarn build`
 6. Start tenaren: `yarn start:dev`
