@@ -69,9 +69,11 @@ junit.xml
 !.vscode/launch.json
 !.vscode/extensions.json
 
-# Redis
-.redis
-.redis-backup
+# Docker volumes
+.pgdata
+.meilidata
+.valkey
+.valkey-backup
 
 # Env
 .env

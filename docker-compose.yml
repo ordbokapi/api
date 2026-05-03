@@ -16,32 +16,32 @@
 # You should have received a copy of the GNU Affero General Public License
 # along with Ordbok API. If not, see <https://www.gnu.org/licenses/>.
 
-version: '3.8'
+name: ordbokapi-local-dev
 services:
   db:
     image: postgres:18-alpine
     environment:
-      - POSTGRES_USER=ordbokapi
-      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
-      - POSTGRES_DB=ordbokapi
+      POSTGRES_USER: ordbokapi
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-password}
+      POSTGRES_DB: ordbokapi
     ports:
-      - '${POSTGRES_PORT}:5432'
+      - '${POSTGRES_PORT:-5432}:5432'
     volumes:
-      - ./.postgres:/var/lib/postgresql/data
+      - ./.pgdata:/var/lib/postgresql/data
 
   meilisearch:
     image: getmeili/meilisearch:v1
     environment:
-      - MEILI_MASTER_KEY=${MEILI_MASTER_KEY}
-      - MEILI_ENV=development
+      MEILI_MASTER_KEY: ${MEILI_API_KEY:-masterkey}
+      MEILI_ENV: development
     ports:
-      - '${MEILI_PORT}:7700'
+      - '${MEILI_PORT:-7700}:7700'
     volumes:
-      - ./.meili:/meili_data
+      - ./.meilidata:/meili_data
 
   valkey:
     image: valkey/valkey:9
     ports:
-      - '${REDIS_PORT}:6379'
+      - '${REDIS_PORT:-6379}:6379'
     volumes:
-      - ./.redis:/data
+      - ./.valkey:/data

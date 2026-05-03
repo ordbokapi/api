@@ -48,11 +48,18 @@ Den beste måten å koma i gang med Ordbok API på, er å vitja [Apollo Sandbox]
 For å starte Ordbok API lokalt, fylg desse trinna:
 
 1. Klon kodelageret: `git clone https://github.com/ordbokapi/api.git`
-2. Opprett `.env` frå malen: `cp template.env .env` og fyll inn dei nødvendige verdiane.
-3. Start tenestene med Docker (PostgreSQL, MeiliSearch og Valkey): `yarn services:start`
-4. Installer avhengnadar: `yarn install`
+2. Installer avhengnadar: `yarn`
+3. Opprett `.env` og symlenkjer til pakkene: `yarn mkenvlink`
+   kopierer `template.env` til `.env` og opprettar symlenkjer slik at alle pakkene deler same konfigurasjon. Du kan endre portane og passorda i `.env` om du treng det.
+4. Start tenestene med Docker (PostgreSQL, MeiliSearch og Valkey): `yarn services:start`
 5. Bygg prosjektet: `yarn build`
 6. Start tenaren: `yarn start:dev`
+
+API-et lyttar på port 3000 som standard. Opne http://localhost:3000/graphql for å koma til Apollo Sandbox.
+
+### Fylle databasen med data
+
+API-et startar utan data. For å fylle databasen med ordbokdata, må du køyre [arbeidarprosessen](https://github.com/ordbokapi/worker) i eit eige terminalvindauge. Sjå README-en i arbeidarkodelageret for oppsett.
 
 ## Bidrag
 

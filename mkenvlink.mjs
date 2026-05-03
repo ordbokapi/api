@@ -38,7 +38,9 @@ try {
       process.exit(0); // don't create .env in production
     }
 
-    await import('./writeenv.mjs');
+    const templateEnvPath = path.join(rootDir, 'template.env');
+    await fs.copyFile(templateEnvPath, rootEnvPath);
+    console.log('Oppretta .env frå template.env.');
   } else {
     throw err;
   }
