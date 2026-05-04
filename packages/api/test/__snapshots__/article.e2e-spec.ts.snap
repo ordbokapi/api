@@ -1,0 +1,798 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`article query > fetches a specific article with all scalar fields 1`] = `
+{
+  "dictionary": "Bokmaalsordboka",
+  "gender": "Hankjoenn",
+  "id": 66381,
+  "wordClass": "Substantiv",
+}
+`;
+
+exports[`article query > returns full nested structure 1`] = `
+{
+  "definitions": [
+    {
+      "content": [
+        {
+          "textContent": "atferd eller handlemåte som er gjentatt så mange ganger at den er blitt  mer eller mindre automatisert og ubevisst",
+        },
+        {
+          "textContent": "jamfør uvane",
+        },
+      ],
+      "examples": [
+        {
+          "textContent": "en dårlig vane",
+        },
+        {
+          "textContent": "jeg begynner å kjenne vanene dine",
+        },
+        {
+          "textContent": "jeg gjorde det av gammel vane",
+        },
+        {
+          "textContent": "de har lagt seg til fine vaner",
+        },
+        {
+          "textContent": "de har en del inngrodde vaner",
+        },
+        {
+          "textContent": "jeg er kommet ut av vanen med å stå opp tidlig",
+        },
+      ],
+      "id": 2,
+      "subDefinitions": [],
+    },
+    {
+      "content": [
+        {
+          "textContent": "skikk, sedvane",
+        },
+      ],
+      "examples": [],
+      "id": 4,
+      "subDefinitions": [],
+    },
+  ],
+  "etymology": [
+    {
+      "textContent": "norrønt vani",
+    },
+  ],
+  "lemmas": [
+    {
+      "id": 76190,
+      "lemma": "vane",
+      "meaning": 0,
+      "paradigms": [
+        {
+          "id": 566,
+          "inflections": [
+            {
+              "tags": [
+                "Eintal",
+                "Ubestemt",
+              ],
+              "wordForm": "vane",
+            },
+            {
+              "tags": [
+                "Eintal",
+                "Bestemt",
+              ],
+              "wordForm": "vanen",
+            },
+            {
+              "tags": [
+                "Fleirtal",
+                "Ubestemt",
+              ],
+              "wordForm": "vaner",
+            },
+            {
+              "tags": [
+                "Fleirtal",
+                "Bestemt",
+              ],
+              "wordForm": "vanene",
+            },
+          ],
+          "tags": [
+            "Hankjoenn",
+          ],
+        },
+      ],
+      "splitInfinitive": false,
+    },
+  ],
+  "phrases": [
+    {
+      "id": 135669,
+      "lemmas": [
+        {
+          "lemma": "sin vane tro",
+        },
+      ],
+    },
+    {
+      "id": 115155,
+      "lemmas": [
+        {
+          "lemma": "gammel vane er vond å vende",
+        },
+      ],
+    },
+    {
+      "id": 106188,
+      "lemmas": [
+        {
+          "lemma": "ha for vane",
+        },
+      ],
+    },
+  ],
+}
+`;
+
+exports[`article query > returns neuter gender for vanemenneske 1`] = `
+{
+  "gender": "Inkjekjoenn",
+  "lemmas": [
+    {
+      "lemma": "vanemenneske",
+    },
+  ],
+  "wordClass": "Substantiv",
+}
+`;
+
+exports[`article query > returns null gender for adjectives 1`] = `
+{
+  "gender": null,
+  "wordClass": "Adjektiv",
+}
+`;
+
+exports[`article query > returns relationships extracted from definitions 1`] = `
+[
+  {
+    "article": {
+      "dictionary": "Bokmaalsordboka",
+      "id": 66027,
+      "lemmas": [
+        {
+          "lemma": "uvane",
+        },
+      ],
+    },
+    "type": "Synonym",
+  },
+  {
+    "article": {
+      "dictionary": "Bokmaalsordboka",
+      "id": 52732,
+      "lemmas": [
+        {
+          "lemma": "skikk",
+        },
+      ],
+    },
+    "type": "Synonym",
+  },
+  {
+    "article": {
+      "dictionary": "Bokmaalsordboka",
+      "id": 50343,
+      "lemmas": [
+        {
+          "lemma": "sedvane",
+        },
+      ],
+    },
+    "type": "Synonym",
+  },
+  {
+    "article": {
+      "dictionary": "Bokmaalsordboka",
+      "id": 135669,
+      "lemmas": [
+        {
+          "lemma": "sin vane tro",
+        },
+      ],
+    },
+    "type": "Phrase",
+  },
+  {
+    "article": {
+      "dictionary": "Bokmaalsordboka",
+      "id": 115155,
+      "lemmas": [
+        {
+          "lemma": "gammel vane er vond å vende",
+        },
+      ],
+    },
+    "type": "Phrase",
+  },
+  {
+    "article": {
+      "dictionary": "Bokmaalsordboka",
+      "id": 106188,
+      "lemmas": [
+        {
+          "lemma": "ha for vane",
+        },
+      ],
+    },
+    "type": "Phrase",
+  },
+]
+`;
+
+exports[`edge cases > handles article with multiple lemmas 1`] = `
+[
+  {
+    "id": 1109332,
+    "lemma": "venje",
+  },
+  {
+    "id": 1109333,
+    "lemma": "venne",
+  },
+]
+`;
+
+exports[`rich content details > renders etymology with multiple segments 1`] = `
+[
+  {
+    "richContent": [
+      {
+        "content": "fra fransk opprinnelig ‘kunnskap om ruten’",
+        "type": "Text",
+      },
+    ],
+    "textContent": "fra fransk opprinnelig ‘kunnskap om ruten’",
+  },
+]
+`;
+
+exports[`rich content details > renders examples with usage text 1`] = `
+[
+  {
+    "examples": [
+      {
+        "textContent": "en dårlig vane",
+      },
+      {
+        "textContent": "jeg begynner å kjenne vanene dine",
+      },
+      {
+        "textContent": "jeg gjorde det av gammel vane",
+      },
+      {
+        "textContent": "de har lagt seg til fine vaner",
+      },
+      {
+        "textContent": "de har en del inngrodde vaner",
+      },
+      {
+        "textContent": "jeg er kommet ut av vanen med å stå opp tidlig",
+      },
+    ],
+    "subDefinitions": [],
+  },
+  {
+    "examples": [],
+    "subDefinitions": [],
+  },
+]
+`;
+
+exports[`rich content details > renders explanation with concept expansion in definition 1`] = `
+[
+  {
+    "content": [
+      {
+        "richContent": [
+          {
+            "content": "atferd eller handlemåte som er gjentatt så mange ganger at den er blitt  mer eller mindre automatisert og ubevisst",
+            "type": "Text",
+          },
+        ],
+        "textContent": "atferd eller handlemåte som er gjentatt så mange ganger at den er blitt  mer eller mindre automatisert og ubevisst",
+      },
+      {
+        "richContent": [
+          {
+            "content": "jamfør ",
+            "type": "Text",
+          },
+          {
+            "content": "uvane",
+            "type": "Article",
+          },
+        ],
+        "textContent": "jamfør uvane",
+      },
+    ],
+    "subDefinitions": [],
+  },
+  {
+    "content": [
+      {
+        "richContent": [
+          {
+            "content": "skikk",
+            "type": "Article",
+          },
+          {
+            "content": ", ",
+            "type": "Text",
+          },
+          {
+            "content": "sedvane",
+            "type": "Article",
+          },
+        ],
+        "textContent": "skikk, sedvane",
+      },
+    ],
+    "subDefinitions": [],
+  },
+]
+`;
+
+exports[`rich content details > returns definition relationships with correct types 1`] = `
+[
+  {
+    "relationships": [
+      {
+        "article": {
+          "id": 66027,
+        },
+        "type": "Synonym",
+      },
+    ],
+    "subDefinitions": [],
+  },
+  {
+    "relationships": [
+      {
+        "article": {
+          "id": 52732,
+        },
+        "type": "Synonym",
+      },
+      {
+        "article": {
+          "id": 50343,
+        },
+        "type": "Synonym",
+      },
+    ],
+    "subDefinitions": [],
+  },
+]
+`;
+
+exports[`word class variety > handles adjectives with comparative/superlative inflections 1`] = `
+{
+  "lemmas": [
+    {
+      "lemma": "vanlig",
+      "paradigms": [
+        {
+          "inflections": [
+            {
+              "tags": [
+                "Positiv",
+                "HankjoennHokjoenn",
+                "Ubestemt",
+                "Eintal",
+              ],
+              "wordForm": "vanlig",
+            },
+            {
+              "tags": [
+                "Positiv",
+                "Fleirtal",
+              ],
+              "wordForm": "vanlige",
+            },
+            {
+              "tags": [
+                "Positiv",
+                "Bestemt",
+                "Eintal",
+              ],
+              "wordForm": "vanlige",
+            },
+            {
+              "tags": [
+                "Positiv",
+                "Inkjekjoenn",
+                "Ubestemt",
+                "Eintal",
+              ],
+              "wordForm": "vanlig",
+            },
+            {
+              "tags": [
+                "Komparativ",
+              ],
+              "wordForm": "vanligere",
+            },
+            {
+              "tags": [
+                "Superlativ",
+                "Ubestemt",
+              ],
+              "wordForm": "vanligst",
+            },
+            {
+              "tags": [
+                "Superlativ",
+                "Bestemt",
+              ],
+              "wordForm": "vanligste",
+            },
+          ],
+          "tags": [],
+        },
+      ],
+    },
+  ],
+  "wordClass": "Adjektiv",
+}
+`;
+
+exports[`word class variety > handles expressions 1`] = `
+{
+  "definitions": [
+    {
+      "content": [
+        {
+          "textContent": "pleie",
+        },
+        {
+          "textContent": "bruke",
+        },
+        {
+          "textContent": "Se: vane",
+        },
+      ],
+    },
+  ],
+  "gender": null,
+  "lemmas": [
+    {
+      "lemma": "ha for vane",
+    },
+  ],
+  "wordClass": "Uttrykk",
+}
+`;
+
+exports[`word class variety > handles nynorsk verb with split infinitive 1`] = `
+{
+  "lemmas": [
+    {
+      "lemma": "venje",
+      "paradigms": [
+        {
+          "id": 919,
+        },
+      ],
+      "splitInfinitive": true,
+    },
+    {
+      "lemma": "venne",
+      "paradigms": [
+        {
+          "id": 836,
+        },
+        {
+          "id": 811,
+        },
+      ],
+      "splitInfinitive": true,
+    },
+  ],
+  "wordClass": "Verb",
+}
+`;
+
+exports[`word class variety > handles verbs with multiple paradigms 1`] = `
+{
+  "lemmas": [
+    {
+      "lemma": "venne",
+      "paradigms": [
+        {
+          "id": 17,
+          "inflections": [
+            {
+              "tags": [
+                "Infinitiv",
+              ],
+              "wordForm": "venne",
+            },
+            {
+              "tags": [
+                "Presens",
+              ],
+              "wordForm": "venner",
+            },
+            {
+              "tags": [
+                "Infinitiv",
+                "Passiv",
+              ],
+              "wordForm": "vennes",
+            },
+            {
+              "tags": [
+                "Presens",
+                "Passiv",
+              ],
+              "wordForm": "vennes",
+            },
+            {
+              "tags": [
+                "Preteritum",
+              ],
+              "wordForm": "vente",
+            },
+            {
+              "tags": [
+                "PerfektPartisipp",
+              ],
+              "wordForm": "vent",
+            },
+            {
+              "tags": [
+                "Adjektiv",
+                "PerfektPartisipp",
+                "Inkjekjoenn",
+                "Ubestemt",
+                "Eintal",
+              ],
+              "wordForm": "vent",
+            },
+            {
+              "tags": [
+                "Adjektiv",
+                "PerfektPartisipp",
+                "HankjoennHokjoenn",
+                "Ubestemt",
+                "Eintal",
+              ],
+              "wordForm": "vent",
+            },
+            {
+              "tags": [
+                "Adjektiv",
+                "PerfektPartisipp",
+                "Bestemt",
+                "Eintal",
+              ],
+              "wordForm": "vente",
+            },
+            {
+              "tags": [
+                "Adjektiv",
+                "PerfektPartisipp",
+                "Fleirtal",
+              ],
+              "wordForm": "vente",
+            },
+            {
+              "tags": [
+                "Adjektiv",
+                "PresensPartisipp",
+              ],
+              "wordForm": "vennende",
+            },
+            {
+              "tags": [
+                "Imperativ",
+              ],
+              "wordForm": "venn",
+            },
+          ],
+        },
+        {
+          "id": 7,
+          "inflections": [
+            {
+              "tags": [
+                "Infinitiv",
+              ],
+              "wordForm": "venne",
+            },
+            {
+              "tags": [
+                "Presens",
+              ],
+              "wordForm": "venner",
+            },
+            {
+              "tags": [
+                "Infinitiv",
+                "Passiv",
+              ],
+              "wordForm": "vennes",
+            },
+            {
+              "tags": [
+                "Presens",
+                "Passiv",
+              ],
+              "wordForm": "vennes",
+            },
+            {
+              "tags": [
+                "Preteritum",
+              ],
+              "wordForm": "vennet",
+            },
+            {
+              "tags": [
+                "PerfektPartisipp",
+              ],
+              "wordForm": "vennet",
+            },
+            {
+              "tags": [
+                "Adjektiv",
+                "PerfektPartisipp",
+                "Inkjekjoenn",
+                "Ubestemt",
+                "Eintal",
+              ],
+              "wordForm": "vennet",
+            },
+            {
+              "tags": [
+                "Adjektiv",
+                "PerfektPartisipp",
+                "HankjoennHokjoenn",
+                "Ubestemt",
+                "Eintal",
+              ],
+              "wordForm": "vennet",
+            },
+            {
+              "tags": [
+                "Adjektiv",
+                "PerfektPartisipp",
+                "Bestemt",
+                "Eintal",
+              ],
+              "wordForm": "vennede",
+            },
+            {
+              "tags": [
+                "Adjektiv",
+                "PerfektPartisipp",
+                "Fleirtal",
+              ],
+              "wordForm": "vennede",
+            },
+            {
+              "tags": [
+                "Adjektiv",
+                "PresensPartisipp",
+              ],
+              "wordForm": "vennende",
+            },
+            {
+              "tags": [
+                "Imperativ",
+              ],
+              "wordForm": "venn",
+            },
+          ],
+        },
+        {
+          "id": 6,
+          "inflections": [
+            {
+              "tags": [
+                "Infinitiv",
+              ],
+              "wordForm": "venne",
+            },
+            {
+              "tags": [
+                "Presens",
+              ],
+              "wordForm": "venner",
+            },
+            {
+              "tags": [
+                "Infinitiv",
+                "Passiv",
+              ],
+              "wordForm": "vennes",
+            },
+            {
+              "tags": [
+                "Presens",
+                "Passiv",
+              ],
+              "wordForm": "vennes",
+            },
+            {
+              "tags": [
+                "Preteritum",
+              ],
+              "wordForm": "vennet",
+            },
+            {
+              "tags": [
+                "PerfektPartisipp",
+              ],
+              "wordForm": "vennet",
+            },
+            {
+              "tags": [
+                "Adjektiv",
+                "PerfektPartisipp",
+                "Inkjekjoenn",
+                "Ubestemt",
+                "Eintal",
+              ],
+              "wordForm": "vennet",
+            },
+            {
+              "tags": [
+                "Adjektiv",
+                "PerfektPartisipp",
+                "HankjoennHokjoenn",
+                "Ubestemt",
+                "Eintal",
+              ],
+              "wordForm": "vennet",
+            },
+            {
+              "tags": [
+                "Adjektiv",
+                "PerfektPartisipp",
+                "Bestemt",
+                "Eintal",
+              ],
+              "wordForm": "vennete",
+            },
+            {
+              "tags": [
+                "Adjektiv",
+                "PerfektPartisipp",
+                "Fleirtal",
+              ],
+              "wordForm": "vennete",
+            },
+            {
+              "tags": [
+                "Adjektiv",
+                "PresensPartisipp",
+              ],
+              "wordForm": "vennende",
+            },
+            {
+              "tags": [
+                "Imperativ",
+              ],
+              "wordForm": "venn",
+            },
+          ],
+        },
+      ],
+      "splitInfinitive": false,
+    },
+  ],
+  "wordClass": "Verb",
+}
+`;

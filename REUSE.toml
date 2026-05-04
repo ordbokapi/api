@@ -3,6 +3,7 @@ version = 1
 [[annotations]]
 path = [
   ".prettierrc",
+  "**/.prettierignore",
   ".vscode/**",
   "**/*.json",
   "yarn.lock",
@@ -16,3 +17,13 @@ SPDX-License-Identifier = "AGPL-3.0-or-later"
 path = ".yarn/**"
 SPDX-FileCopyrightText = "Copyright (c) Yarn Contributors"
 SPDX-License-Identifier = "BSD-2-Clause"
+
+[[annotations]]
+path = [
+  "packages/api/test/fixtures/*.json",
+  "packages/api/test/__snapshots__/article.e2e-spec.ts.snap",
+  "packages/api/test/__snapshots__/word.e2e-spec.ts.snap",
+]
+precedence = "aggregate"
+SPDX-FileCopyrightText = "Universitetet i Bergen and Språkrådet"
+SPDX-License-Identifier = "CC-BY-4.0"

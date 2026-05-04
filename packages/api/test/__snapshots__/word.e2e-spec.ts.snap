@@ -1,0 +1,188 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`word query > queries nynorsk dictionary 1`] = `
+{
+  "articles": [
+    {
+      "dictionary": "Nynorskordboka",
+      "id": 87267,
+    },
+    {
+      "dictionary": "Nynorskordboka",
+      "id": 87222,
+    },
+  ],
+  "dictionaries": [
+    "Nynorskordboka",
+  ],
+  "word": "vane",
+}
+`;
+
+exports[`word query > returns definitions with specific text content 1`] = `
+[
+  {
+    "content": [
+      {
+        "textContent": "atferd eller handlemåte som er gjentatt så mange ganger at den er blitt  mer eller mindre automatisert og ubevisst",
+      },
+      {
+        "textContent": "jamfør uvane",
+      },
+    ],
+    "examples": [
+      {
+        "textContent": "en dårlig vane",
+      },
+      {
+        "textContent": "jeg begynner å kjenne vanene dine",
+      },
+      {
+        "textContent": "jeg gjorde det av gammel vane",
+      },
+      {
+        "textContent": "de har lagt seg til fine vaner",
+      },
+      {
+        "textContent": "de har en del inngrodde vaner",
+      },
+      {
+        "textContent": "jeg er kommet ut av vanen med å stå opp tidlig",
+      },
+    ],
+    "id": 2,
+    "subDefinitions": [],
+  },
+  {
+    "content": [
+      {
+        "textContent": "skikk, sedvane",
+      },
+    ],
+    "examples": [],
+    "id": 4,
+    "subDefinitions": [],
+  },
+]
+`;
+
+exports[`word query > returns etymology with concept expansion 1`] = `
+[
+  {
+    "richContent": [
+      {
+        "content": "norrønt vani",
+        "type": "Text",
+      },
+    ],
+    "textContent": "norrønt vani",
+  },
+]
+`;
+
+exports[`word query > returns lemma details with id, meaning, and splitInfinitive 1`] = `
+[
+  {
+    "id": 76190,
+    "lemma": "vane",
+    "meaning": 0,
+    "splitInfinitive": false,
+  },
+]
+`;
+
+exports[`word query > returns paradigm with mapped tags and inflections 1`] = `
+[
+  {
+    "id": 566,
+    "inflections": [
+      {
+        "tags": [
+          "Eintal",
+          "Ubestemt",
+        ],
+        "wordForm": "vane",
+      },
+      {
+        "tags": [
+          "Eintal",
+          "Bestemt",
+        ],
+        "wordForm": "vanen",
+      },
+      {
+        "tags": [
+          "Fleirtal",
+          "Ubestemt",
+        ],
+        "wordForm": "vaner",
+      },
+      {
+        "tags": [
+          "Fleirtal",
+          "Bestemt",
+        ],
+        "wordForm": "vanene",
+      },
+    ],
+    "tags": [
+      "Hankjoenn",
+    ],
+  },
+]
+`;
+
+exports[`word query > returns phrases 1`] = `
+[
+  {
+    "dictionary": "Bokmaalsordboka",
+    "id": 135669,
+    "lemmas": [
+      {
+        "lemma": "sin vane tro",
+      },
+    ],
+  },
+  {
+    "dictionary": "Bokmaalsordboka",
+    "id": 115155,
+    "lemmas": [
+      {
+        "lemma": "gammel vane er vond å vende",
+      },
+    ],
+  },
+  {
+    "dictionary": "Bokmaalsordboka",
+    "id": 106188,
+    "lemmas": [
+      {
+        "lemma": "ha for vane",
+      },
+    ],
+  },
+]
+`;
+
+exports[`word query > returns word, dictionaries, and article stubs 1`] = `
+{
+  "articles": [
+    {
+      "dictionary": "Bokmaalsordboka",
+      "id": 66381,
+    },
+  ],
+  "dictionaries": [
+    "Bokmaalsordboka",
+  ],
+  "word": "vane",
+}
+`;
+
+exports[`word query > returns wordClass and gender for a noun 1`] = `
+{
+  "gender": "Hankjoenn",
+  "id": 66381,
+  "wordClass": "Substantiv",
+}
+`;

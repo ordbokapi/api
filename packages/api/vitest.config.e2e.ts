@@ -16,33 +16,37 @@
 // You should have received a copy of the GNU Affero General Public License
 // along with Ordbok API. If not, see <https://www.gnu.org/licenses/>.
 
-import { Test, TestingModule } from '@nestjs/testing';
-import { INestApplication } from '@nestjs/common';
-import {
-  FastifyAdapter,
-  NestFastifyApplication,
-} from '@nestjs/platform-fastify';
-import * as request from 'supertest';
-import { AppModule } from './../src/app.module';
+import { resolve } from 'path';
+import { defineConfig } from 'vitest/config';
 
-describe('AppController (e2e)', () => {
-  let app: INestApplication;
-
-  beforeEach(async () => {
-    const moduleFixture: TestingModule = await Test.createTestingModule({
-      imports: [AppModule],
-    }).compile();
-
-    app = moduleFixture.createNestApplication<NestFastifyApplication>(
-      new FastifyAdapter(),
-    );
-    await app.init();
-  });
-
-  it('/ (GET) should redirect to /graphql', () => {
-    return request(app.getHttpServer())
-      .get('/')
-      .expect(302)
-      .expect('Location', '/graphql');
-  });
+export default defineConfig({
+  resolve: {
+    alias: {
+      'ordbokapi-common': resolve(__dirname, '../common/src/index.ts'),
+    },
+    dedupe: [
+      '@nestjs/common',
+      '@nestjs/config',
+      '@nestjs/core',
+      'reflect-metadata',
+    ],
+  },
+  oxc: {
+    decorator: {
+      legacy: true,
+      emitDecoratorMetadata: true,
+    },
+  },
+  test: {
+    include: ['test/**/*.e2e-spec.ts'],
+    globalSetup: ['test/global-e2e-setup.ts'],
+    testTimeout: 30_000,
+    hookTimeout: 120_000,
+    maxWorkers: 1,
+    isolate: false,
+    coverage: {
+      provider: 'v8',
+      reportsDirectory: './coverage',
+    },
+  },
 });
