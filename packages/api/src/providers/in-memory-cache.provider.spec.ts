@@ -16,6 +16,15 @@
 // You should have received a copy of the GNU Affero General Public License
 // along with Ordbok API. If not, see <https://www.gnu.org/licenses/>.
 
+import {
+  describe,
+  test,
+  expect,
+  beforeAll,
+  beforeEach,
+  afterEach,
+  vi,
+} from 'vitest';
 import { Logger } from '@nestjs/common';
 import { InMemoryCacheProvider } from './in-memory-cache.provider';
 import { TTLBucket } from './i-cache-provider';
@@ -27,19 +36,19 @@ describe('InMemoryCacheProvider', () => {
 
   beforeAll(() => {
     // Silence the logger by overriding its methods.
-    jest.spyOn(Logger.prototype, 'verbose').mockImplementation(() => {});
-    jest.spyOn(Logger.prototype, 'debug').mockImplementation(() => {});
-    jest.spyOn(Logger.prototype, 'error').mockImplementation(() => {});
+    vi.spyOn(Logger.prototype, 'verbose').mockImplementation(() => {});
+    vi.spyOn(Logger.prototype, 'debug').mockImplementation(() => {});
+    vi.spyOn(Logger.prototype, 'error').mockImplementation(() => {});
   });
 
   beforeEach(() => {
-    jest.useFakeTimers();
-    jest.setSystemTime(startTime);
+    vi.useFakeTimers();
+    vi.setSystemTime(startTime);
     cacheProvider = new InMemoryCacheProvider();
   });
 
   afterEach(() => {
-    jest.useRealTimers();
+    vi.useRealTimers();
   });
 
   test('should return null when a key is not found', async () => {
@@ -54,7 +63,7 @@ describe('InMemoryCacheProvider', () => {
       expect(result).toEqual('nonExpiringValue');
 
       // Advance time by 10 minutes - the key should still be retrievable.
-      await jest.advanceTimersByTimeAsync(10 * 60 * 1000);
+      await vi.advanceTimersByTimeAsync(10 * 60 * 1000);
       result = await cacheProvider.get('nonExpiringKey');
       expect(result).toEqual('nonExpiringValue');
     });
@@ -71,7 +80,7 @@ describe('InMemoryCacheProvider', () => {
       expect(result).toEqual('ttlValue');
 
       // Advance time by 30 seconds, well within the initial 60-sec TTL.
-      await jest.advanceTimersByTimeAsync(30 * 1000);
+      await vi.advanceTimersByTimeAsync(30 * 1000);
       result = await cacheProvider.get('ttlKey');
       expect(result).toEqual('ttlValue');
       // Note: Each get extends the TTL to "now + 60 sec" (but never past the
@@ -79,12 +88,12 @@ describe('InMemoryCacheProvider', () => {
 
       // Advance time to nearly the maximum allowed expiry.
       // (Imagine we are nearly at startTime + 3600 seconds.)
-      jest.setSystemTime(startTime + 3599 * 1000);
+      vi.setSystemTime(startTime + 3599 * 1000);
       result = await cacheProvider.get('ttlKey');
       expect(result).toEqual('ttlValue');
 
       // Now set the time beyond the maximum TTL boundary.
-      jest.setSystemTime(startTime + 3601 * 1000);
+      vi.setSystemTime(startTime + 3601 * 1000);
       result = await cacheProvider.get('ttlKey');
       expect(result).toBeNull();
     });
@@ -93,11 +102,9 @@ describe('InMemoryCacheProvider', () => {
       cacheProvider.set('ttlNoAccess', 'valueNoAccess', TTLBucket.Short);
       // If we do not call get within the initial 60 seconds (min TTL), the key
       // should be removed by lru-cache.
-      jest.setSystemTime(startTime + 61 * 1000);
-      await jest.advanceTimersByTimeAsync(0);
-      await new Promise((resolve) =>
-        jest.requireActual('timers').setImmediate(resolve),
-      );
+      vi.useRealTimers();
+      vi.setSystemTime(startTime + 61 * 1000);
+      await new Promise<void>((resolve) => setTimeout(resolve, 0));
       const result = await cacheProvider.get('ttlNoAccess');
       expect(result).toBeNull();
     });
@@ -115,17 +122,17 @@ describe('InMemoryCacheProvider', () => {
 
       // Advance a short amount of time (e.g. 10 seconds) and the key should
       // still exist.
-      await jest.advanceTimersByTimeAsync(10 * 1000);
+      await vi.advanceTimersByTimeAsync(10 * 1000);
       result = await cacheProvider.get('longTTLKey');
       expect(result).toEqual('longTTLValue');
 
       // Advance time to just before the maximum expiry (t0 + 14400 sec - 1 sec):
-      jest.setSystemTime(startTime + (14400 - 1) * 1000);
+      vi.setSystemTime(startTime + (14400 - 1) * 1000);
       result = await cacheProvider.get('longTTLKey');
       expect(result).toEqual('longTTLValue');
 
       // Advance beyond the maximum TTL.
-      jest.setSystemTime(startTime + 14400 * 1000 + 1);
+      vi.setSystemTime(startTime + 14400 * 1000 + 1);
       result = await cacheProvider.get('longTTLKey');
       expect(result).toBeNull();
     });

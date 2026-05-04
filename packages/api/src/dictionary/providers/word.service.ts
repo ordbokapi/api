@@ -387,7 +387,13 @@ export class WordService {
       dictionary,
     };
 
+    this.#rawData.set(article, data);
     this.transformArticleResponse(article, data);
+
+    article.lemmas = this.transformLemmaInfo(data);
+    article.gender = this.transformGender(data);
+    article.phrases = this.transformPhrases(article, data);
+    article.etymology = this.transformEtymology(article, data);
 
     return article;
   }
