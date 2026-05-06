@@ -79,4 +79,4 @@ junit.xml
 .env
 packages/*/.env
 
-scripts
+test-scripts

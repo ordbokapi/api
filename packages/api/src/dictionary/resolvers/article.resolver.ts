@@ -29,12 +29,16 @@ import { WordService } from '../providers';
 import {
   Article,
   Definition,
+  FlatDefinition,
   WordClass,
   Gender,
   Lemma,
   Dictionary,
   ArticleRelationship,
   RichContent,
+  BibliographyReference,
+  Dialect,
+  WrittenForm,
 } from '../models';
 
 @Injectable()
@@ -43,13 +47,13 @@ export class ArticleResolver {
   constructor(private wordService: WordService) {}
 
   @Query(() => Article, {
-    description: 'Hentar artikkelen med eit gitt id.',
+    description: 'Hentar artikkelen med ein gjeven ID.',
     nullable: true,
   })
   async article(
     @Args('id', {
       type: () => Int,
-      description: 'Id-en til artikkelen som skal hentast.',
+      description: 'ID-en til artikkelen som skal hentast.',
     })
     id: number,
     @Args('dictionary', {
@@ -80,6 +84,11 @@ export class ArticleResolver {
     return this.wordService.getDefinitions(article);
   }
 
+  @ResolveField(() => [FlatDefinition])
+  async flatDefinitions(@Parent() article: Article) {
+    return this.wordService.getFlatDefinitions(article);
+  }
+
   @ResolveField(() => WordClass)
   async wordClass(@Parent() article: Article) {
     return this.wordService.getWordClass(article);
@@ -108,5 +117,25 @@ export class ArticleResolver {
   @ResolveField(() => [RichContent], { nullable: true })
   async etymology(@Parent() article: Article) {
     return this.wordService.getEtymology(article);
+  }
+
+  @ResolveField(() => [RichContent], { nullable: true })
+  async pronunciation(@Parent() article: Article) {
+    return this.wordService.getPronunciation(article);
+  }
+
+  @ResolveField(() => [Dialect], { nullable: true })
+  async dialect(@Parent() article: Article) {
+    return this.wordService.getDialect(article);
+  }
+
+  @ResolveField(() => [WrittenForm], { nullable: true })
+  async writtenForm(@Parent() article: Article) {
+    return this.wordService.getWrittenForm(article);
+  }
+
+  @ResolveField(() => [BibliographyReference], { nullable: true })
+  async olderSources(@Parent() article: Article) {
+    return this.wordService.getOlderSources(article);
   }
 }

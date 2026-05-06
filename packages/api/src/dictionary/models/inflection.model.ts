@@ -21,11 +21,11 @@ import { Field, ObjectType } from '@nestjs/graphql';
 
 @ObjectType({
   description:
-    'Representerer bøyingsinformasjon for eit ord, inkludert bøyingsmerke og ordform.',
+    'Bøyingsinformasjon for eit ord, inkludert bøyingsmerke og ordform.',
 })
 export class Inflection {
   @Field(() => [InflectionTag], {
-    description: 'Liste av bøyingsmerke assosiert med ordet.',
+    description: 'Liste over bøyingsmerke knytte til ordet.',
   })
   tags: InflectionTag[];
 

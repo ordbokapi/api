@@ -56,3 +56,15 @@ export const dictionaryMetadata = pgTable(
   },
   (table) => [primaryKey({ columns: [table.dictionary, table.key] })],
 );
+
+export const bibliography = pgTable('bibliography', {
+  id: bigint('id', { mode: 'number' }).primaryKey(),
+  code: text('code').notNull().default(''),
+  author: text('author').notNull().default(''),
+  title: text('title').notNull().default(''),
+  year: text('year').notNull().default(''),
+  fields: jsonb('fields').notNull().default([]),
+  fetchedAt: timestamp('fetched_at', { withTimezone: true })
+    .notNull()
+    .defaultNow(),
+});

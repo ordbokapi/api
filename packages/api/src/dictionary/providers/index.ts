@@ -16,6 +16,7 @@
 // You should have received a copy of the GNU Affero General Public License
 // along with Ordbok API. If not, see <https://www.gnu.org/licenses/>.
 
+export * from './article-filter-compiler.service';
 export * from './cache-wrapper.service';
 export * from './ordboekene-api.service';
 export * from './uib-cache.service';

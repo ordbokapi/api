@@ -22,7 +22,7 @@ import { ArticleRelationshipType } from './relationship-type.model';
 import { ArticleRelationship } from './relationship.model';
 
 @ObjectType({
-  description: 'Representerer ein grafkant frå ein artikkel til ein annan.',
+  description: 'Ein grafkant frå ein artikkel til ein annan.',
   implements: [ArticleRelationship],
 })
 export class RelatedArticleRelationship implements ArticleRelationship {

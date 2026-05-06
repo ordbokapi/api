@@ -23,7 +23,7 @@ import { ArticleRelationship } from './relationship.model';
 
 @ObjectType({
   description:
-    'Representerer ein grafkant frå ein artikkel til ein annan, der dei to artiklane er synonyme.',
+    'Ein grafkant frå ein artikkel til ein annan, der dei to artiklane er synonyme.',
   implements: [ArticleRelationship],
 })
 export class SynonymArticleRelationship implements ArticleRelationship {

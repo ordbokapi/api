@@ -22,8 +22,7 @@ import { RichContentSegment } from './segment.model';
 import { Article } from '../article.model';
 
 @ObjectType({
-  description:
-    'Representerer eit segment av rich content med ein referanse til ein artikkel.',
+  description: 'Eit riktekstsegment med ein referanse til ein artikkel.',
   implements: [RichContentSegment],
 })
 export class RichContentArticleSegment implements RichContentSegment {
@@ -32,7 +31,7 @@ export class RichContentArticleSegment implements RichContentSegment {
   }
 
   @Field(() => RichContentSegmentType, {
-    description: 'Typen av rich content-segmentet.',
+    description: 'Typen av segmentet.',
   })
   type: RichContentSegmentType.Article = RichContentSegmentType.Article;
 

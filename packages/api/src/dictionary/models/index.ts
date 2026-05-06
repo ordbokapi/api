@@ -17,16 +17,26 @@
 // along with Ordbok API. If not, see <https://www.gnu.org/licenses/>.
 
 export * from './article.model';
+export * from './article-connection';
+export * from './article-filter';
 export * from './article-graph';
 export * from './article-relationship';
+export * from './bibliography.model';
+export * from './bibliography-reference.model';
 export * from './definition.model';
+export * from './flat-definition.model';
+export * from './dialect';
 export * from './dictionary.model';
+export * from './etymology-language.model';
 export * from './gender.model';
 export * from './inflection-tag.model';
 export * from './inflection.model';
 export * from './lemma.model';
 export * from './paradigm.model';
+export * from './place.model';
+export * from './place-reference.model';
 export * from './rich-content';
 export * from './suggestions.model';
 export * from './word-class.model';
 export * from './word.model';
+export * from './written-form';

@@ -17,6 +17,8 @@
 // along with Ordbok API. If not, see <https://www.gnu.org/licenses/>.
 
 export * from './article-segment.model';
+export * from './formatted-text-segment.model';
+export * from './fraction-segment.model';
 export * from './rich-content.model';
 export * from './segment.model';
 export * from './segment-type.model';

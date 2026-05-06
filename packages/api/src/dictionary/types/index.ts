@@ -16,5 +16,6 @@
 // You should have received a copy of the GNU Affero General Public License
 // along with Ordbok API. If not, see <https://www.gnu.org/licenses/>.
 
+export * from './article-data';
 export * from './rich-content-builder';
 export * from './two-way-map';

@@ -381,5 +381,120 @@ export class UibDbService {
     };
   }
 
+  async searchFaceted(
+    dictionaries: UibDictionary[],
+    query: string,
+    options?: {
+      filter?: string;
+      sort?: string[];
+      facets?: string[];
+      limit?: number;
+      offset?: number;
+    },
+  ): Promise<{
+    total: number;
+    identifiers: UibArticleIdentifier[];
+    facetDistribution?: Record<string, Record<string, number>>;
+  }> {
+    const result = await this.meili.searchWithFacets(dictionaries, query, {
+      filter: options?.filter,
+      sort: options?.sort,
+      facets: options?.facets,
+      limit: options?.limit ?? 20,
+      offset: options?.offset ?? 0,
+    });
+
+    const identifiers: UibArticleIdentifier[] = result.hits.map((hit) => ({
+      dictionary: hit.dictionary as UibDictionary,
+      id: hit.article_id,
+    }));
+
+    return {
+      total: result.total,
+      identifiers,
+      facetDistribution: result.facetDistribution,
+    };
+  }
+
   // #endregion
+
+  // #region Bibliography
+
+  async getBibliographyByIds(
+    ids: number[],
+  ): Promise<Map<number, BibliographyEntry>> {
+    if (ids.length === 0) {
+      return new Map();
+    }
+
+    const rows = await this.database.db
+      .select({
+        id: schema.bibliography.id,
+        code: schema.bibliography.code,
+        author: schema.bibliography.author,
+        title: schema.bibliography.title,
+        year: schema.bibliography.year,
+      })
+      .from(schema.bibliography)
+      .where(inArray(schema.bibliography.id, ids));
+
+    const map = new Map<number, BibliographyEntry>();
+    for (const row of rows) {
+      map.set(row.id, row);
+    }
+    return map;
+  }
+
+  async getBibliographyById(id: number): Promise<BibliographyEntry | null> {
+    const row = await this.database.db
+      .select({
+        id: schema.bibliography.id,
+        code: schema.bibliography.code,
+        author: schema.bibliography.author,
+        title: schema.bibliography.title,
+        year: schema.bibliography.year,
+      })
+      .from(schema.bibliography)
+      .where(eq(schema.bibliography.id, id))
+      .limit(1)
+      .then((rows) => rows[0] ?? null);
+
+    return row;
+  }
+
+  async searchBibliography(
+    query: string,
+    options?: {
+      filter?: string;
+      limit?: number;
+      offset?: number;
+    },
+  ): Promise<{ total: number; entries: BibliographyEntry[] }> {
+    const result = await this.meili.searchBibliography(query, {
+      filter: options?.filter,
+      limit: options?.limit ?? 20,
+      offset: options?.offset ?? 0,
+    });
+
+    return {
+      total: result.total,
+      entries: result.hits.map((hit) => ({
+        id: hit.id,
+        code: hit.code ?? '',
+        author: hit.author ?? '',
+        title: hit.title ?? '',
+        year: hit.year ?? '',
+      })),
+    };
+  }
+
+  // #endregion
+}
+
+export interface BibliographyEntry {
+  id: number;
+  code: string;
+  author: string;
+  title: string;
+  year: string;
 }

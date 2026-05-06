@@ -19,10 +19,12 @@
 import { Field, Int, ObjectType } from '@nestjs/graphql';
 import { ArticleRelationship } from './article-relationship';
 import { RichContent } from './rich-content';
+import { PlaceReference } from './place-reference.model';
+import { BibliographyReference } from './bibliography-reference.model';
 
 @ObjectType({
   description:
-    'Representerer ein definisjon av eit ord eller uttrykk, inkludert døme og underdefinisjonar.',
+    'Ein definisjon av eit ord eller uttrykk, inkludert døme og underdefinisjonar.',
 })
 export class Definition {
   constructor(definiton?: Partial<Definition>) {
@@ -47,13 +49,27 @@ export class Definition {
 
   @Field(() => [ArticleRelationship], {
     description:
-      'Ei liste over artikkelrelasjonar som er relevante for definisjonen.',
+      'Ei liste over artiklar som er relaterte til denne definisjonen.',
   })
   relationships: ArticleRelationship[] = [];
 
   @Field(() => [Definition], {
+    deprecationReason:
+      'Bruk flatDefinitions på artikkelen i staden. Dette feltet skal tidlegast fjernast 2026-08-01.',
     description:
-      'Ei liste over underdefinisjonar relatert til hovuddefinisjonen.',
+      'Ei liste over underdefinisjonar som tilhøyrer denne definisjonen.',
   })
   subDefinitions: Definition[] = [];
+
+  @Field(() => [PlaceReference], {
+    description:
+      'Ei liste over geografiske stader der tydinga er heimfesta. Tilgjengeleg for Norsk Ordbok.',
+  })
+  placeReferences: PlaceReference[] = [];
+
+  @Field(() => [BibliographyReference], {
+    description:
+      'Ei liste over litteraturreferansar knytte til definisjonen. Tilgjengeleg for Norsk Ordbok.',
+  })
+  literatureReferences: BibliographyReference[] = [];
 }

@@ -22,7 +22,7 @@ import { InflectionTag } from './inflection-tag.model';
 
 @ObjectType({
   description:
-    'Representerer eit sett av bøyingsmønster for ord, inkludert spesifikke bøyingsformer og knyta til merke.',
+    'Eit bøyingsparadigme for eit ord, med bøyingsformer og tilhøyrande merke.',
 })
 export class Paradigm {
   @Field(() => Int, {
@@ -31,12 +31,12 @@ export class Paradigm {
   id: number;
 
   @Field(() => [Inflection], {
-    description: 'Liste av bøyingsformer assosiert med dette paradigmet.',
+    description: 'Liste over bøyingsformer i dette paradigmet.',
   })
   inflections: Inflection[];
 
   @Field(() => [InflectionTag], {
-    description: 'Liste av merke som er relevante for dette bøyingsparadigmet.',
+    description: 'Liste over merke knytte til dette bøyingsparadigmet.',
   })
   tags: InflectionTag[];
 }

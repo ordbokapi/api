@@ -21,7 +21,7 @@ import { Paradigm } from './paradigm.model';
 
 @ObjectType({
   description:
-    'Representerer grunnforma av eit ord, med tilhøyrande betyding og bøyingsparadigme.',
+    'Grunnforma til eit ord, med tilhøyrande tyding og bøyingsparadigme.',
 })
 export class Lemma {
   @Field(() => Int, { description: 'Ein unik identifikator for lemmaet.' })
@@ -36,7 +36,7 @@ export class Lemma {
   meaning: number;
 
   @Field(() => [Paradigm], {
-    description: 'Liste av bøyingsparadigme assosiert med lemmaet.',
+    description: 'Liste over bøyingsparadigme knytte til lemmaet.',
   })
   paradigms: Paradigm[];
 

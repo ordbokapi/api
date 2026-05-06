@@ -27,6 +27,7 @@ import {
   OrdboekeneApiService,
   CacheWrapperService,
   UibCacheService,
+  ArticleFilterCompiler,
 } from './providers';
 import { BuildInfoProvider, InMemoryCacheProvider } from '../providers';
 import * as resolvers from './resolvers';
@@ -41,6 +42,7 @@ import * as resolvers from './resolvers';
       WordService,
       OrdboekeneApiService,
       UibCacheService,
+      ArticleFilterCompiler,
     ])
     .add({
       provide: 'ICacheProvider',

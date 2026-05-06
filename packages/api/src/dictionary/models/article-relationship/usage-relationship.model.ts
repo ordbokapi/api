@@ -23,7 +23,7 @@ import { ArticleRelationship } from './relationship.model';
 
 @ObjectType({
   description:
-    'Representerer ein grafkant frå ein artikkel til ein annan, der den første artikkelen er brukt i den andre.',
+    'Ein grafkant frå ein artikkel til ein annan, der den første artikkelen er brukt i den andre.',
   implements: [ArticleRelationship],
 })
 export class UsageArticleRelationship implements ArticleRelationship {

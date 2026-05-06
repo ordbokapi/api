@@ -23,7 +23,7 @@ import { ArticleRelationship } from './relationship.model';
 
 @ObjectType({
   description:
-    'Representerer ein grafkant frå ein artikkel til ein annan, der dei to artiklane er antonyme.',
+    'Ein grafkant frå ein artikkel til ein annan, der dei to artiklane er antonyme.',
   implements: [ArticleRelationship],
 })
 export class AntonymArticleRelationship implements ArticleRelationship {

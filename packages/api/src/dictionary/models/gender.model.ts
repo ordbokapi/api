@@ -27,5 +27,5 @@ export enum Gender {
 
 registerEnumType(Gender, {
   name: 'Gender',
-  description: 'Den grammatiske kjønnet til eit substantiv.',
+  description: 'Det grammatiske kjønnet til eit substantiv.',
 });

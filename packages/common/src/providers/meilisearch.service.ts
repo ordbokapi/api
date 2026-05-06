@@ -37,6 +37,23 @@ export interface MeiliSearchResults {
   hits: MeiliSearchHit[];
 }
 
+export interface BibliographyHit {
+  id: number;
+  code: string;
+  author: string;
+  title: string;
+  year: string;
+}
+
+export interface BibliographySearchResults {
+  total: number;
+  hits: BibliographyHit[];
+}
+
+export interface MeiliSearchFacetResults extends MeiliSearchResults {
+  facetDistribution?: Record<string, Record<string, number>>;
+}
+
 @Injectable()
 export class MeilisearchService implements OnModuleInit {
   constructor(private readonly config: ConfigService) {}
@@ -159,6 +176,58 @@ export class MeilisearchService implements OnModuleInit {
     return { total, hits: allHits };
   }
 
+  async searchWithFacets(
+    dictionaries: UibDictionary[],
+    query: string,
+    options?: {
+      filter?: string;
+      sort?: string[];
+      facets?: string[];
+      limit?: number;
+      offset?: number;
+    },
+  ): Promise<MeiliSearchFacetResults> {
+    const queries = dictionaries.map((dict) => ({
+      indexUid: this.#indexName(dict),
+      q: query,
+      filter: options?.filter,
+      sort: options?.sort,
+      facets: options?.facets,
+      limit: options?.limit ?? 20,
+      offset: options?.offset ?? 0,
+    }));
+
+    const result = await this.#client.multiSearch({ queries });
+
+    const allHits: MeiliSearchHit[] = [];
+    let total = 0;
+    const mergedFacets: Record<string, Record<string, number>> = {};
+
+    for (const r of result.results) {
+      total += r.estimatedTotalHits ?? r.hits.length;
+      allHits.push(...(r.hits as MeiliSearchHit[]));
+
+      if (r.facetDistribution) {
+        for (const [attr, counts] of Object.entries(r.facetDistribution)) {
+          if (!mergedFacets[attr]) {
+            mergedFacets[attr] = {};
+          }
+          for (const [value, count] of Object.entries(counts)) {
+            mergedFacets[attr][value] =
+              (mergedFacets[attr][value] ?? 0) + count;
+          }
+        }
+      }
+    }
+
+    return {
+      total,
+      hits: allHits,
+      facetDistribution:
+        Object.keys(mergedFacets).length > 0 ? mergedFacets : undefined,
+    };
+  }
+
   #pendingBatch:
     | {
         queries: Array<{
@@ -243,5 +312,27 @@ export class MeilisearchService implements OnModuleInit {
         entry.reject(err);
       }
     }
+  }
+
+  async searchBibliography(
+    query: string,
+    options?: {
+      filter?: string;
+      limit?: number;
+      offset?: number;
+    },
+  ): Promise<BibliographySearchResults> {
+    const index = this.#client.index('bibliography');
+
+    const result = await index.search(query, {
+      filter: options?.filter,
+      limit: options?.limit ?? 20,
+      offset: options?.offset ?? 0,
+    });
+
+    return {
+      total: result.estimatedTotalHits ?? result.hits.length,
+      hits: result.hits as BibliographyHit[],
+    };
   }
 }

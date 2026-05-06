@@ -23,7 +23,7 @@ import { ArticleRelationship } from './relationship.model';
 
 @ObjectType({
   description:
-    'Representerer ein grafkant frå ein artikkel til ein annan, der den annan gir meir informasjon om den første eller er relatert på anna vis.',
+    'Ein grafkant frå ein artikkel til ein annan, der den andre gjev meir informasjon om den fyrste, eller er relatert på anna vis.',
   implements: [ArticleRelationship],
 })
 export class SeeAlsoArticleRelationship implements ArticleRelationship {

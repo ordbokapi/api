@@ -17,10 +17,11 @@
 // along with Ordbok API. If not, see <https://www.gnu.org/licenses/>.
 
 import { Field, ObjectType } from '@nestjs/graphql';
+import { RichContentFormattedTextSegment } from './formatted-text-segment.model';
 import { RichContentSegment } from './segment.model';
 
 @ObjectType({
-  description: 'Representerer tekstinnhaldet i ein artikkel.',
+  description: 'Tekstinnhald i ein artikkel.',
 })
 export class RichContent {
   constructor(segments?: RichContentSegment[]) {
@@ -31,11 +32,18 @@ export class RichContent {
     description: 'Innhaldet i rein tekst.',
   })
   get textContent(): string {
-    return this.richContent.reduce((acc, segment) => acc + segment.content, '');
+    return this.richContent.reduce(
+      (acc, segment) =>
+        acc +
+        (segment instanceof RichContentFormattedTextSegment
+          ? segment.formatted
+          : segment.content),
+      '',
+    );
   }
 
   @Field(() => [RichContentSegment], {
-    description: 'Innhaldet i form av rich content-segmenter.',
+    description: 'Innhaldet i form av riktekstsegment.',
   })
   richContent: RichContentSegment[];
 }

@@ -17,29 +17,40 @@
 // along with Ordbok API. If not, see <https://www.gnu.org/licenses/>.
 
 import { writeFile, mkdir } from 'node:fs/promises';
-import { dirname, join } from 'node:path';
-import { fileURLToPath } from 'node:url';
+import { join } from 'node:path';
 import pg from 'pg';
 
-const __dirname = dirname(fileURLToPath(import.meta.url));
-const fixturesDir = join(__dirname, 'fixtures');
+const fixturesDir = join(import.meta.dirname, '../test/fixtures');
 
-const DATABASE_URL =
+const databaseUrl =
   process.env.DATABASE_URL ??
   'postgres://ordbokapi:password@localhost:5432/ordbokapi';
-const MEILI_URL = process.env.MEILI_URL ?? 'http://localhost:7700';
-const MEILI_API_KEY = process.env.MEILI_API_KEY ?? 'masterkey';
+const meiliUrl = process.env.MEILI_URL ?? 'http://localhost:7700';
+const meiliApiKey = process.env.MEILI_API_KEY ?? 'masterkey';
 
-// "vane"
-const SEED_ARTICLES = {
-  bm: [66381],
-  nn: [87267],
+const seedArticles = {
+  bm: [
+    66381, // "vane"
+    4719, // "basseng"
+    20612, // "grafisk"
+    33530, // "lagnad"
+    33983, // "latin"
+    37093, // "maritim"
+    40381, // "nautisk"
+  ],
+  nn: [87267], // "vane"
+  no: [
+    166337, // "merg"
+    194163, // "stjerneloden"
+    266810, // "pund"
+    354805, // "sardiniar"
+  ],
 };
 
 async function meili(path, options = {}) {
-  const res = await fetch(`${MEILI_URL}${path}`, {
+  const res = await fetch(`${meiliUrl}${path}`, {
     headers: {
-      Authorization: `Bearer ${MEILI_API_KEY}`,
+      Authorization: `Bearer ${meiliApiKey}`,
       'Content-Type': 'application/json',
     },
     ...options,
@@ -64,12 +75,12 @@ async function findReferencedArticleIds(client, dictionary, articleId) {
 async function main() {
   await mkdir(fixturesDir, { recursive: true });
 
-  const client = new pg.Client(DATABASE_URL);
+  const client = new pg.Client(databaseUrl);
   await client.connect();
 
   try {
     const allIds = {};
-    for (const [dict, seedIds] of Object.entries(SEED_ARTICLES)) {
+    for (const [dict, seedIds] of Object.entries(seedArticles)) {
       const expanded = new Set(seedIds);
       for (const id of seedIds) {
         const refs = await findReferencedArticleIds(client, dict, id);

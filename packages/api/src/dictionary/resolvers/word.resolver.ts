@@ -29,7 +29,7 @@ export class WordResolver {
   @Query(() => Word, {
     nullable: true,
     description:
-      'Hentar eit spesifikt ord basert på ordteksten og ein valfri liste av ordbøker.',
+      'Hentar eit spesifikt ord basert på ordteksten og ei valfri liste over ordbøker.',
   })
   async word(
     @Args('word', {
@@ -41,14 +41,13 @@ export class WordResolver {
       type: () => [Dictionary],
       defaultValue: Object.values(Dictionary),
       description:
-        'Liste over ordbøker der søket skal utførast. Standardverdiane er Bokmålsordboka og Nynorskordboka.',
+        'Liste over ordbøker der søket skal utførast. Alle ordbøkene er med som standard.',
     })
     dictionaries: Dictionary[],
     @Args('wordClass', {
       type: () => WordClass,
       nullable: true,
-      description:
-        'Begrensar søket til å berre gjelda ord med denne ordklassen.',
+      description: 'Avgrensar søket til ord med denne ordklassen.',
     })
     wordClass: WordClass | undefined,
   ) {

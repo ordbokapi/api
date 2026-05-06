@@ -41,15 +41,18 @@ import { RequestLoggerMiddleware } from './request-logger.middleware';
               pollForSchemaUpdates: process.env.NODE_ENV !== 'production',
             },
           },
-          document: `query ExampleSuggestionsQuery($word: String!) {
+          document: `# Slå opp eit ord.
+query LookUp($word: String!) {
   suggestions(word: $word) {
     exact {
       word
       articles {
+        id
         dictionary
         wordClass
         gender
-        definitions {
+        flatDefinitions {
+          parentIndex
           content {
             textContent
           }
@@ -61,9 +64,200 @@ import { RequestLoggerMiddleware } from './request-logger.middleware';
     }
   }
 }
+
+# Søk etter ord.
+query Search($query: String!) {
+  articles(
+    query: $query
+    dictionaries: [Bokmaalsordboka, Nynorskordboka]
+    first: 10
+  ) {
+    totalCount
+    facets {
+      wordClass {
+        value
+        count
+      }
+      gender {
+        value
+        count
+      }
+    }
+    edges {
+      node {
+        id
+        dictionary
+        lemmas {
+          lemma
+        }
+        wordClass
+        gender
+        flatDefinitions {
+          parentIndex
+          content {
+            textContent
+          }
+          examples {
+            textContent
+          }
+        }
+      }
+    }
+    pageInfo {
+      hasNextPage
+      endCursor
+    }
+  }
+}
+
+# Kva ord finst i bergensk?
+query DialectWords($place: String!) {
+  articles(
+    dictionaries: [NorskOrdbok]
+    filter: { dialectPlace: { eq: $place } }
+    first: 10
+  ) {
+    totalCount
+    edges {
+      node {
+        id
+        lemmas {
+          lemma
+        }
+        flatDefinitions {
+          parentIndex
+          content {
+            textContent
+          }
+          examples {
+            textContent
+          }
+        }
+      }
+    }
+  }
+}
+
+# Kva ord har Ivar Aasen skrive i sine verk?
+query WordsAttestedByAuthor($author: String!) {
+  articles(
+    dictionaries: [NorskOrdbok]
+    filter: { writtenFormSource: { author: { contains: $author } } }
+    first: 10
+  ) {
+    totalCount
+    edges {
+      node {
+        id
+        lemmas {
+          lemma
+        }
+        writtenForm {
+          intro
+          variants {
+            sources {
+              id
+            }
+          }
+        }
+        flatDefinitions {
+          parentIndex
+          content {
+            textContent
+          }
+          examples {
+            textContent
+          }
+        }
+      }
+    }
+  }
+}
+
+# Kva substantiv kjem frå norrønt?
+query NorseOriginNouns {
+  articles(
+    dictionaries: [Bokmaalsordboka]
+    filter: { wordClass: Substantiv, etymologyLanguage: Norroent }
+    first: 10
+  ) {
+    totalCount
+    facets {
+      gender {
+        value
+        count
+      }
+    }
+    edges {
+      node {
+        id
+        lemmas {
+          lemma
+        }
+        gender
+      }
+    }
+  }
+}
+
+# Slå opp eit ord med strukturert tekst og lenkjer til andre artiklar i definisjonane.
+query LookUpRichContent($word: String!) {
+  suggestions(word: $word) {
+    exact {
+      word
+      articles {
+        id
+        dictionary
+        wordClass
+        gender
+        flatDefinitions {
+          parentIndex
+          content {
+            ...richContentFields
+          }
+          examples {
+            ...richContentFields
+          }
+        }
+      }
+    }
+  }
+}
+
+fragment richContentFields on RichContent {
+  textContent
+  richContent {
+    ... on RichContentTextSegment {
+      type
+      content
+    }
+    ... on RichContentArticleSegment {
+      type
+      content
+      article {
+        id
+        dictionary
+      }
+    }
+    ... on RichContentFormattedTextSegment {
+      type
+      content
+      formatted
+    }
+    ... on RichContentFractionSegment {
+      type
+      content
+      numerator
+      denominator
+    }
+  }
+}
 `,
           variables: {
             word: 'klasse',
+            query: 'sjø',
+            place: 'Bergen',
+            author: 'Aasen',
           },
         }),
         ApolloServerPluginInlineTrace(),

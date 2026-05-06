@@ -23,7 +23,7 @@ import { ArticleRelationship } from './relationship.model';
 
 @ObjectType({
   description:
-    'Representerer ein grafkant frå ein artikkel til ein annan, der den annan er eit uttrykk som den første artikkelen er ein del av.',
+    'Ein grafkant frå ein artikkel til ein annan, der den andre er eit uttrykk som den fyrste er ein del av.',
   implements: [ArticleRelationship],
 })
 export class PhraseArticleRelationship implements ArticleRelationship {

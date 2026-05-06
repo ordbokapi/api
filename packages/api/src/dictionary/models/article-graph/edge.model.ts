@@ -20,7 +20,7 @@ import { Field, Int, ObjectType } from '@nestjs/graphql';
 import { ArticleRelationshipType } from '../article-relationship';
 
 @ObjectType({
-  description: 'Representerer ein kant i ein graf av artikkelrelasjonar.',
+  description: 'Ein kant i ein graf av artikkelrelasjonar.',
 })
 export class ArticleGraphEdge {
   constructor(edge?: Partial<ArticleGraphEdge>) {

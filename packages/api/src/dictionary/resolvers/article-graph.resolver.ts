@@ -29,12 +29,13 @@ export class ArticleGraphResolver {
 
   @Query(() => ArticleGraph, {
     nullable: true,
-    description: 'Hentar ein graf av artikkelrelasjonar for eit gitt artikkel.',
+    description:
+      'Hentar ein graf av artikkelrelasjonar for ein gjeven artikkel.',
   })
   async articleGraph(
     @Args('id', {
       type: () => Int,
-      description: 'Id-en til artikkelen som skal hentast.',
+      description: 'ID-en til artikkelen som skal hentast.',
     })
     articleId: number,
     @Args('dictionary', {

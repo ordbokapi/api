@@ -29,7 +29,7 @@ import {
 } from '@testcontainers/postgresql';
 import pg from 'pg';
 
-const FIXTURES_DIR = join(__dirname, 'fixtures');
+const fixturesDir = join(__dirname, 'fixtures');
 
 interface FixtureArticle {
   dictionary: string;
@@ -53,7 +53,7 @@ interface MeiliDocument {
 }
 
 function loadFixture<T>(name: string): T {
-  return JSON.parse(readFileSync(join(FIXTURES_DIR, name), 'utf-8'));
+  return JSON.parse(readFileSync(join(fixturesDir, name), 'utf-8'));
 }
 
 async function waitForMeiliSearch(url: string, apiKey: string): Promise<void> {
@@ -181,6 +181,11 @@ async function seedPostgres(connectionString: string): Promise<void> {
 async function seedMeiliSearch(url: string, apiKey: string): Promise<void> {
   const settings = loadFixture<Record<string, unknown>>('meili-settings.json');
   const documents = loadFixture<MeiliDocument[]>('meili-documents.json');
+
+  await meiliFetch(url, apiKey, '/experimental-features', {
+    method: 'PATCH',
+    body: JSON.stringify({ containsFilter: true }),
+  });
 
   const byDict = new Map<string, MeiliDocument[]>();
   for (const doc of documents) {

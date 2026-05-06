@@ -21,8 +21,7 @@ import { RichContentSegmentType } from './segment-type.model';
 import { RichContentSegment } from './segment.model';
 
 @ObjectType({
-  description:
-    'Representerer eit segment av rich content med tekst som innhald.',
+  description: 'Eit riktekstsegment med tekstinnhald.',
   implements: [RichContentSegment],
 })
 export class RichContentTextSegment implements RichContentSegment {
@@ -31,7 +30,7 @@ export class RichContentTextSegment implements RichContentSegment {
   }
 
   @Field(() => RichContentSegmentType, {
-    description: 'Typen av rich content-segmentet.',
+    description: 'Typen av segmentet.',
   })
   type: RichContentSegmentType.Text = RichContentSegmentType.Text;
 

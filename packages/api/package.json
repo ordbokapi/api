@@ -21,7 +21,9 @@
     "test:watch": "vitest",
     "test:cov": "vitest run --coverage",
     "test:debug": "vitest --inspect-brk --no-file-parallelism",
-    "test:e2e": "vitest run --config ./vitest.config.e2e.ts"
+    "test:e2e": "vitest run --config ./vitest.config.e2e.ts",
+    "test:extract-fixtures": "node scripts/extract-fixtures.mjs",
+    "generate:schema": "node scripts/gen-article-schema.mjs"
   },
   "dependencies": {
     "@apollo/server": "^5.5.0",
@@ -59,10 +61,12 @@
     "@typescript-eslint/eslint-plugin": "^8.59.1",
     "@typescript-eslint/parser": "^8.59.1",
     "@vitest/coverage-v8": "^4.1.5",
+    "dotenv": "^17.4.2",
     "eslint": "^10.2.1",
     "eslint-config-prettier": "^10.1.8",
     "eslint-plugin-prettier": "^5.5.5",
     "globals": "^17.5.0",
+    "json-schema-to-typescript": "^15.0.4",
     "meilisearch": "^0.58.0",
     "pg": "^8.20.0",
     "prettier": "^3.8.3",

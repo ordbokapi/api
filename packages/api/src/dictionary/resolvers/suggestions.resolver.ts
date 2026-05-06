@@ -32,32 +32,31 @@ export class SuggestionsResolver {
 
   @Query(() => Suggestions, {
     description:
-      'Hentar forslag til ord basert på delvis ordtekst og valde ordbøker.',
+      'Hentar framlegg til ord basert på delvis ordtekst og valde ordbøker.',
   })
   async suggestions(
     @Args('word', {
       type: () => String,
-      description: 'Den delvise ordteksten som det skal hentast forslag for.',
+      description: 'Den delvise ordteksten som det skal hentast framlegg for.',
     })
     word: string,
     @Args('dictionaries', {
       type: () => [Dictionary],
       defaultValue: Object.values(Dictionary),
       description:
-        'Liste over ordbøker som skal brukast for å generera forslag. Standardverdiane er Bokmålsordboka og Nynorskordboka.',
+        'Liste over ordbøker som skal brukast for å generere framlegg. Alle ordbøkene er med som standard.',
     })
     dictionaries: Dictionary[],
     @Args('maxCount', {
       type: () => Number,
       nullable: true,
-      description: 'Begrensar talet på forslag som skal returnerast.',
+      description: 'Avgrensar talet på framlegg som skal returnerast.',
     })
     maxCount: number | undefined,
     @Args('wordClass', {
       type: () => WordClass,
       nullable: true,
-      description:
-        'Begrensar forslaga til å berre gjelda ord med denne ordklassen.',
+      description: 'Avgrensar framlegg til ord med denne ordklassen.',
     })
     wordClass: WordClass | undefined,
     @Info() info: GraphQLResolveInfo,

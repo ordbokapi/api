@@ -1,0 +1,2020 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`Norsk Ordbok article > returns definitions with content and examples 1`] = `
+{
+  "definitions": [
+    {
+      "content": [
+        {
+          "textContent": "mjuk, feittrik masse i det indre av dei fleste bein el knoklar",
+        },
+        {
+          "textContent": "òg i sms som beinmerg, ryggmerg",
+        },
+      ],
+      "examples": [
+        {
+          "textContent": "den (for)lengde mergen",
+        },
+        {
+          "textContent": "mange av beini er innhole og fyllte med merg",
+        },
+      ],
+      "id": 3,
+      "subDefinitions": [
+        {
+          "content": [
+            {
+              "textContent": "det inste, mest kjenslevare hjå menneske",
+            },
+          ],
+          "id": 4,
+        },
+        {
+          "content": [
+            {
+              "textContent": "gen.",
+            },
+          ],
+          "id": 10,
+        },
+      ],
+    },
+    {
+      "content": [
+        {
+          "textContent": "indre del av visse organ, t skiln frå den ytre delen",
+        },
+        {
+          "textContent": "òg i sms som nyremerg",
+        },
+      ],
+      "examples": [],
+      "id": 7,
+      "subDefinitions": [],
+    },
+    {
+      "content": [
+        {
+          "textContent": "indre, laust bygt vev i røter og stenglar",
+        },
+      ],
+      "examples": [
+        {
+          "textContent": "hos til dømes eik lagar mergen ei femspissa stjerne",
+        },
+      ],
+      "id": 11,
+      "subDefinitions": [],
+    },
+    {
+      "content": [],
+      "examples": [],
+      "id": 12,
+      "subDefinitions": [
+        {
+          "content": [
+            {
+              "textContent": "kjerne i korn",
+            },
+          ],
+          "id": 6,
+        },
+        {
+          "content": [
+            {
+              "textContent": "kjerne i nøtt",
+            },
+          ],
+          "id": 9,
+        },
+      ],
+    },
+    {
+      "content": [
+        {
+          "textContent": "midtre del av (tjukt) tauverk",
+        },
+      ],
+      "examples": [],
+      "id": 13,
+      "subDefinitions": [],
+    },
+    {
+      "content": [
+        {
+          "textContent": "",
+        },
+      ],
+      "examples": [],
+      "id": 14,
+      "subDefinitions": [
+        {
+          "content": [
+            {
+              "textContent": "viktig del av noko",
+            },
+            {
+              "textContent": "kjerne",
+            },
+          ],
+          "id": 5,
+        },
+        {
+          "content": [
+            {
+              "textContent": "(indre) kraft el styrke",
+            },
+          ],
+          "id": 8,
+        },
+      ],
+    },
+  ],
+}
+`;
+
+exports[`Norsk Ordbok article > returns etymology for NO articles 1`] = `
+[
+  {
+    "richContent": [
+      {
+        "content": "norrøn(t) mergr",
+        "type": "Text",
+      },
+    ],
+    "textContent": "norrøn(t) mergr",
+  },
+]
+`;
+
+exports[`Norsk Ordbok article > returns lemmas with paradigms 1`] = `
+{
+  "lemmas": [
+    {
+      "id": 1060376,
+      "lemma": "merg",
+      "meaning": 0,
+      "paradigms": [
+        {
+          "id": 2228,
+          "inflections": [
+            {
+              "tags": [
+                "Eintal",
+                "Ubestemt",
+              ],
+              "wordForm": "merg",
+            },
+            {
+              "tags": [
+                "Eintal",
+                "Bestemt",
+              ],
+              "wordForm": "mergen",
+            },
+            {
+              "tags": [
+                "Fleirtal",
+                "Ubestemt",
+              ],
+              "wordForm": "mergar",
+            },
+            {
+              "tags": [
+                "Fleirtal",
+                "Bestemt",
+              ],
+              "wordForm": "mergane",
+            },
+          ],
+          "tags": [
+            "Hankjoenn",
+          ],
+        },
+      ],
+      "splitInfinitive": false,
+    },
+  ],
+}
+`;
+
+exports[`Norsk Ordbok dialect > returns dialect forms with geographic sources 1`] = `
+[
+  {
+    "intro": "målf òg",
+    "subcategories": [
+      {
+        "forms": [
+          {
+            "form": "mærj",
+            "sources": [
+              {
+                "place": {
+                  "id": 3,
+                  "name": "Flatbygdene på Austlandet",
+                  "type": "",
+                },
+                "visible": true,
+              },
+              {
+                "place": {
+                  "id": 4,
+                  "name": "Sør-Austlandet",
+                  "type": "",
+                },
+                "visible": false,
+              },
+              {
+                "place": {
+                  "id": 5,
+                  "name": "Austfold",
+                  "type": "",
+                },
+                "visible": false,
+              },
+              {
+                "place": {
+                  "id": 41,
+                  "name": "Akershus",
+                  "type": "",
+                },
+                "visible": false,
+              },
+              {
+                "place": {
+                  "id": 85,
+                  "name": "Eidskog",
+                  "type": "",
+                },
+                "visible": true,
+              },
+              {
+                "place": {
+                  "id": 86,
+                  "name": "Vinger",
+                  "type": "",
+                },
+                "visible": true,
+              },
+              {
+                "place": {
+                  "id": 88,
+                  "name": "Odal",
+                  "type": "",
+                },
+                "visible": false,
+              },
+              {
+                "place": {
+                  "id": 91,
+                  "name": "Solør",
+                  "type": "",
+                },
+                "visible": false,
+              },
+              {
+                "place": {
+                  "id": 97,
+                  "name": "Hedmark",
+                  "type": "",
+                },
+                "visible": false,
+              },
+              {
+                "place": {
+                  "id": 106,
+                  "name": "Østerdalen",
+                  "type": "",
+                },
+                "visible": true,
+              },
+              {
+                "place": {
+                  "id": 113,
+                  "name": "Rendal",
+                  "type": "",
+                },
+                "visible": false,
+              },
+              {
+                "place": {
+                  "id": 116,
+                  "name": "Stor-Elvdal",
+                  "type": "",
+                },
+                "visible": false,
+              },
+              {
+                "place": {
+                  "id": 119,
+                  "name": "Alvdal",
+                  "type": "",
+                },
+                "visible": false,
+              },
+              {
+                "place": {
+                  "id": 120,
+                  "name": "Tynset",
+                  "type": "",
+                },
+                "visible": false,
+              },
+              {
+                "place": {
+                  "id": 121,
+                  "name": "Tolga",
+                  "type": "",
+                },
+                "visible": false,
+              },
+              {
+                "place": {
+                  "id": 123,
+                  "name": "Kvikne",
+                  "type": "",
+                },
+                "visible": false,
+              },
+              {
+                "place": {
+                  "id": 143,
+                  "name": "Fåberg",
+                  "type": "",
+                },
+                "visible": true,
+              },
+              {
+                "place": {
+                  "id": 158,
+                  "name": "Vest-Oppland",
+                  "type": "",
+                },
+                "visible": false,
+              },
+              {
+                "place": {
+                  "id": 192,
+                  "name": "Flesberg",
+                  "type": "",
+                },
+                "visible": true,
+              },
+              {
+                "place": {
+                  "id": 194,
+                  "name": "Sigdal",
+                  "type": "",
+                },
+                "visible": false,
+              },
+              {
+                "place": {
+                  "id": 196,
+                  "name": "Ringerike",
+                  "type": "",
+                },
+                "visible": false,
+              },
+              {
+                "place": {
+                  "id": 197,
+                  "name": "Ådal",
+                  "type": "",
+                },
+                "visible": false,
+              },
+              {
+                "place": {
+                  "id": 198,
+                  "name": "Norderhov",
+                  "type": "",
+                },
+                "visible": false,
+              },
+              {
+                "place": {
+                  "id": 202,
+                  "name": "Nedre Buskerud",
+                  "type": "",
+                },
+                "visible": false,
+              },
+              {
+                "place": {
+                  "id": 216,
+                  "name": "Vestfold",
+                  "type": "",
+                },
+                "visible": false,
+              },
+              {
+                "place": {
+                  "id": 254,
+                  "name": "Lunde",
+                  "type": "",
+                },
+                "visible": true,
+              },
+              {
+                "place": {
+                  "id": 264,
+                  "name": "Nedre Telemark",
+                  "type": "",
+                },
+                "visible": false,
+              },
+              {
+                "place": {
+                  "id": 265,
+                  "name": "Drangedal",
+                  "type": "",
+                },
+                "visible": false,
+              },
+              {
+                "place": {
+                  "id": 266,
+                  "name": "Holla",
+                  "type": "",
+                },
+                "visible": false,
+              },
+              {
+                "place": {
+                  "id": 267,
+                  "name": "Solum",
+                  "type": "",
+                },
+                "visible": false,
+              },
+              {
+                "place": {
+                  "id": 268,
+                  "name": "Gjerpen",
+                  "type": "",
+                },
+                "visible": false,
+              },
+              {
+                "place": {
+                  "id": 271,
+                  "name": "Siljan",
+                  "type": "",
+                },
+                "visible": false,
+              },
+              {
+                "place": {
+                  "id": 272,
+                  "name": "Eidanger",
+                  "type": "",
+                },
+                "visible": false,
+              },
+              {
+                "place": {
+                  "id": 276,
+                  "name": "Bamble",
+                  "type": "",
+                },
+                "visible": false,
+              },
+              {
+                "place": {
+                  "id": 279,
+                  "name": "Sannidal",
+                  "type": "",
+                },
+                "visible": false,
+              },
+              {
+                "place": {
+                  "id": 280,
+                  "name": "Agder",
+                  "type": "",
+                },
+                "visible": true,
+              },
+              {
+                "place": {
+                  "id": 281,
+                  "name": "Ytre Agder",
+                  "type": "",
+                },
+                "visible": false,
+              },
+              {
+                "place": {
+                  "id": 285,
+                  "name": "Indre Agder",
+                  "type": "",
+                },
+                "visible": false,
+              },
+              {
+                "place": {
+                  "id": 290,
+                  "name": "Vegårshei",
+                  "type": "",
+                },
+                "visible": false,
+              },
+              {
+                "place": {
+                  "id": 291,
+                  "name": "Dypvåg",
+                  "type": "",
+                },
+                "visible": false,
+              },
+              {
+                "place": {
+                  "id": 295,
+                  "name": "Mykland",
+                  "type": "",
+                },
+                "visible": false,
+              },
+              {
+                "place": {
+                  "id": 296,
+                  "name": "Froland",
+                  "type": "",
+                },
+                "visible": false,
+              },
+              {
+                "place": {
+                  "id": 300,
+                  "name": "Austre Moland",
+                  "type": "",
+                },
+                "visible": false,
+              },
+              {
+                "place": {
+                  "id": 305,
+                  "name": "Fjære",
+                  "type": "",
+                },
+                "visible": false,
+              },
+              {
+                "place": {
+                  "id": 306,
+                  "name": "Landvik",
+                  "type": "",
+                },
+                "visible": false,
+              },
+              {
+                "place": {
+                  "id": 311,
+                  "name": "Herefoss",
+                  "type": "",
+                },
+                "visible": false,
+              },
+              {
+                "place": {
+                  "id": 313,
+                  "name": "Vegusdal",
+                  "type": "",
+                },
+                "visible": false,
+              },
+              {
+                "place": {
+                  "id": 314,
+                  "name": "Iveland",
+                  "type": "",
+                },
+                "visible": false,
+              },
+              {
+                "place": {
+                  "id": 326,
+                  "name": "Tveit",
+                  "type": "",
+                },
+                "visible": false,
+              },
+              {
+                "place": {
+                  "id": 327,
+                  "name": "Oddernes",
+                  "type": "",
+                },
+                "visible": false,
+              },
+              {
+                "place": {
+                  "id": 328,
+                  "name": "Randesund",
+                  "type": "",
+                },
+                "visible": false,
+              },
+              {
+                "place": {
+                  "id": 329,
+                  "name": "Øvrebø",
+                  "type": "",
+                },
+                "visible": false,
+              },
+              {
+                "place": {
+                  "id": 330,
+                  "name": "Hægeland",
+                  "type": "",
+                },
+                "visible": false,
+              },
+              {
+                "place": {
+                  "id": 331,
+                  "name": "Vennesla",
+                  "type": "",
+                },
+                "visible": false,
+              },
+              {
+                "place": {
+                  "id": 332,
+                  "name": "Søgne",
+                  "type": "",
+                },
+                "visible": false,
+              },
+              {
+                "place": {
+                  "id": 333,
+                  "name": "Holum",
+                  "type": "",
+                },
+                "visible": false,
+              },
+              {
+                "place": {
+                  "id": 334,
+                  "name": "Halse og Harkmark",
+                  "type": "",
+                },
+                "visible": false,
+              },
+              {
+                "place": {
+                  "id": 336,
+                  "name": "Greipstad",
+                  "type": "",
+                },
+                "visible": false,
+              },
+              {
+                "place": {
+                  "id": 371,
+                  "name": "Lund",
+                  "type": "",
+                },
+                "visible": true,
+              },
+              {
+                "place": {
+                  "id": 622,
+                  "name": "Sør-Trøndelag",
+                  "type": "",
+                },
+                "visible": true,
+              },
+              {
+                "place": {
+                  "id": 651,
+                  "name": "Orkdalen",
+                  "type": "",
+                },
+                "visible": false,
+              },
+              {
+                "place": {
+                  "id": 654,
+                  "name": "Orkdal",
+                  "type": "",
+                },
+                "visible": false,
+              },
+              {
+                "place": {
+                  "id": 655,
+                  "name": "Orkland",
+                  "type": "",
+                },
+                "visible": false,
+              },
+              {
+                "place": {
+                  "id": 656,
+                  "name": "Meldal",
+                  "type": "",
+                },
+                "visible": false,
+              },
+              {
+                "place": {
+                  "id": 568,
+                  "name": "Oppdal",
+                  "type": "",
+                },
+                "visible": false,
+              },
+              {
+                "place": {
+                  "id": 661,
+                  "name": "Gauldal",
+                  "type": "",
+                },
+                "visible": false,
+              },
+              {
+                "place": {
+                  "id": 662,
+                  "name": "Nedre Gauldal",
+                  "type": "",
+                },
+                "visible": false,
+              },
+              {
+                "place": {
+                  "id": 665,
+                  "name": "Hølonda",
+                  "type": "",
+                },
+                "visible": false,
+              },
+              {
+                "place": {
+                  "id": 666,
+                  "name": "Horg",
+                  "type": "",
+                },
+                "visible": false,
+              },
+              {
+                "place": {
+                  "id": 667,
+                  "name": "Midtre Gauldal",
+                  "type": "",
+                },
+                "visible": false,
+              },
+              {
+                "place": {
+                  "id": 668,
+                  "name": "Støren",
+                  "type": "",
+                },
+                "visible": false,
+              },
+              {
+                "place": {
+                  "id": 669,
+                  "name": "Soknedal",
+                  "type": "",
+                },
+                "visible": false,
+              },
+              {
+                "place": {
+                  "id": 671,
+                  "name": "Singsås",
+                  "type": "",
+                },
+                "visible": false,
+              },
+              {
+                "place": {
+                  "id": 672,
+                  "name": "Øvre Gauldal",
+                  "type": "",
+                },
+                "visible": false,
+              },
+              {
+                "place": {
+                  "id": 673,
+                  "name": "Haltdalen",
+                  "type": "",
+                },
+                "visible": false,
+              },
+              {
+                "place": {
+                  "id": 674,
+                  "name": "Ålen",
+                  "type": "",
+                },
+                "visible": false,
+              },
+              {
+                "place": {
+                  "id": 676,
+                  "name": "Brekken",
+                  "type": "",
+                },
+                "visible": false,
+              },
+              {
+                "place": {
+                  "id": 677,
+                  "name": "Røros",
+                  "type": "",
+                },
+                "visible": false,
+              },
+              {
+                "place": {
+                  "id": 699,
+                  "name": "Skogn",
+                  "type": "",
+                },
+                "visible": true,
+              },
+              {
+                "place": {
+                  "id": 838,
+                  "name": "Målselv",
+                  "type": "",
+                },
+                "visible": true,
+              },
+              {
+                "place": {
+                  "id": 839,
+                  "name": "Øverbygd",
+                  "type": "",
+                },
+                "visible": true,
+              },
+            ],
+          },
+          {
+            "form": "marg",
+            "sources": [
+              {
+                "place": {
+                  "id": 100,
+                  "name": "Hamar",
+                  "type": "",
+                },
+                "visible": true,
+              },
+              {
+                "place": {
+                  "id": 125,
+                  "name": "Gudbrandsdalen",
+                  "type": "",
+                },
+                "visible": true,
+              },
+              {
+                "place": {
+                  "id": 127,
+                  "name": "Dovre",
+                  "type": "",
+                },
+                "visible": false,
+              },
+              {
+                "place": {
+                  "id": 128,
+                  "name": "Lesja",
+                  "type": "",
+                },
+                "visible": false,
+              },
+              {
+                "place": {
+                  "id": 131,
+                  "name": "Vågå",
+                  "type": "",
+                },
+                "visible": false,
+              },
+              {
+                "place": {
+                  "id": 139,
+                  "name": "Øyer",
+                  "type": "",
+                },
+                "visible": false,
+              },
+              {
+                "place": {
+                  "id": 179,
+                  "name": "Hallingdal",
+                  "type": "",
+                },
+                "visible": true,
+              },
+              {
+                "place": {
+                  "id": 180,
+                  "name": "Øvre Hallingdal",
+                  "type": "",
+                },
+                "visible": false,
+              },
+              {
+                "place": {
+                  "id": 183,
+                  "name": "Ål",
+                  "type": "",
+                },
+                "visible": false,
+              },
+              {
+                "place": {
+                  "id": 184,
+                  "name": "Hol i Hallingdal",
+                  "type": "",
+                },
+                "visible": false,
+              },
+              {
+                "place": {
+                  "id": 187,
+                  "name": "Flå i Hallingdal",
+                  "type": "",
+                },
+                "visible": false,
+              },
+              {
+                "place": {
+                  "id": 270,
+                  "name": "Porsgrunn",
+                  "type": "",
+                },
+                "visible": true,
+              },
+              {
+                "place": {
+                  "id": 281,
+                  "name": "Ytre Agder",
+                  "type": "",
+                },
+                "visible": true,
+              },
+              {
+                "place": {
+                  "id": 284,
+                  "name": "Søndeled",
+                  "type": "",
+                },
+                "visible": false,
+              },
+              {
+                "place": {
+                  "id": 293,
+                  "name": "Holt",
+                  "type": "",
+                },
+                "visible": false,
+              },
+              {
+                "place": {
+                  "id": 304,
+                  "name": "Grimstad",
+                  "type": "",
+                },
+                "visible": false,
+              },
+              {
+                "place": {
+                  "id": 335,
+                  "name": "Mandal",
+                  "type": "",
+                },
+                "visible": false,
+              },
+              {
+                "place": {
+                  "id": 352,
+                  "name": "Austad",
+                  "type": "",
+                },
+                "visible": false,
+              },
+              {
+                "place": {
+                  "id": 368,
+                  "name": "Rogaland",
+                  "type": "",
+                },
+                "visible": true,
+              },
+              {
+                "place": {
+                  "id": 517,
+                  "name": "Fjordane",
+                  "type": "",
+                },
+                "visible": true,
+              },
+              {
+                "place": {
+                  "id": 569,
+                  "name": "Ålesund",
+                  "type": "",
+                },
+                "visible": true,
+              },
+              {
+                "place": {
+                  "id": 603,
+                  "name": "Frei",
+                  "type": "",
+                },
+                "visible": true,
+              },
+              {
+                "place": {
+                  "id": 617,
+                  "name": "Edøy",
+                  "type": "",
+                },
+                "visible": true,
+              },
+              {
+                "place": {
+                  "id": 639,
+                  "name": "Ørland",
+                  "type": "",
+                },
+                "visible": true,
+              },
+              {
+                "place": {
+                  "id": 646,
+                  "name": "Åfjord",
+                  "type": "",
+                },
+                "visible": true,
+              },
+              {
+                "place": {
+                  "id": 658,
+                  "name": "Skaun",
+                  "type": "",
+                },
+                "visible": true,
+              },
+              {
+                "place": {
+                  "id": 682,
+                  "name": "Strinda",
+                  "type": "",
+                },
+                "visible": true,
+              },
+              {
+                "place": {
+                  "id": 686,
+                  "name": "Trondheim",
+                  "type": "",
+                },
+                "visible": true,
+              },
+              {
+                "place": {
+                  "id": 690,
+                  "name": "Meråker",
+                  "type": "",
+                },
+                "visible": true,
+              },
+              {
+                "place": {
+                  "id": 731,
+                  "name": "Ytre Namdalen",
+                  "type": "",
+                },
+                "visible": true,
+              },
+              {
+                "place": {
+                  "id": 735,
+                  "name": "Nærøy",
+                  "type": "",
+                },
+                "visible": false,
+              },
+              {
+                "place": {
+                  "id": 736,
+                  "name": "Vikna",
+                  "type": "",
+                },
+                "visible": false,
+              },
+              {
+                "place": {
+                  "id": 740,
+                  "name": "Leka",
+                  "type": "",
+                },
+                "visible": false,
+              },
+              {
+                "place": {
+                  "id": 741,
+                  "name": "Nord-Noreg",
+                  "type": "",
+                },
+                "visible": true,
+              },
+              {
+                "place": {
+                  "id": 742,
+                  "name": "Nordland",
+                  "type": "",
+                },
+                "visible": false,
+              },
+              {
+                "place": {
+                  "id": 743,
+                  "name": "Helgeland",
+                  "type": "",
+                },
+                "visible": false,
+              },
+              {
+                "place": {
+                  "id": 744,
+                  "name": "Sør-Helgeland",
+                  "type": "",
+                },
+                "visible": false,
+              },
+              {
+                "place": {
+                  "id": 764,
+                  "name": "Dønnes",
+                  "type": "",
+                },
+                "visible": false,
+              },
+              {
+                "place": {
+                  "id": 773,
+                  "name": "Lurøy",
+                  "type": "",
+                },
+                "visible": false,
+              },
+              {
+                "place": {
+                  "id": 776,
+                  "name": "Meløy",
+                  "type": "",
+                },
+                "visible": false,
+              },
+              {
+                "place": {
+                  "id": 777,
+                  "name": "Salten",
+                  "type": "",
+                },
+                "visible": false,
+              },
+              {
+                "place": {
+                  "id": 778,
+                  "name": "Saltdal",
+                  "type": "",
+                },
+                "visible": false,
+              },
+              {
+                "place": {
+                  "id": 782,
+                  "name": "Fauske",
+                  "type": "",
+                },
+                "visible": false,
+              },
+              {
+                "place": {
+                  "id": 788,
+                  "name": "Leiranger",
+                  "type": "",
+                },
+                "visible": false,
+              },
+              {
+                "place": {
+                  "id": 789,
+                  "name": "Steigen",
+                  "type": "",
+                },
+                "visible": false,
+              },
+              {
+                "place": {
+                  "id": 790,
+                  "name": "Hamarøy",
+                  "type": "",
+                },
+                "visible": false,
+              },
+              {
+                "place": {
+                  "id": 791,
+                  "name": "Ofoten",
+                  "type": "",
+                },
+                "visible": false,
+              },
+              {
+                "place": {
+                  "id": 799,
+                  "name": "Lofoten",
+                  "type": "",
+                },
+                "visible": false,
+              },
+              {
+                "place": {
+                  "id": 811,
+                  "name": "Vesterålen",
+                  "type": "",
+                },
+                "visible": false,
+              },
+              {
+                "place": {
+                  "id": 820,
+                  "name": "Troms",
+                  "type": "",
+                },
+                "visible": false,
+              },
+              {
+                "place": {
+                  "id": 821,
+                  "name": "Sør-Troms",
+                  "type": "",
+                },
+                "visible": false,
+              },
+              {
+                "place": {
+                  "id": 822,
+                  "name": "Kvæfjord",
+                  "type": "",
+                },
+                "visible": false,
+              },
+              {
+                "place": {
+                  "id": 828,
+                  "name": "Trondenes",
+                  "type": "",
+                },
+                "visible": false,
+              },
+              {
+                "place": {
+                  "id": 830,
+                  "name": "Andørja",
+                  "type": "",
+                },
+                "visible": false,
+              },
+              {
+                "place": {
+                  "id": 831,
+                  "name": "Midt-Troms",
+                  "type": "",
+                },
+                "visible": false,
+              },
+              {
+                "place": {
+                  "id": 835,
+                  "name": "Dyrøy",
+                  "type": "",
+                },
+                "visible": false,
+              },
+              {
+                "place": {
+                  "id": 836,
+                  "name": "Sørreisa",
+                  "type": "",
+                },
+                "visible": false,
+              },
+              {
+                "place": {
+                  "id": 841,
+                  "name": "Malangen",
+                  "type": "",
+                },
+                "visible": false,
+              },
+              {
+                "place": {
+                  "id": 843,
+                  "name": "Lenvik",
+                  "type": "",
+                },
+                "visible": false,
+              },
+              {
+                "place": {
+                  "id": 845,
+                  "name": "Torsken",
+                  "type": "",
+                },
+                "visible": false,
+              },
+              {
+                "place": {
+                  "id": 842,
+                  "name": "Senja",
+                  "type": "",
+                },
+                "visible": false,
+              },
+              {
+                "place": {
+                  "id": 846,
+                  "name": "Berg i Troms",
+                  "type": "",
+                },
+                "visible": false,
+              },
+              {
+                "place": {
+                  "id": 849,
+                  "name": "Tromsøysund",
+                  "type": "",
+                },
+                "visible": false,
+              },
+              {
+                "place": {
+                  "id": 855,
+                  "name": "Karlsøy",
+                  "type": "",
+                },
+                "visible": false,
+              },
+              {
+                "place": {
+                  "id": 858,
+                  "name": "Nordreisa",
+                  "type": "",
+                },
+                "visible": false,
+              },
+              {
+                "place": {
+                  "id": 860,
+                  "name": "Finnmark",
+                  "type": "",
+                },
+                "visible": false,
+              },
+            ],
+          },
+          {
+            "form": "marj",
+            "sources": [
+              {
+                "place": {
+                  "id": 99,
+                  "name": "Stange",
+                  "type": "",
+                },
+                "visible": true,
+              },
+              {
+                "place": {
+                  "id": 121,
+                  "name": "Tolga",
+                  "type": "",
+                },
+                "visible": true,
+              },
+              {
+                "place": {
+                  "id": 122,
+                  "name": "Os i Østerdalen",
+                  "type": "",
+                },
+                "visible": true,
+              },
+              {
+                "place": {
+                  "id": 225,
+                  "name": "Horten",
+                  "type": "",
+                },
+                "visible": true,
+              },
+              {
+                "place": {
+                  "id": 264,
+                  "name": "Nedre Telemark",
+                  "type": "",
+                },
+                "visible": true,
+              },
+              {
+                "place": {
+                  "id": 266,
+                  "name": "Holla",
+                  "type": "",
+                },
+                "visible": false,
+              },
+              {
+                "place": {
+                  "id": 268,
+                  "name": "Gjerpen",
+                  "type": "",
+                },
+                "visible": false,
+              },
+              {
+                "place": {
+                  "id": 269,
+                  "name": "Skien",
+                  "type": "",
+                },
+                "visible": false,
+              },
+              {
+                "place": {
+                  "id": 272,
+                  "name": "Eidanger",
+                  "type": "",
+                },
+                "visible": false,
+              },
+              {
+                "place": {
+                  "id": 275,
+                  "name": "Langesund",
+                  "type": "",
+                },
+                "visible": false,
+              },
+              {
+                "place": {
+                  "id": 277,
+                  "name": "Skåtøy",
+                  "type": "",
+                },
+                "visible": false,
+              },
+              {
+                "place": {
+                  "id": 278,
+                  "name": "Kragerø",
+                  "type": "",
+                },
+                "visible": false,
+              },
+              {
+                "place": {
+                  "id": 284,
+                  "name": "Søndeled",
+                  "type": "",
+                },
+                "visible": true,
+              },
+              {
+                "place": {
+                  "id": 290,
+                  "name": "Vegårshei",
+                  "type": "",
+                },
+                "visible": true,
+              },
+              {
+                "place": {
+                  "id": 293,
+                  "name": "Holt",
+                  "type": "",
+                },
+                "visible": true,
+              },
+              {
+                "place": {
+                  "id": 312,
+                  "name": "Birkenes",
+                  "type": "",
+                },
+                "visible": true,
+              },
+              {
+                "place": {
+                  "id": 568,
+                  "name": "Oppdal",
+                  "type": "",
+                },
+                "visible": true,
+              },
+              {
+                "place": {
+                  "id": 675,
+                  "name": "Glåmos",
+                  "type": "",
+                },
+                "visible": true,
+              },
+              {
+                "place": {
+                  "id": 780,
+                  "name": "Gildeskål",
+                  "type": "",
+                },
+                "visible": true,
+              },
+              {
+                "place": {
+                  "id": 840,
+                  "name": "Balsfjord",
+                  "type": "",
+                },
+                "visible": true,
+              },
+              {
+                "place": {
+                  "id": 851,
+                  "name": "Ullsfjord",
+                  "type": "",
+                },
+                "visible": true,
+              },
+            ],
+          },
+          {
+            "form": "mærv",
+            "sources": [
+              {
+                "place": {
+                  "id": 283,
+                  "name": "Risør",
+                  "type": "",
+                },
+                "visible": true,
+              },
+              {
+                "place": {
+                  "id": 298,
+                  "name": "Arendal",
+                  "type": "",
+                },
+                "visible": true,
+              },
+            ],
+          },
+          {
+            "form": "marv",
+            "sources": [
+              {
+                "place": {
+                  "id": 58,
+                  "name": "Oslo",
+                  "type": "",
+                },
+                "visible": true,
+              },
+              {
+                "place": {
+                  "id": 239,
+                  "name": "Larvik",
+                  "type": "",
+                },
+                "visible": true,
+              },
+              {
+                "place": {
+                  "id": 273,
+                  "name": "Brevik",
+                  "type": "",
+                },
+                "visible": true,
+              },
+              {
+                "place": {
+                  "id": 325,
+                  "name": "Kristiansand",
+                  "type": "",
+                },
+                "visible": true,
+              },
+              {
+                "place": {
+                  "id": 792,
+                  "name": "Tysfjord",
+                  "type": "",
+                },
+                "visible": true,
+              },
+              {
+                "place": {
+                  "id": 862,
+                  "name": "Alta",
+                  "type": "",
+                },
+                "visible": true,
+              },
+            ],
+          },
+          {
+            "form": "mærri, marri",
+            "sources": [
+              {
+                "place": {
+                  "id": 777,
+                  "name": "Salten",
+                  "type": "",
+                },
+                "visible": true,
+              },
+              {
+                "place": {
+                  "id": 778,
+                  "name": "Saltdal",
+                  "type": "",
+                },
+                "visible": false,
+              },
+              {
+                "place": {
+                  "id": 779,
+                  "name": "Beiarn",
+                  "type": "",
+                },
+                "visible": false,
+              },
+              {
+                "place": {
+                  "id": 781,
+                  "name": "Skjerstad",
+                  "type": "",
+                },
+                "visible": false,
+              },
+              {
+                "place": {
+                  "id": 785,
+                  "name": "Sørfold",
+                  "type": "",
+                },
+                "visible": false,
+              },
+              {
+                "place": {
+                  "id": 786,
+                  "name": "Kjerringøy",
+                  "type": "",
+                },
+                "visible": false,
+              },
+              {
+                "place": {
+                  "id": 787,
+                  "name": "Nordfold",
+                  "type": "",
+                },
+                "visible": false,
+              },
+            ],
+          },
+        ],
+        "label": null,
+      },
+    ],
+  },
+]
+`;
+
+exports[`Norsk Ordbok literature references > returns literature references on definitions 1`] = `
+[
+  {
+    "id": 3,
+    "literatureReferences": [],
+    "subDefinitions": [
+      {
+        "id": 4,
+        "literatureReferences": [],
+      },
+      {
+        "id": 10,
+        "literatureReferences": [],
+      },
+    ],
+  },
+  {
+    "id": 7,
+    "literatureReferences": [],
+    "subDefinitions": [],
+  },
+  {
+    "id": 11,
+    "literatureReferences": [
+      {
+        "code": "A2",
+        "id": 2,
+        "spec": null,
+      },
+      {
+        "code": "NoAllk",
+        "id": 1591,
+        "spec": null,
+      },
+      {
+        "code": "NLO",
+        "id": 1586,
+        "spec": null,
+      },
+      {
+        "code": "J.LidLBM",
+        "id": 1219,
+        "spec": {
+          "textContent": "41",
+        },
+      },
+    ],
+    "subDefinitions": [],
+  },
+  {
+    "id": 12,
+    "literatureReferences": [],
+    "subDefinitions": [
+      {
+        "id": 6,
+        "literatureReferences": [
+          {
+            "code": "A2",
+            "id": 2,
+          },
+          {
+            "code": "HellemoNARyf",
+            "id": 822,
+          },
+          {
+            "code": "GOS",
+            "id": 664,
+          },
+        ],
+      },
+      {
+        "id": 9,
+        "literatureReferences": [],
+      },
+    ],
+  },
+  {
+    "id": 13,
+    "literatureReferences": [
+      {
+        "code": "NTO",
+        "id": 1671,
+        "spec": null,
+      },
+    ],
+    "subDefinitions": [],
+  },
+  {
+    "id": 14,
+    "literatureReferences": [],
+    "subDefinitions": [
+      {
+        "id": 5,
+        "literatureReferences": [],
+      },
+      {
+        "id": 8,
+        "literatureReferences": [],
+      },
+    ],
+  },
+]
+`;
+
+exports[`Norsk Ordbok older sources > returns older source references 1`] = `
+[
+  {
+    "code": "Fyresdal1698",
+    "id": 581,
+    "spec": {
+      "textContent": "mærgien",
+    },
+  },
+  {
+    "code": "Seljord1786",
+    "id": 1971,
+    "spec": {
+      "textContent": "99",
+    },
+  },
+  {
+    "code": "Saga1816",
+    "id": 1889,
+    "spec": null,
+  },
+  {
+    "code": "VTel1821",
+    "id": 2494,
+    "spec": {
+      "textContent": "55 mergæ",
+    },
+  },
+  {
+    "code": "C",
+    "id": 268,
+    "spec": {
+      "textContent": "marg og mærg",
+    },
+  },
+  {
+    "code": "FayeD1840",
+    "id": 469,
+    "spec": {
+      "textContent": "u marv",
+    },
+  },
+  {
+    "code": "VigOrdl",
+    "id": 10313,
+    "spec": {
+      "textContent": "u marv",
+    },
+  },
+  {
+    "code": "A",
+    "id": 10927,
+    "spec": null,
+  },
+  {
+    "code": "R",
+    "id": 1763,
+    "spec": {
+      "textContent": "òg u møne",
+    },
+  },
+]
+`;
+
+exports[`Norsk Ordbok place references > returns place references on definitions 1`] = `
+{
+  "definitions": [
+    {
+      "content": [
+        {
+          "textContent": "(om natthimmelen) (uvanleg) full av stjerner",
+        },
+      ],
+      "id": 2,
+      "placeReferences": [
+        {
+          "place": {
+            "id": 609,
+            "name": "Sunndal",
+            "type": "kommune",
+          },
+          "visible": true,
+        },
+        {
+          "place": {
+            "id": 610,
+            "name": "Stangvik",
+            "type": "kommune",
+          },
+          "visible": true,
+        },
+        {
+          "place": {
+            "id": 625,
+            "name": "Vinje i Fosen",
+            "type": "kommune",
+          },
+          "visible": true,
+        },
+        {
+          "place": {
+            "id": 626,
+            "name": "Hemne",
+            "type": "kommune",
+          },
+          "visible": true,
+        },
+        {
+          "place": {
+            "id": 568,
+            "name": "Oppdal",
+            "type": "kommune",
+          },
+          "visible": true,
+        },
+        {
+          "place": {
+            "id": 663,
+            "name": "Melhus",
+            "type": "kommune",
+          },
+          "visible": true,
+        },
+        {
+          "place": {
+            "id": 665,
+            "name": "Hølonda",
+            "type": "kommune",
+          },
+          "visible": true,
+        },
+        {
+          "place": {
+            "id": 666,
+            "name": "Horg",
+            "type": "kommune",
+          },
+          "visible": true,
+        },
+        {
+          "place": {
+            "id": 710,
+            "name": "Sparbu",
+            "type": "kommune",
+          },
+          "visible": true,
+        },
+        {
+          "place": {
+            "id": 749,
+            "name": "Velfjord",
+            "type": "kommune",
+          },
+          "visible": true,
+        },
+        {
+          "place": {
+            "id": 762,
+            "name": "Drevja",
+            "type": "kommune",
+          },
+          "visible": true,
+        },
+      ],
+    },
+  ],
+}
+`;
+
+exports[`Norsk Ordbok pronunciation > returns pronunciation for articles with pronunciation data 1`] = `
+{
+  "lemmas": [
+    {
+      "lemma": "sardiniar",
+    },
+  ],
+  "pronunciation": [
+    {
+      "textContent": "-iˊn-",
+    },
+  ],
+}
+`;
+
+exports[`Norsk Ordbok written form > returns written form variants with sources 1`] = `
+[
+  {
+    "intro": "skr òg",
+    "variants": [
+      {
+        "sources": [
+          {
+            "code": "S.SkardAP",
+            "id": 2027,
+          },
+          {
+            "code": "FløgstadKS",
+            "id": 10482,
+          },
+        ],
+        "writtenForm": "marg",
+      },
+    ],
+  },
+]
+`;

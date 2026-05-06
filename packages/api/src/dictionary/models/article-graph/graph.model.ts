@@ -23,7 +23,7 @@ import { ArticleGraphEdge } from './edge.model';
 
 @ObjectType({
   description:
-    'Representerer ein graf av artikkelrelasjonar, der kvar node er ein artikkel og kvar kant er ein artikkelrelasjon.',
+    'Ein graf av artikkelrelasjonar, der kvar node er ein artikkel og kvar kant er ein artikkelrelasjon.',
 })
 export class ArticleGraph {
   constructor(graph?: Partial<ArticleGraph>) {

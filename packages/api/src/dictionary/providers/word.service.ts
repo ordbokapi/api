@@ -21,6 +21,7 @@ import {
   Word,
   Dictionary,
   Definition,
+  FlatDefinition,
   Article,
   WordClass,
   Inflection,
@@ -35,6 +36,9 @@ import {
   AntonymArticleRelationship,
   SeeAlsoArticleRelationship,
   RichContentArticleSegment,
+  RichContentFormattedTextSegment,
+  RichContentFractionSegment,
+  RichContentSegmentType,
   ArticleRelationship,
   ArticleGraph,
   ArticleGraphEdge,
@@ -43,12 +47,22 @@ import {
   RichContent,
   toUibDictionary,
   fromUibDictionary,
+  Bibliography,
+  BibliographyReference,
+  Dialect,
+  DialectSubcategory,
+  DialectForm,
+  WrittenForm,
+  WrittenFormVariant,
 } from '../models';
+import { OrdboekeneApiSearchType as ApiSearchType } from './ordboekene-api.service';
+import { flattenDefinitions } from './flatten-definitions';
 import {
-  OrdboekeneApiService,
-  OrdboekeneApiSearchType as ApiSearchType,
-} from './ordboekene-api.service';
-import { TwoWayMap, RichContentBuilder } from '../types';
+  TwoWayMap,
+  RichContentBuilder,
+  type ArticleData,
+  type NoArticle,
+} from '../types';
 import {
   UibDictionary,
   ArticleElement,
@@ -83,7 +97,6 @@ export class WordService {
   private readonly logger = new Logger(WordService.name);
 
   constructor(
-    private ordboekeneApiService: OrdboekeneApiService,
     private readonly sanitizer: SanitizationService,
     private readonly data: UibDbService,
     private readonly uib: UibCacheService,
@@ -229,7 +242,7 @@ export class WordService {
   }
 
   #hydratePromises = new WeakMap<Article, Promise<boolean>>();
-  #rawData = new WeakMap<Article, any>();
+  #rawData = new WeakMap<Article, ArticleData>();
 
   async #hydrateArticle(article: Article): Promise<boolean> {
     const existing = this.#hydratePromises.get(article);
@@ -252,13 +265,26 @@ export class WordService {
         return false;
       }
 
-      this.#rawData.set(article, data);
-      this.transformArticleResponse(article, data);
+      const articleData = data as unknown as ArticleData;
+      this.#rawData.set(article, articleData);
+      this.transformArticleResponse(article, articleData);
 
-      article.lemmas = this.transformLemmaInfo(data);
-      article.gender = this.transformGender(data);
-      article.phrases = this.transformPhrases(article, data);
-      article.etymology = this.transformEtymology(article, data);
+      article.lemmas = this.transformLemmaInfo(articleData);
+      article.gender = this.transformGender(articleData);
+      article.phrases = this.transformPhrases(article, articleData);
+      article.etymology = this.transformEtymology(article, articleData);
+      article.pronunciation = this.transformPronunciation(article, articleData);
+
+      if (article.dictionary === Dictionary.NorskOrdbok) {
+        const noData = articleData as NoArticle;
+        article.dialect = this.transformDialect(noData);
+        article.writtenForm = this.transformWrittenForm(noData);
+        article.olderSources = this.transformOlderSources(article, noData);
+      } else {
+        article.dialect = [];
+        article.writtenForm = [];
+        article.olderSources = [];
+      }
 
       return true;
     })();
@@ -276,6 +302,14 @@ export class WordService {
     return article.definitions!;
   }
 
+  async getFlatDefinitions(article: Article): Promise<FlatDefinition[]> {
+    if (!(await this.#hydrateArticle(article))) {
+      return [];
+    }
+
+    return article.flatDefinitions!;
+  }
+
   async getRelationships(article: Article): Promise<ArticleRelationship[]> {
     if (!(await this.#hydrateArticle(article))) {
       return [];
@@ -283,7 +317,7 @@ export class WordService {
 
     const relationships = this.transformRelationships(
       article,
-      this.#rawData.get(article),
+      this.#rawData.get(article)!,
     );
     const byDict = new Map<Dictionary, number[]>();
 
@@ -355,6 +389,34 @@ export class WordService {
     return article.etymology!;
   }
 
+  async getPronunciation(article: Article): Promise<RichContent[]> {
+    if (!(await this.#hydrateArticle(article))) {
+      return [];
+    }
+    return article.pronunciation!;
+  }
+
+  async getDialect(article: Article): Promise<Dialect[]> {
+    if (!(await this.#hydrateArticle(article))) {
+      return [];
+    }
+    return article.dialect!;
+  }
+
+  async getWrittenForm(article: Article): Promise<WrittenForm[]> {
+    if (!(await this.#hydrateArticle(article))) {
+      return [];
+    }
+    return article.writtenForm!;
+  }
+
+  async getOlderSources(article: Article): Promise<BibliographyReference[]> {
+    if (!(await this.#hydrateArticle(article))) {
+      return [];
+    }
+    return article.olderSources!;
+  }
+
   async getArticleGraph(
     articleId: number,
     dictionary: Dictionary,
@@ -382,18 +444,31 @@ export class WordService {
       return undefined;
     }
 
+    const articleData = data as unknown as ArticleData;
     const article: Article = {
       id: data.article_id,
       dictionary,
     };
 
-    this.#rawData.set(article, data);
-    this.transformArticleResponse(article, data);
+    this.#rawData.set(article, articleData);
+    this.transformArticleResponse(article, articleData);
 
-    article.lemmas = this.transformLemmaInfo(data);
-    article.gender = this.transformGender(data);
-    article.phrases = this.transformPhrases(article, data);
-    article.etymology = this.transformEtymology(article, data);
+    article.lemmas = this.transformLemmaInfo(articleData);
+    article.gender = this.transformGender(articleData);
+    article.phrases = this.transformPhrases(article, articleData);
+    article.etymology = this.transformEtymology(article, articleData);
+    article.pronunciation = this.transformPronunciation(article, articleData);
+
+    if (dictionary === Dictionary.NorskOrdbok) {
+      const noData = articleData as NoArticle;
+      article.dialect = this.transformDialect(noData);
+      article.writtenForm = this.transformWrittenForm(noData);
+      article.olderSources = this.transformOlderSources(article, noData);
+    } else {
+      article.dialect = [];
+      article.writtenForm = [];
+      article.olderSources = [];
+    }
 
     return article;
   }
@@ -487,7 +562,7 @@ export class WordService {
     return fromUibDictionary(dictParam as UibDictionary);
   }
 
-  private transformWordClass(article: any): WordClass | undefined {
+  private transformWordClass(article: ArticleData): WordClass | undefined {
     if (article.lemmas && article.lemmas.length > 0) {
       const lemma = article.lemmas[0];
       if (lemma.paradigm_info && lemma.paradigm_info.length > 0) {
@@ -509,7 +584,7 @@ export class WordService {
     return undefined;
   }
 
-  private transformLemmaInfo(article: any): Lemma[] | undefined {
+  private transformLemmaInfo(article: ArticleData): Lemma[] | undefined {
     const inflectionTagMapping: { [key: string]: InflectionTag } = {
       Inf: InflectionTag.Infinitiv,
       Pres: InflectionTag.Presens,
@@ -542,6 +617,8 @@ export class WordService {
     const lemmas: Lemma[] = [];
 
     article.lemmas?.forEach((lemma: any) => {
+      if (lemma.id == null) return;
+
       const lemmaEntity: Lemma = {
         id: lemma.id,
         lemma: lemma.lemma,
@@ -574,7 +651,7 @@ export class WordService {
     return lemmas;
   }
 
-  private transformGender(article: any): Gender | undefined {
+  private transformGender(article: ArticleData): Gender | undefined {
     // Gender is determined by the paradigms. If paradigms exist for both masculine and feminine
     // grammatical genders, then the word is both masculine and feminine. If paradigms exist for
     // only one grammatical gender, then the word is just of that gender.
@@ -615,7 +692,7 @@ export class WordService {
   ): RichContentBuilder {
     const richContent = new RichContentBuilder();
 
-    if (!element.content) {
+    if (!element.content || typeof element.content !== 'string') {
       return richContent;
     }
 
@@ -628,7 +705,10 @@ export class WordService {
         continue;
       }
 
-      richContent.append(this.formatElement(dictionary, element.items[i]));
+      const item = element.items?.[i];
+      if (item) {
+        richContent.append(this.formatElement(dictionary, item));
+      }
     }
 
     return richContent;
@@ -670,9 +750,9 @@ export class WordService {
         richContent
           .append(this.formatText(dictionary, element.intro))
           .append(' ');
-        element.elements.forEach((item: any, index: number) => {
+        (element.elements ?? []).forEach((item: any, index: number) => {
           richContent.append(this.formatElement(dictionary, item));
-          if (index < element.elements.length - 1) {
+          if (index < (element.elements ?? []).length - 1) {
             richContent.append(', ');
           }
         });
@@ -681,7 +761,7 @@ export class WordService {
 
       case 'article_ref': {
         const article = element;
-        const lemma = article.lemmas[0].lemma;
+        const lemma = article.lemmas?.[0]?.lemma ?? '(?)';
 
         richContent.append(
           new RichContentArticleSegment({
@@ -693,7 +773,9 @@ export class WordService {
             definitionId: article.definition_id ?? undefined,
             definitionIndex:
               article.definition_order != null
-                ? article.definition_order - 1
+                ? (Array.isArray(article.definition_order)
+                    ? article.definition_order[0]
+                    : article.definition_order) - 1
                 : undefined,
           }),
         );
@@ -703,7 +785,7 @@ export class WordService {
 
       case 'sub_article': {
         const article = element.article;
-        const lemma = article.lemmas[0].lemma;
+        const lemma = article?.lemmas?.[0]?.lemma ?? '(?)';
 
         richContent.append(
           new RichContentArticleSegment({
@@ -725,7 +807,9 @@ export class WordService {
       case 'quote_inset':
       case 'explanation':
       case 'etymology_language':
-      case 'etymology_reference': {
+      case 'etymology_reference':
+      case 'etymology_lang':
+      case 'etymology_ref': {
         richContent.append(this.formatText(dictionary, element));
         break;
       }
@@ -739,6 +823,75 @@ export class WordService {
 
       case 'example': {
         richContent.append(this.formatText(dictionary, element.quote));
+        break;
+      }
+
+      case 'pronunciation_guide': {
+        richContent.append(this.formatText(dictionary, element));
+        break;
+      }
+
+      case 'fraction': {
+        const sup = '⁰¹²³⁴⁵⁶⁷⁸⁹';
+        const sub = '₀₁₂₃₄₅₆₇₈₉';
+        const num = String(element.numerator)
+          .split('')
+          .map((c: string) => (/\d/.test(c) ? sup[+c] : c))
+          .join('');
+        const den = String(element.denominator)
+          .split('')
+          .map((c: string) => (/\d/.test(c) ? sub[+c] : c))
+          .join('');
+        richContent.append(
+          new RichContentFractionSegment(
+            String(element.numerator),
+            String(element.denominator),
+            `${num}⁄${den}`,
+          ),
+        );
+        break;
+      }
+
+      case 'superscript': {
+        const sup = '⁰¹²³⁴⁵⁶⁷⁸⁹';
+        const textContent = String(element.text)
+          .split('')
+          .map((c: string) => (/\d/.test(c) ? sup[+c] : c))
+          .join('');
+        richContent.append(
+          new RichContentFormattedTextSegment(
+            RichContentSegmentType.Superscript,
+            textContent,
+            String(element.text),
+          ),
+        );
+        break;
+      }
+
+      case 'subscript': {
+        const sub = '₀₁₂₃₄₅₆₇₈₉';
+        const textContent = String(element.text)
+          .split('')
+          .map((c: string) => (/\d/.test(c) ? sub[+c] : c))
+          .join('');
+        richContent.append(
+          new RichContentFormattedTextSegment(
+            RichContentSegmentType.Subscript,
+            textContent,
+            String(element.text),
+          ),
+        );
+        break;
+      }
+
+      case 'emph': {
+        richContent.append(
+          new RichContentFormattedTextSegment(
+            RichContentSegmentType.Emphasis,
+            String(element.text),
+            String(element.text),
+          ),
+        );
         break;
       }
 
@@ -765,7 +918,10 @@ export class WordService {
     );
   }
 
-  private transformArticleResponse(article: Article, data: any): Article {
+  private transformArticleResponse(
+    article: Article,
+    data: ArticleData,
+  ): Article {
     const definitions: Definition[] = [];
 
     // Example API response:
@@ -789,6 +945,7 @@ export class WordService {
     }
 
     article.definitions = definitions;
+    article.flatDefinitions = flattenDefinitions(definitions);
 
     article.wordClass = this.transformWordClass(data);
 
@@ -911,6 +1068,9 @@ export class WordService {
           index++;
         });
 
+        this.extractPlaceReferences(element, definition);
+        this.extractLiteratureReferences(element, definition);
+
         break;
       }
 
@@ -986,7 +1146,7 @@ export class WordService {
     return definitions;
   }
 
-  private transformPhrases(article: Article, data: any): Article[] {
+  private transformPhrases(article: Article, data: ArticleData): Article[] {
     // Phrases are in the definitions array but are 'definition' elements with
     // a single 'sub_article' element in the 'elements' array
 
@@ -994,10 +1154,10 @@ export class WordService {
 
     for (const element of data?.body?.definitions?.[0]?.elements ?? []) {
       if (element.type_ === 'definition') {
-        for (const subElement of element.elements) {
+        for (const subElement of element.elements ?? []) {
           if (subElement.type_ === 'sub_article') {
             phrases.push({
-              id: subElement.article_id,
+              id: subElement.article_id!,
               dictionary: article.dictionary,
             });
           }
@@ -1010,7 +1170,7 @@ export class WordService {
 
   private transformRelationships(
     article: Article,
-    data: any,
+    data: ArticleData,
   ): ArticleRelationship[] {
     const relationships: ArticleRelationship[] = [];
 
@@ -1049,19 +1209,207 @@ export class WordService {
     return relationships;
   }
 
-  private transformEtymology(article: Article, data: any): RichContent[] {
+  private transformEtymology(
+    article: Article,
+    data: ArticleData,
+  ): RichContent[] {
     const content: RichContent[] = [];
 
     for (const element of data?.body?.etymology ?? []) {
       if (
         element.type_ === 'etymology_language' ||
-        element.type_ === 'etymology_reference'
+        element.type_ === 'etymology_reference' ||
+        element.type_ === 'etymology_litt' ||
+        element.type_ === 'etymology_lang' ||
+        element.type_ === 'etymology_ref'
       ) {
-        content.push(this.formatElement(article.dictionary, element).build());
+        content.push(
+          this.formatElement(
+            article.dictionary,
+            element as unknown as ArticleElement,
+          ).build(),
+        );
       }
     }
 
     return content;
+  }
+
+  private transformPronunciation(
+    _article: Article,
+    data: ArticleData,
+  ): RichContent[] {
+    const content: RichContent[] = [];
+
+    for (const element of data?.body?.pronunciation ?? []) {
+      if (element.type_ === 'pronunciation' && element.content) {
+        content.push(new RichContentBuilder().append(element.content).build());
+      }
+    }
+
+    return content;
+  }
+
+  private extractPlaceReferences(element: any, definition: Definition): void {
+    for (const ref of element.place_refs ?? []) {
+      if (!ref.place) {
+        continue;
+      }
+
+      definition.placeReferences.push({
+        place: {
+          id: ref.place.place_id,
+          name: ref.place.place_name,
+          type: ref.place.place_type,
+        },
+        visible: ref.vis === 1,
+      });
+    }
+  }
+
+  private extractLiteratureReferences(
+    element: any,
+    definition: Definition,
+  ): void {
+    for (const ref of element.lit_refs ?? []) {
+      if (ref.code == null || ref.bibl_id == null) continue;
+
+      const litRef: BibliographyReference = {
+        code: ref.code,
+        id: ref.bibl_id,
+      };
+
+      if (ref.spec?.content) {
+        litRef.spec = this.formatText(Dictionary.NorskOrdbok, ref.spec).build();
+      }
+
+      definition.literatureReferences.push(litRef);
+    }
+  }
+
+  private transformDialect(data: NoArticle): Dialect[] {
+    const dialects: Dialect[] = [];
+
+    for (const dialectData of data?.body?.dialect ?? []) {
+      const dialect: Dialect = {
+        intro: dialectData.intro || undefined,
+        subcategories: [],
+      };
+
+      for (const subcat of dialectData.subcats ?? []) {
+        const subcategory: DialectSubcategory = {
+          label: subcat.subcat || undefined,
+          forms: [],
+        };
+
+        for (const formData of subcat.forms ?? []) {
+          const formValue =
+            typeof formData.form === 'object' && formData.form !== null
+              ? (formData.form.content ?? '')
+              : formData.form;
+
+          if (!formValue) {
+            continue;
+          }
+
+          const form: DialectForm = {
+            form: formValue,
+            sources: [],
+          };
+
+          for (const source of formData.sources ?? []) {
+            if (!source.place_id) {
+              continue;
+            }
+
+            form.sources.push({
+              place: {
+                id: source.place_id,
+                name: source.place_name ?? '',
+                type: source.place?.place_type ?? '',
+              },
+              visible: source.show === 1,
+            });
+          }
+
+          subcategory.forms.push(form);
+        }
+
+        dialect.subcategories.push(subcategory);
+      }
+
+      dialects.push(dialect);
+    }
+
+    return dialects;
+  }
+
+  private transformWrittenForm(data: NoArticle): WrittenForm[] {
+    const writtenForms: WrittenForm[] = [];
+
+    for (const wfData of data?.body?.written_form ?? []) {
+      const writtenForm: WrittenForm = {
+        intro: wfData.intro || undefined,
+        variants: [],
+      };
+
+      for (const formData of wfData.forms ?? []) {
+        const variant: WrittenFormVariant = {
+          writtenForm: formData.written_form,
+          sources: [],
+        };
+
+        for (const source of formData.sources ?? []) {
+          if (source.code == null || source.bibl_id == null) {
+            continue;
+          }
+
+          variant.sources.push({
+            code: source.code,
+            id: source.bibl_id,
+          } as Bibliography);
+        }
+
+        writtenForm.variants.push(variant);
+      }
+
+      writtenForms.push(writtenForm);
+    }
+
+    return writtenForms;
+  }
+
+  private transformOlderSources(
+    article: Article,
+    data: NoArticle,
+  ): BibliographyReference[] {
+    const sources: BibliographyReference[] = [];
+
+    for (const sourceData of data?.body?.older_source ?? []) {
+      if (sourceData.code == null || sourceData.bibl_id == null) {
+        continue;
+      }
+
+      const source: BibliographyReference = {
+        code: sourceData.code,
+        id: sourceData.bibl_id,
+      };
+
+      if (sourceData.spec) {
+        const spec = sourceData.spec;
+
+        if (typeof spec === 'object' && spec.content) {
+          source.spec = this.formatText(
+            article.dictionary,
+            spec as ArticleTextElement,
+          ).build();
+        }
+      }
+
+      sources.push(source);
+    }
+
+    return sources;
   }
 
   private async walkArticleGraph(
