@@ -155,18 +155,12 @@ query WordsAttestedByAuthor($author: String!) {
         writtenForm {
           intro
           variants {
+            writtenForm
             sources {
+              title
+              author
               id
             }
-          }
-        }
-        flatDefinitions {
-          parentIndex
-          content {
-            textContent
-          }
-          examples {
-            textContent
           }
         }
       }
@@ -257,7 +251,7 @@ fragment richContentFields on RichContent {
             word: 'klasse',
             query: 'sjø',
             place: 'Bergen',
-            author: 'Aasen',
+            author: 'Aasen, Ivar',
           },
         }),
         ApolloServerPluginInlineTrace(),
