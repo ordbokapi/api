@@ -1,0 +1,74 @@
+# SPDX-FileCopyrightText: Copyright (C) 2026 Adaline Simonian
+# SPDX-License-Identifier: AGPL-3.0-or-later
+#
+# This file is part of Ordbok API.
+#
+# Ordbok API is free software: you can redistribute it and/or modify it under
+# the terms of the GNU Affero General Public License as published by the Free
+# Software Foundation, either version 3 of the License, or (at your option) any
+# later version.
+#
+# Ordbok API is distributed in the hope that it will be useful, but WITHOUT ANY
+# WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR
+# A PARTICULAR PURPOSE. See the GNU Affero General Public License for more
+# details.
+#
+# You should have received a copy of the GNU Affero General Public License
+# along with Ordbok API. If not, see <https://www.gnu.org/licenses/>.
+
+name: Deploy to production
+
+on:
+  workflow_dispatch:
+    inputs:
+      ref:
+        description: 'Git ref to deploy. Leave empty to deploy the selected branch.'
+        required: false
+        type: string
+
+permissions:
+  contents: read
+  packages: read
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    environment: production
+    steps:
+      - name: Resolve commit SHA
+        id: resolve
+        run: |
+          REF="${{ inputs.ref }}"
+          if [ -z "$REF" ]; then
+            echo "sha=${{ github.sha }}" >> "$GITHUB_OUTPUT"
+          else
+            SHA=$(curl -sf -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" \
+              "https://api.github.com/repos/${{ github.repository }}/commits/$REF" \
+              | jq -r '.sha')
+            if [ "$SHA" = "null" ] || [ -z "$SHA" ]; then
+              echo "::error::Failed to resolve ref '$REF' to a commit SHA"
+              exit 1
+            fi
+            echo "sha=$SHA" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Verify image exists in GHCR
+        run: |
+          SHA="${{ steps.resolve.outputs.sha }}"
+          echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u "${{ github.actor }}" --password-stdin
+          docker manifest inspect "ghcr.io/${{ github.repository }}:sha-$SHA" > /dev/null
+          echo "Verified: ghcr.io/${{ github.repository }}:sha-$SHA"
+
+      - name: Deploy to production
+        run: |
+          SHA="${{ steps.resolve.outputs.sha }}"
+          TAG="sha-$SHA"
+          BODY=$(printf '${{ secrets.DEPLOY_TAG_PAYLOAD }}' "$TAG")
+
+          curl -f -X PATCH "${{ secrets.DEPLOY_APP_URL }}" \
+            -H "Authorization: Bearer ${{ secrets.DEPLOY_WEBHOOK_SECRET }}" \
+            -H "Content-Type: application/json" \
+            -d "$BODY"
+
+          curl -f "${{ secrets.DEPLOY_WEBHOOK_URL }}" \
+            -H "Authorization: Bearer ${{ secrets.DEPLOY_WEBHOOK_SECRET }}"
