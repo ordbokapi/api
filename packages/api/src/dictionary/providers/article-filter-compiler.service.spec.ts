@@ -142,9 +142,9 @@ describe('ArticleFilterCompiler', () => {
       });
 
       test('dialectPlace', () => {
-        expect(compileFilter({ dialectPlace: { eq: 'Eidskog' } })).toBe(
-          'dialect_places = "Eidskog"',
-        );
+        expect(
+          compileFilter({ dialectPlace: { name: { eq: 'Eidskog' } } }),
+        ).toBe('dialect_place_names = "Eidskog"');
       });
 
       test('olderSource code', () => {
@@ -284,9 +284,9 @@ describe('ArticleFilterCompiler', () => {
       test('dialectPlace in', () => {
         expect(
           compileFilter({
-            dialectPlace: { in: ['Eidskog', 'Ringsaker'] },
+            dialectPlace: { name: { in: ['Eidskog', 'Ringsaker'] } },
           }),
-        ).toBe('dialect_places IN ["Eidskog", "Ringsaker"]');
+        ).toBe('dialect_place_names IN ["Eidskog", "Ringsaker"]');
       });
     });
 
@@ -304,9 +304,9 @@ describe('ArticleFilterCompiler', () => {
       });
 
       test('dialectPlace exists', () => {
-        expect(compileFilter({ dialectPlace: { exists: true } })).toBe(
-          'dialect_places IS NOT EMPTY',
-        );
+        expect(
+          compileFilter({ dialectPlace: { name: { exists: true } } }),
+        ).toBe('dialect_place_names IS NOT EMPTY');
       });
     });
 
@@ -324,9 +324,9 @@ describe('ArticleFilterCompiler', () => {
       });
 
       test('escapes in dialectPlace', () => {
-        expect(compileFilter({ dialectPlace: { eq: 'Sted "Nord"' } })).toBe(
-          'dialect_places = "Sted \\"Nord\\""',
-        );
+        expect(
+          compileFilter({ dialectPlace: { name: { eq: 'Sted "Nord"' } } }),
+        ).toBe('dialect_place_names = "Sted \\"Nord\\""');
       });
     });
 
@@ -378,9 +378,11 @@ describe('ArticleFilterCompiler', () => {
         expect(
           compileFilter({
             dialectForm: { exists: true },
-            AND: [{ dialectPlace: { eq: 'Eidskog' } }],
+            AND: [{ dialectPlace: { name: { eq: 'Eidskog' } } }],
           }),
-        ).toBe('dialect_forms IS NOT EMPTY AND (dialect_places = "Eidskog")');
+        ).toBe(
+          'dialect_forms IS NOT EMPTY AND (dialect_place_names = "Eidskog")',
+        );
       });
     });
 
@@ -400,12 +402,12 @@ describe('ArticleFilterCompiler', () => {
         expect(
           compileFilter({
             OR: [
-              { dialectPlace: { eq: 'Eidskog' } },
+              { dialectPlace: { name: { eq: 'Eidskog' } } },
               { writtenFormSource: { code: { eq: 'FløgstadKS' } } },
             ],
           }),
         ).toBe(
-          '(dialect_places = "Eidskog" OR written_form_source_codes = "FløgstadKS")',
+          '(dialect_place_names = "Eidskog" OR written_form_source_codes = "FløgstadKS")',
         );
       });
     });

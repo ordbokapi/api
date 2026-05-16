@@ -32,6 +32,12 @@ export enum WordClass {
   Symbol = 'Symbol', // Symbol
   Forkorting = 'Forkorting', // Abbreviation
   Uttrykk = 'Uttrykk', // Phrase
+  Talord = 'Talord', // Numeral
+  Eigennamn = 'Eigennamn', // Proper noun
+  Prefiks = 'Prefiks', // Prefix
+  Samansetjingsled = 'Samansetjingsled', // Compound prefix
+  Infinitivsmerke = 'Infinitivsmerke', // Infinitive marker
+  Ukjend = 'Ukjend', // Unknown
 }
 
 registerEnumType(WordClass, {

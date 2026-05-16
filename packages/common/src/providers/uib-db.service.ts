@@ -489,6 +489,138 @@ export class UibDbService {
   }
 
   // #endregion
+
+  // #region Place data
+
+  async getPlaceTypes(placeIds: number[]): Promise<Map<number, string>> {
+    if (placeIds.length === 0) {
+      return new Map();
+    }
+
+    const rows = await this.database.db
+      .select({
+        id: schema.places.id,
+        placeType: schema.places.placeType,
+      })
+      .from(schema.places)
+      .where(inArray(schema.places.id, placeIds));
+
+    const map = new Map<number, string>();
+    for (const row of rows) {
+      map.set(row.id, row.placeType);
+    }
+    return map;
+  }
+
+  async getPlacesByIds(ids: number[]): Promise<Map<number, PlaceEntry>> {
+    if (ids.length === 0) {
+      return new Map();
+    }
+
+    const rows = await this.database.db
+      .select({
+        id: schema.places.id,
+        placeName: schema.places.placeName,
+        placeNameFull: schema.places.placeNameFull,
+        placeType: schema.places.placeType,
+        parentId: schema.places.parentId,
+        municipalityNr: schema.places.municipalityNr,
+      })
+      .from(schema.places)
+      .where(inArray(schema.places.id, ids));
+
+    const map = new Map<number, PlaceEntry>();
+    for (const row of rows) {
+      map.set(row.id, {
+        id: row.id,
+        code: row.placeName,
+        name: row.placeNameFull || row.placeName,
+        type: row.placeType,
+        parentId: row.parentId,
+        municipalityNr: row.municipalityNr,
+      });
+    }
+    return map;
+  }
+
+  async getPlaceById(id: number): Promise<PlaceEntry | null> {
+    const row = await this.database.db
+      .select({
+        id: schema.places.id,
+        placeName: schema.places.placeName,
+        placeNameFull: schema.places.placeNameFull,
+        placeType: schema.places.placeType,
+        parentId: schema.places.parentId,
+        municipalityNr: schema.places.municipalityNr,
+      })
+      .from(schema.places)
+      .where(eq(schema.places.id, id))
+      .limit(1)
+      .then((rows) => rows[0] ?? null);
+
+    if (!row) return null;
+
+    return {
+      id: row.id,
+      code: row.placeName,
+      name: row.placeNameFull || row.placeName,
+      type: row.placeType,
+      parentId: row.parentId,
+      municipalityNr: row.municipalityNr,
+    };
+  }
+
+  async getPlaceChildren(parentId: number): Promise<PlaceEntry[]> {
+    const rows = await this.database.db
+      .select({
+        id: schema.places.id,
+        placeName: schema.places.placeName,
+        placeNameFull: schema.places.placeNameFull,
+        placeType: schema.places.placeType,
+        parentId: schema.places.parentId,
+        municipalityNr: schema.places.municipalityNr,
+      })
+      .from(schema.places)
+      .where(eq(schema.places.parentId, parentId));
+
+    return rows.map((row) => ({
+      id: row.id,
+      code: row.placeName,
+      name: row.placeNameFull || row.placeName,
+      type: row.placeType,
+      parentId: row.parentId,
+      municipalityNr: row.municipalityNr,
+    }));
+  }
+
+  async searchPlaces(
+    query: string,
+    options?: {
+      filter?: string;
+      limit?: number;
+      offset?: number;
+    },
+  ): Promise<{ total: number; entries: PlaceEntry[] }> {
+    const result = await this.meili.searchPlaces(query, {
+      filter: options?.filter,
+      limit: options?.limit ?? 20,
+      offset: options?.offset ?? 0,
+    });
+
+    return {
+      total: result.total,
+      entries: result.hits.map((hit) => ({
+        id: hit.id,
+        code: hit.place_name ?? '',
+        name: hit.place_name_full || hit.place_name || '',
+        type: hit.place_type ?? '',
+        parentId: hit.parent_id ?? null,
+        municipalityNr: hit.municipality_nr ?? null,
+      })),
+    };
+  }
+
+  // #endregion
 }
 
 export interface BibliographyEntry {
@@ -497,4 +629,13 @@ export interface BibliographyEntry {
   author: string;
   title: string;
   year: string;
+}
+
+export interface PlaceEntry {
+  id: number;
+  code: string;
+  name: string;
+  type: string;
+  parentId: number | null;
+  municipalityNr: string | null;
 }

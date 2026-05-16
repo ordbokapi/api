@@ -20,6 +20,7 @@ import {
   pgTable,
   text,
   bigint,
+  integer,
   jsonb,
   timestamp,
   primaryKey,
@@ -64,6 +65,20 @@ export const bibliography = pgTable('bibliography', {
   title: text('title').notNull().default(''),
   year: text('year').notNull().default(''),
   fields: jsonb('fields').notNull().default([]),
+  fetchedAt: timestamp('fetched_at', { withTimezone: true })
+    .notNull()
+    .defaultNow(),
+});
+
+export const places = pgTable('places', {
+  id: bigint('id', { mode: 'number' }).primaryKey(),
+  placeName: text('place_name').notNull().default(''),
+  placeNameFull: text('place_name_full').notNull().default(''),
+  placeType: text('place_type').notNull().default(''),
+  parentId: bigint('parent_id', { mode: 'number' }),
+  placeOrder: integer('place_order').notNull().default(0),
+  municipalityNr: text('municipality_nr'),
+  weightThreshold: integer('weight_threshold').notNull().default(0),
   fetchedAt: timestamp('fetched_at', { withTimezone: true })
     .notNull()
     .defaultNow(),

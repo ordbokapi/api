@@ -59,6 +59,29 @@ export class BibliographyFacets {
 }
 
 @ObjectType({
+  description: 'Fasettfordeling for geografiske stader.',
+})
+export class PlaceFacets {
+  @Field(() => [FacetCount], {
+    nullable: true,
+    description: 'Fordeling av resultat etter stadnamn.',
+  })
+  name?: FacetCount[];
+
+  @Field(() => [FacetCount], {
+    nullable: true,
+    description: 'Fordeling av resultat etter stadkode (kortform).',
+  })
+  code?: FacetCount[];
+
+  @Field(() => [FacetCount], {
+    nullable: true,
+    description: 'Fordeling av resultat etter stadtype.',
+  })
+  type?: FacetCount[];
+}
+
+@ObjectType({
   description:
     'Aggregerte tal over søkeresultat, fordelt på ulike eigenskapar.',
 })
@@ -87,11 +110,17 @@ export class ArticleFacets {
   })
   inflectionTags?: FacetCount[];
 
-  @Field(() => [FacetCount], {
+  @Field(() => PlaceFacets, {
     nullable: true,
-    description: 'Fordeling av resultat etter stadnamn i dialektkjeldene.',
+    description: 'Fordeling av resultat etter stader knytte til dialektformer.',
   })
-  dialectPlace?: FacetCount[];
+  dialectPlace?: PlaceFacets;
+
+  @Field(() => PlaceFacets, {
+    nullable: true,
+    description: 'Fordeling av resultat etter stader knytte til heimfesting.',
+  })
+  attestationPlace?: PlaceFacets;
 
   @Field(() => BibliographyFacets, {
     nullable: true,
@@ -122,4 +151,10 @@ export class ArticleFacets {
     description: 'Fordeling av resultat etter bibliografisk kjelde.',
   })
   bibliography?: BibliographyFacets;
+
+  @Field(() => PlaceFacets, {
+    nullable: true,
+    description: 'Fordeling av resultat etter geografiske stader.',
+  })
+  place?: PlaceFacets;
 }

@@ -19,7 +19,7 @@
 import { Field, Int, ObjectType } from '@nestjs/graphql';
 import { ArticleRelationship } from './article-relationship';
 import { RichContent } from './rich-content';
-import { PlaceReference } from './place-reference.model';
+import { GeographicAttestation } from './geographic-attestation.model';
 import { BibliographyReference } from './bibliography-reference.model';
 
 @ObjectType({
@@ -61,11 +61,11 @@ export class Definition {
   })
   subDefinitions: Definition[] = [];
 
-  @Field(() => [PlaceReference], {
+  @Field(() => [GeographicAttestation], {
     description:
       'Ei liste over geografiske stader der tydinga er heimfesta. Tilgjengeleg for Norsk Ordbok.',
   })
-  placeReferences: PlaceReference[] = [];
+  placeReferences: GeographicAttestation[] = [];
 
   @Field(() => [BibliographyReference], {
     description:

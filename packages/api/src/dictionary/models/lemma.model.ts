@@ -31,9 +31,17 @@ export class Lemma {
   lemma: string;
 
   @Field(() => Int, {
+    deprecationReason:
+      'Bruk homographNumber i staden. Dette feltet skal tidlegast fjernast 2026-08-01.',
     description: 'Numerisk referansenummer til betydinga av lemmaet.',
   })
   meaning: number;
+
+  @Field(() => Int, {
+    description:
+      'Homografindeks som skil mellom identisk stava ord med ulik opphav og tyding.',
+  })
+  homographNumber: number;
 
   @Field(() => [Paradigm], {
     description: 'Liste over bøyingsparadigme knytte til lemmaet.',

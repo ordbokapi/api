@@ -150,6 +150,81 @@ async function main() {
     );
     console.log(`Wrote ${allDocs.length} MeiliSearch documents`);
 
+    const articleIdConditions = Object.entries(allIds)
+      .map(
+        ([dict, ids]) =>
+          `(dictionary = '${dict}' AND article_id IN (${ids.join(',')}))`,
+      )
+      .join(' OR ');
+
+    const { rows: articleBiblRows } = await client.query(
+      `SELECT json_agg(row_to_json(t)) AS data FROM (
+         SELECT dictionary, article_id, bibl_id
+         FROM article_bibliography WHERE ${articleIdConditions}
+         ORDER BY dictionary, article_id, bibl_id
+       ) t`,
+    );
+    const articleBiblJson = articleBiblRows[0].data ?? [];
+    await writeFile(
+      join(fixturesDir, 'article-bibliography.json'),
+      JSON.stringify(articleBiblJson) + '\n',
+    );
+    console.log(`Wrote ${articleBiblJson.length} article_bibliography rows`);
+
+    const biblIds = [...new Set(articleBiblJson.map((r) => r.bibl_id))];
+    if (biblIds.length > 0) {
+      const { rows: biblRows } = await client.query(
+        `SELECT json_agg(row_to_json(t)) AS data FROM (
+           SELECT id, code, author, title, year
+           FROM bibliography WHERE id IN (${biblIds.join(',')})
+           ORDER BY id
+         ) t`,
+      );
+      const biblJson = biblRows[0].data ?? [];
+      await writeFile(
+        join(fixturesDir, 'bibliography.json'),
+        JSON.stringify(biblJson) + '\n',
+      );
+      console.log(`Wrote ${biblJson.length} bibliography entries`);
+    } else {
+      await writeFile(join(fixturesDir, 'bibliography.json'), '[]\n');
+      console.log('Wrote 0 bibliography entries');
+    }
+
+    const { rows: articlePlaceRows } = await client.query(
+      `SELECT json_agg(row_to_json(t)) AS data FROM (
+         SELECT dictionary, article_id, place_id, context
+         FROM article_place WHERE ${articleIdConditions}
+         ORDER BY dictionary, article_id, place_id, context
+       ) t`,
+    );
+    const articlePlaceJson = articlePlaceRows[0].data ?? [];
+    await writeFile(
+      join(fixturesDir, 'article-place.json'),
+      JSON.stringify(articlePlaceJson) + '\n',
+    );
+    console.log(`Wrote ${articlePlaceJson.length} article_place rows`);
+
+    const placeIds = [...new Set(articlePlaceJson.map((r) => r.place_id))];
+    if (placeIds.length > 0) {
+      const { rows: placeRows } = await client.query(
+        `SELECT json_agg(row_to_json(t)) AS data FROM (
+           SELECT id, place_name, place_name_full, place_type, parent_id, municipality_nr
+           FROM places WHERE id IN (${placeIds.join(',')})
+           ORDER BY id
+         ) t`,
+      );
+      const placesJson = placeRows[0].data ?? [];
+      await writeFile(
+        join(fixturesDir, 'places.json'),
+        JSON.stringify(placesJson) + '\n',
+      );
+      console.log(`Wrote ${placesJson.length} place entries`);
+    } else {
+      await writeFile(join(fixturesDir, 'places.json'), '[]\n');
+      console.log('Wrote 0 place entries');
+    }
+
     console.log('\nFixtures written to', fixturesDir);
   } finally {
     await client.end();

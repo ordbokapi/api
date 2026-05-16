@@ -50,6 +50,20 @@ export interface BibliographySearchResults {
   hits: BibliographyHit[];
 }
 
+export interface PlaceHit {
+  id: number;
+  place_name: string;
+  place_name_full: string;
+  place_type: string;
+  parent_id: number | null;
+  municipality_nr: string | null;
+}
+
+export interface PlaceSearchResults {
+  total: number;
+  hits: PlaceHit[];
+}
+
 export interface MeiliSearchFacetResults extends MeiliSearchResults {
   facetDistribution?: Record<string, Record<string, number>>;
 }
@@ -333,6 +347,28 @@ export class MeilisearchService implements OnModuleInit {
     return {
       total: result.estimatedTotalHits ?? result.hits.length,
       hits: result.hits as BibliographyHit[],
+    };
+  }
+
+  async searchPlaces(
+    query: string,
+    options?: {
+      filter?: string;
+      limit?: number;
+      offset?: number;
+    },
+  ): Promise<PlaceSearchResults> {
+    const index = this.#client.index('places');
+
+    const result = await index.search(query, {
+      filter: options?.filter,
+      limit: options?.limit ?? 20,
+      offset: options?.offset ?? 0,
+    });
+
+    return {
+      total: result.estimatedTotalHits ?? result.hits.length,
+      hits: result.hits as PlaceHit[],
     };
   }
 }

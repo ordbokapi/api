@@ -30,7 +30,7 @@ import { WrittenForm } from './written-form';
 
 @ObjectType({
   description:
-    'Ein artikkel i eit leksikon eller ordbok, med detaljert informasjon om ord og bruken deira.',
+    'Ein artikkel i ei ordbok, med informasjon om eit oppslag og bruken av det.',
 })
 export class Article {
   constructor(article?: Partial<Article>) {
@@ -85,14 +85,15 @@ export class Article {
 
   @Field(() => [RichContent], {
     nullable: true,
-    description: 'Liste over etymologiske opphav til ordet i artikkelen.',
+    description:
+      'Etymologi for oppslaget, med opphav bakover i tid og slektskap med ord i andre språk.',
   })
   etymology?: RichContent[];
 
   @Field(() => [RichContent], {
     nullable: true,
     description:
-      'Liste over uttalar av ordet i artikkelen. Tilgjengeleg for Norsk Ordbok.',
+      'Uttalerettleiing for ord der uttalen ikkje er openberr frå skriftforma, t.d. trykk i importord eller uvanlege konsonantljodar. Tilgjengeleg for Norsk Ordbok.',
   })
   pronunciation?: RichContent[];
 
@@ -113,7 +114,7 @@ export class Article {
   @Field(() => [BibliographyReference], {
     nullable: true,
     description:
-      'Referansar til eldre kjelder, som historiske ordbøker. Tilgjengeleg for Norsk Ordbok.',
+      'Referansar til ordbokskjelder til og med Ivar Aasen (1873) og Hans Ross (1895). Tilgjengeleg for Norsk Ordbok.',
   })
   olderSources?: BibliographyReference[];
 }

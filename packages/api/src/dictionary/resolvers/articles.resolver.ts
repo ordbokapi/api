@@ -28,6 +28,7 @@ import {
   PageInfo,
   ArticleFacets,
   BibliographyFacets,
+  PlaceFacets,
   FacetCount,
   toUibDictionary,
 } from '../models';
@@ -40,6 +41,15 @@ const facetAttributes = [
   'inflection_tags',
   'has_split_inf',
   'dialect_places',
+  'dialect_place_names',
+  'dialect_place_codes',
+  'dialect_place_types',
+  'attestation_place_names',
+  'attestation_place_codes',
+  'attestation_place_types',
+  'place_names',
+  'place_codes',
+  'place_types',
   'older_source_codes',
   'older_source_authors',
   'older_source_titles',
@@ -240,8 +250,21 @@ export class ArticlesResolver {
 
     const dialectPlaces = distribution['dialect_places'];
     if (dialectPlaces) {
-      facets.dialectPlace = this.#rawFacetCounts(dialectPlaces);
+      facets.dialectPlace = facets.dialectPlace ?? {};
+      facets.dialectPlace.name = [
+        ...(facets.dialectPlace.name ?? []),
+        ...this.#rawFacetCounts(dialectPlaces),
+      ];
     }
+
+    facets.dialectPlace = this.#mergePlaceFacets(
+      facets.dialectPlace,
+      this.#buildPlaceFacets(distribution, 'dialect_place'),
+    );
+    facets.attestationPlace = this.#buildPlaceFacets(
+      distribution,
+      'attestation_place',
+    );
 
     facets.olderSource = this.#buildBibliographyFacets(
       distribution,
@@ -259,6 +282,8 @@ export class ArticlesResolver {
       distribution,
       'bibliography',
     );
+
+    facets.place = this.#buildPlaceFacets(distribution, 'place');
 
     const etymLangs = distribution['etymology_languages'];
     if (etymLangs) {
@@ -301,6 +326,58 @@ export class ArticlesResolver {
     if (titles) result.title = this.#rawFacetCounts(titles);
     if (years) result.year = this.#rawFacetCounts(years);
     return result;
+  }
+
+  #buildPlaceFacets(
+    distribution: Record<string, Record<string, number>>,
+    prefix: string,
+  ): PlaceFacets | undefined {
+    const names = distribution[`${prefix}_names`];
+    const codes = distribution[`${prefix}_codes`];
+    const types = distribution[`${prefix}_types`];
+
+    if (!names && !codes && !types) {
+      return undefined;
+    }
+
+    const result: PlaceFacets = {};
+
+    if (names) {
+      result.name = this.#rawFacetCounts(names);
+    }
+
+    if (codes) {
+      result.code = this.#rawFacetCounts(codes);
+    }
+
+    if (types) {
+      result.type = this.#rawFacetCounts(types);
+    }
+
+    return result;
+  }
+
+  #mergePlaceFacets(
+    a: PlaceFacets | undefined,
+    b: PlaceFacets | undefined,
+  ): PlaceFacets | undefined {
+    if (!a && !b) {
+      return undefined;
+    }
+
+    if (!a) {
+      return b;
+    }
+
+    if (!b) {
+      return a;
+    }
+
+    return {
+      name: [...(a.name ?? []), ...(b.name ?? [])],
+      code: [...(a.code ?? []), ...(b.code ?? [])],
+      type: [...(a.type ?? []), ...(b.type ?? [])],
+    };
   }
 
   #boolFacetCounts(dist: Record<string, number>): FacetCount[] {

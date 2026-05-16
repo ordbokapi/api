@@ -17,7 +17,7 @@
 // along with Ordbok API. If not, see <https://www.gnu.org/licenses/>.
 
 import { Field, ObjectType } from '@nestjs/graphql';
-import { DialectSource } from './dialect-source.model';
+import { GeographicAttestation } from '../geographic-attestation.model';
 
 @ObjectType({
   description: 'Ei dialektform av eit ord med geografiske kjelder.',
@@ -28,9 +28,9 @@ export class DialectForm {
   })
   form: string;
 
-  @Field(() => [DialectSource], {
+  @Field(() => [GeographicAttestation], {
     description:
       'Liste over geografiske kjelder der dialektforma er attestert.',
   })
-  sources: DialectSource[];
+  sources: GeographicAttestation[];
 }

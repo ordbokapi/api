@@ -18,5 +18,4 @@
 
 export * from './dialect.model';
 export * from './dialect-form.model';
-export * from './dialect-source.model';
 export * from './dialect-subcategory.model';

@@ -366,17 +366,35 @@ describe('articles query', () => {
     expect(data.articles.totalCount).toBeGreaterThan(0);
   });
 
-  it('filters by dialectPlace', async () => {
-    const data = await gql(`{
+  it('filters by dialectPlace name, code, and type', async () => {
+    const byName = await gql(`{
       articles(
         dictionaries: [NorskOrdbok]
-        filter: { dialectPlace: { eq: "Eidskog" } }
+        filter: { dialectPlace: { name: { eq: "Eidskog" } } }
       ) {
         totalCount
         edges { node { id } }
       }
     }`);
-    expect(data.articles.totalCount).toBeGreaterThan(0);
+    expect(byName.articles.totalCount).toBeGreaterThan(0);
+
+    const byCode = await gql(`{
+      articles(
+        dictionaries: [NorskOrdbok]
+        filter: { dialectPlace: { code: { eq: "Eidskog" } } }
+      ) { totalCount }
+    }`);
+    expect(byCode.articles.totalCount).toBe(byName.articles.totalCount);
+
+    const byType = await gql(`{
+      articles(
+        dictionaries: [NorskOrdbok]
+        filter: { dialectPlace: { type: { eq: "Kommune" } } }
+      ) { totalCount }
+    }`);
+    expect(byType.articles.totalCount).toBeGreaterThan(
+      byName.articles.totalCount,
+    );
   });
 
   it('filters by writtenFormSource', async () => {
@@ -440,7 +458,7 @@ describe('articles query', () => {
         dictionaries: [NorskOrdbok]
         filter: {
           OR: [
-            { dialectPlace: { eq: "Eidskog" } }
+            { dialectPlace: { name: { eq: "Eidskog" } } }
             { writtenFormSource: { code: { eq: "FløgstadKS" } } }
           ]
         }
@@ -454,7 +472,7 @@ describe('articles query', () => {
     const eidskog = await gql(`{
       articles(
         dictionaries: [NorskOrdbok]
-        filter: { dialectPlace: { eq: "Eidskog" } }
+        filter: { dialectPlace: { name: { eq: "Eidskog" } } }
       ) { totalCount }
     }`);
     const flogstad = await gql(`{
@@ -850,5 +868,71 @@ describe('articles query', () => {
       ) { totalCount }
     }`);
     expect(data.articles.totalCount).toMatchInlineSnapshot(`36`);
+  });
+
+  it('filters by attestationPlace and respects tier separation', async () => {
+    const attestation = await gql(`{
+      articles(
+        dictionaries: [NorskOrdbok]
+        filter: { attestationPlace: { name: { eq: "Masfjorden" } } }
+      ) {
+        totalCount
+        edges { node { id } }
+      }
+    }`);
+    expect(attestation.articles.totalCount).toBeGreaterThan(0);
+
+    const dialectOnly = await gql(`{
+      articles(
+        dictionaries: [NorskOrdbok]
+        filter: { attestationPlace: { name: { eq: "Eidskog" } } }
+      ) { totalCount }
+    }`);
+    expect(dialectOnly.articles.totalCount).toBe(0);
+  });
+
+  it('combined place filter includes both dialect and attestation', async () => {
+    const dialectOnly = await gql(`{
+      articles(
+        dictionaries: [NorskOrdbok]
+        filter: { dialectPlace: { name: { eq: "Tynset" } } }
+      ) { totalCount }
+    }`);
+    const combined = await gql(`{
+      articles(
+        dictionaries: [NorskOrdbok]
+        filter: { place: { name: { eq: "Tynset" } } }
+      ) { totalCount }
+    }`);
+    expect(dialectOnly.articles.totalCount).toBeGreaterThan(0);
+    expect(combined.articles.totalCount).toBeGreaterThanOrEqual(
+      dialectOnly.articles.totalCount,
+    );
+  });
+
+  it('returns place facets with all three tiers', async () => {
+    const data = await gql(`{
+      articles(dictionaries: [NorskOrdbok]) {
+        facets {
+          dialectPlace { name { value count } code { value count } type { value count } }
+          attestationPlace { name { value count } code { value count } type { value count } }
+          place { name { value count } code { value count } type { value count } }
+        }
+      }
+    }`);
+    const { dialectPlace, attestationPlace, place } = data.articles.facets;
+
+    expect(dialectPlace.name.length).toBeGreaterThan(0);
+    expect(dialectPlace.code.length).toBeGreaterThan(0);
+    expect(dialectPlace.type.length).toBeGreaterThan(0);
+
+    expect(attestationPlace.name.length).toBeGreaterThan(0);
+
+    expect(place.name.length).toBeGreaterThan(0);
+
+    for (const fc of dialectPlace.name) {
+      expect(fc.value).toBeDefined();
+      expect(fc.count).toBeGreaterThan(0);
+    }
   });
 });

@@ -54,6 +54,7 @@ import {
   DialectForm,
   WrittenForm,
   WrittenFormVariant,
+  RawPlaceTypeMap,
 } from '../models';
 import { OrdboekeneApiSearchType as ApiSearchType } from './ordboekene-api.service';
 import { flattenDefinitions } from './flatten-definitions';
@@ -69,6 +70,7 @@ import {
   ArticleTextElement,
   SanitizationService,
   UibDbService,
+  PlaceEntry,
   SearchOptions,
   LightSearchResult,
 } from 'ordbokapi-common';
@@ -88,6 +90,12 @@ const wordClassMap = new TwoWayMap([
   ['SYM', WordClass.Symbol],
   ['ABBR', WordClass.Forkorting],
   ['EXPR', WordClass.Uttrykk],
+  ['DET_Q', WordClass.Talord],
+  ['PROPN', WordClass.Eigennamn],
+  ['PFX', WordClass.Prefiks],
+  ['COMPPFX', WordClass.Samansetjingsled],
+  ['INFM', WordClass.Infinitivsmerke],
+  ['UNKN', WordClass.Ukjend],
 ]);
 
 type SearchLabel = 'exact' | 'inflections' | 'freetext' | 'similar';
@@ -277,7 +285,8 @@ export class WordService {
 
       if (article.dictionary === Dictionary.NorskOrdbok) {
         const noData = articleData as NoArticle;
-        article.dialect = this.transformDialect(noData);
+        const placeMap = await this.#getPlacesForArticle(noData);
+        article.dialect = this.transformDialect(noData, placeMap);
         article.writtenForm = this.transformWrittenForm(noData);
         article.olderSources = this.transformOlderSources(article, noData);
       } else {
@@ -461,7 +470,8 @@ export class WordService {
 
     if (dictionary === Dictionary.NorskOrdbok) {
       const noData = articleData as NoArticle;
-      article.dialect = this.transformDialect(noData);
+      const placeMap = await this.#getPlacesForArticle(noData);
+      article.dialect = this.transformDialect(noData, placeMap);
       article.writtenForm = this.transformWrittenForm(noData);
       article.olderSources = this.transformOlderSources(article, noData);
     } else {
@@ -623,6 +633,7 @@ export class WordService {
         id: lemma.id,
         lemma: lemma.lemma,
         meaning: lemma.hgno,
+        homographNumber: lemma.hgno,
         paradigms: [],
         splitInfinitive: Boolean(lemma.split_inf),
       };
@@ -658,11 +669,14 @@ export class WordService {
 
     let foundMasc = false;
     let foundFem = false;
+    let isNoun = false;
 
     for (const lemma of article.lemmas ?? []) {
       for (const paradigmInfo of lemma.paradigm_info ?? []) {
         for (const tag of paradigmInfo.tags ?? []) {
-          if (tag === 'Neuter') {
+          if (tag === 'NOUN') {
+            isNoun = true;
+          } else if (tag === 'Neuter') {
             return Gender.Inkjekjoenn;
           } else if (tag === 'Masc') {
             foundMasc = true;
@@ -673,13 +687,23 @@ export class WordService {
       }
     }
 
-    return foundMasc && foundFem
-      ? Gender.HankjoennHokjoenn
-      : foundMasc
-        ? Gender.Hankjoenn
-        : foundFem
-          ? Gender.Hokjoenn
-          : undefined;
+    if (foundMasc && foundFem) {
+      return Gender.HankjoennHokjoenn;
+    }
+
+    if (foundMasc) {
+      return Gender.Hankjoenn;
+    }
+
+    if (foundFem) {
+      return Gender.Hokjoenn;
+    }
+
+    if (isNoun) {
+      return Gender.Ukjent;
+    }
+
+    return undefined;
   }
 
   //#endregion
@@ -1260,7 +1284,7 @@ export class WordService {
         place: {
           id: ref.place.place_id,
           name: ref.place.place_name,
-          type: ref.place.place_type,
+          type: RawPlaceTypeMap[ref.place.place_type],
         },
         visible: ref.vis === 1,
       });
@@ -1287,7 +1311,34 @@ export class WordService {
     }
   }
 
-  private transformDialect(data: NoArticle): Dialect[] {
+  async #getPlacesForArticle(
+    data: NoArticle,
+  ): Promise<Map<number, PlaceEntry>> {
+    const placeIds = new Set<number>();
+
+    for (const dialectData of data?.body?.dialect ?? []) {
+      for (const subcat of dialectData.subcats ?? []) {
+        for (const formData of subcat.forms ?? []) {
+          for (const source of formData.sources ?? []) {
+            if (source.place_id) {
+              placeIds.add(source.place_id);
+            }
+          }
+        }
+      }
+    }
+
+    if (placeIds.size === 0) {
+      return new Map();
+    }
+
+    return this.data.getPlacesByIds([...placeIds]);
+  }
+
+  private transformDialect(
+    data: NoArticle,
+    placeMap: Map<number, PlaceEntry>,
+  ): Dialect[] {
     const dialects: Dialect[] = [];
 
     for (const dialectData of data?.body?.dialect ?? []) {
@@ -1322,11 +1373,17 @@ export class WordService {
               continue;
             }
 
+            const placeEntry = placeMap.get(source.place_id);
+
             form.sources.push({
               place: {
                 id: source.place_id,
-                name: source.place_name ?? '',
-                type: source.place?.place_type ?? '',
+                name: placeEntry?.name || source.place_name || '',
+                code: placeEntry?.code || undefined,
+                type: RawPlaceTypeMap[
+                  placeEntry?.type ?? source.place?.place_type ?? ''
+                ],
+                parentId: placeEntry?.parentId ?? null,
               },
               visible: source.show === 1,
             });

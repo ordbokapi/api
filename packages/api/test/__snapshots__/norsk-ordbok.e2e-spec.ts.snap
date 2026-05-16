@@ -213,7 +213,7 @@ exports[`Norsk Ordbok dialect > returns dialect forms with geographic sources 1`
                 "place": {
                   "id": 3,
                   "name": "Flatbygdene på Austlandet",
-                  "type": "",
+                  "type": "DelAvLandsdel",
                 },
                 "visible": true,
               },
@@ -221,7 +221,7 @@ exports[`Norsk Ordbok dialect > returns dialect forms with geographic sources 1`
                 "place": {
                   "id": 4,
                   "name": "Sør-Austlandet",
-                  "type": "",
+                  "type": "DelAvLandsdel",
                 },
                 "visible": false,
               },
@@ -229,7 +229,7 @@ exports[`Norsk Ordbok dialect > returns dialect forms with geographic sources 1`
                 "place": {
                   "id": 5,
                   "name": "Austfold",
-                  "type": "",
+                  "type": "Fylke",
                 },
                 "visible": false,
               },
@@ -237,7 +237,7 @@ exports[`Norsk Ordbok dialect > returns dialect forms with geographic sources 1`
                 "place": {
                   "id": 41,
                   "name": "Akershus",
-                  "type": "",
+                  "type": "Fylke",
                 },
                 "visible": false,
               },
@@ -245,7 +245,7 @@ exports[`Norsk Ordbok dialect > returns dialect forms with geographic sources 1`
                 "place": {
                   "id": 85,
                   "name": "Eidskog",
-                  "type": "",
+                  "type": "Kommune",
                 },
                 "visible": true,
               },
@@ -253,7 +253,7 @@ exports[`Norsk Ordbok dialect > returns dialect forms with geographic sources 1`
                 "place": {
                   "id": 86,
                   "name": "Vinger",
-                  "type": "",
+                  "type": "Kommune",
                 },
                 "visible": true,
               },
@@ -261,7 +261,7 @@ exports[`Norsk Ordbok dialect > returns dialect forms with geographic sources 1`
                 "place": {
                   "id": 88,
                   "name": "Odal",
-                  "type": "",
+                  "type": "Landskap",
                 },
                 "visible": false,
               },
@@ -269,7 +269,7 @@ exports[`Norsk Ordbok dialect > returns dialect forms with geographic sources 1`
                 "place": {
                   "id": 91,
                   "name": "Solør",
-                  "type": "",
+                  "type": "Landskap",
                 },
                 "visible": false,
               },
@@ -277,7 +277,7 @@ exports[`Norsk Ordbok dialect > returns dialect forms with geographic sources 1`
                 "place": {
                   "id": 97,
                   "name": "Hedmark",
-                  "type": "",
+                  "type": "Landskap",
                 },
                 "visible": false,
               },
@@ -285,7 +285,7 @@ exports[`Norsk Ordbok dialect > returns dialect forms with geographic sources 1`
                 "place": {
                   "id": 106,
                   "name": "Østerdalen",
-                  "type": "",
+                  "type": "Landskap",
                 },
                 "visible": true,
               },
@@ -293,7 +293,7 @@ exports[`Norsk Ordbok dialect > returns dialect forms with geographic sources 1`
                 "place": {
                   "id": 113,
                   "name": "Rendal",
-                  "type": "",
+                  "type": "Tvillingkommune",
                 },
                 "visible": false,
               },
@@ -301,7 +301,7 @@ exports[`Norsk Ordbok dialect > returns dialect forms with geographic sources 1`
                 "place": {
                   "id": 116,
                   "name": "Stor-Elvdal",
-                  "type": "",
+                  "type": "Kommune",
                 },
                 "visible": false,
               },
@@ -309,7 +309,7 @@ exports[`Norsk Ordbok dialect > returns dialect forms with geographic sources 1`
                 "place": {
                   "id": 119,
                   "name": "Alvdal",
-                  "type": "",
+                  "type": "Kommune",
                 },
                 "visible": false,
               },
@@ -317,7 +317,7 @@ exports[`Norsk Ordbok dialect > returns dialect forms with geographic sources 1`
                 "place": {
                   "id": 120,
                   "name": "Tynset",
-                  "type": "",
+                  "type": "Kommune",
                 },
                 "visible": false,
               },
@@ -325,7 +325,7 @@ exports[`Norsk Ordbok dialect > returns dialect forms with geographic sources 1`
                 "place": {
                   "id": 121,
                   "name": "Tolga",
-                  "type": "",
+                  "type": "Kommune",
                 },
                 "visible": false,
               },
@@ -333,7 +333,7 @@ exports[`Norsk Ordbok dialect > returns dialect forms with geographic sources 1`
                 "place": {
                   "id": 123,
                   "name": "Kvikne",
-                  "type": "",
+                  "type": "Kommune",
                 },
                 "visible": false,
               },
@@ -341,7 +341,7 @@ exports[`Norsk Ordbok dialect > returns dialect forms with geographic sources 1`
                 "place": {
                   "id": 143,
                   "name": "Fåberg",
-                  "type": "",
+                  "type": "Kommune",
                 },
                 "visible": true,
               },
@@ -349,7 +349,7 @@ exports[`Norsk Ordbok dialect > returns dialect forms with geographic sources 1`
                 "place": {
                   "id": 158,
                   "name": "Vest-Oppland",
-                  "type": "",
+                  "type": "DelAvFylke",
                 },
                 "visible": false,
               },
@@ -357,7 +357,7 @@ exports[`Norsk Ordbok dialect > returns dialect forms with geographic sources 1`
                 "place": {
                   "id": 192,
                   "name": "Flesberg",
-                  "type": "",
+                  "type": "Kommune",
                 },
                 "visible": true,
               },
@@ -365,7 +365,7 @@ exports[`Norsk Ordbok dialect > returns dialect forms with geographic sources 1`
                 "place": {
                   "id": 194,
                   "name": "Sigdal",
-                  "type": "",
+                  "type": "Kommune",
                 },
                 "visible": false,
               },
@@ -373,7 +373,7 @@ exports[`Norsk Ordbok dialect > returns dialect forms with geographic sources 1`
                 "place": {
                   "id": 196,
                   "name": "Ringerike",
-                  "type": "",
+                  "type": "Landskap",
                 },
                 "visible": false,
               },
@@ -381,7 +381,7 @@ exports[`Norsk Ordbok dialect > returns dialect forms with geographic sources 1`
                 "place": {
                   "id": 197,
                   "name": "Ådal",
-                  "type": "",
+                  "type": "Kommune",
                 },
                 "visible": false,
               },
@@ -389,7 +389,7 @@ exports[`Norsk Ordbok dialect > returns dialect forms with geographic sources 1`
                 "place": {
                   "id": 198,
                   "name": "Norderhov",
-                  "type": "",
+                  "type": "Kommune",
                 },
                 "visible": false,
               },
@@ -397,7 +397,7 @@ exports[`Norsk Ordbok dialect > returns dialect forms with geographic sources 1`
                 "place": {
                   "id": 202,
                   "name": "Nedre Buskerud",
-                  "type": "",
+                  "type": "Landskap",
                 },
                 "visible": false,
               },
@@ -405,7 +405,7 @@ exports[`Norsk Ordbok dialect > returns dialect forms with geographic sources 1`
                 "place": {
                   "id": 216,
                   "name": "Vestfold",
-                  "type": "",
+                  "type": "Fylke",
                 },
                 "visible": false,
               },
@@ -413,7 +413,7 @@ exports[`Norsk Ordbok dialect > returns dialect forms with geographic sources 1`
                 "place": {
                   "id": 254,
                   "name": "Lunde",
-                  "type": "",
+                  "type": "Kommune",
                 },
                 "visible": true,
               },
@@ -421,7 +421,7 @@ exports[`Norsk Ordbok dialect > returns dialect forms with geographic sources 1`
                 "place": {
                   "id": 264,
                   "name": "Nedre Telemark",
-                  "type": "",
+                  "type": "Landskap",
                 },
                 "visible": false,
               },
@@ -429,7 +429,7 @@ exports[`Norsk Ordbok dialect > returns dialect forms with geographic sources 1`
                 "place": {
                   "id": 265,
                   "name": "Drangedal",
-                  "type": "",
+                  "type": "Kommune",
                 },
                 "visible": false,
               },
@@ -437,7 +437,7 @@ exports[`Norsk Ordbok dialect > returns dialect forms with geographic sources 1`
                 "place": {
                   "id": 266,
                   "name": "Holla",
-                  "type": "",
+                  "type": "Kommune",
                 },
                 "visible": false,
               },
@@ -445,7 +445,7 @@ exports[`Norsk Ordbok dialect > returns dialect forms with geographic sources 1`
                 "place": {
                   "id": 267,
                   "name": "Solum",
-                  "type": "",
+                  "type": "Kommune",
                 },
                 "visible": false,
               },
@@ -453,7 +453,7 @@ exports[`Norsk Ordbok dialect > returns dialect forms with geographic sources 1`
                 "place": {
                   "id": 268,
                   "name": "Gjerpen",
-                  "type": "",
+                  "type": "Kommune",
                 },
                 "visible": false,
               },
@@ -461,7 +461,7 @@ exports[`Norsk Ordbok dialect > returns dialect forms with geographic sources 1`
                 "place": {
                   "id": 271,
                   "name": "Siljan",
-                  "type": "",
+                  "type": "Kommune",
                 },
                 "visible": false,
               },
@@ -469,7 +469,7 @@ exports[`Norsk Ordbok dialect > returns dialect forms with geographic sources 1`
                 "place": {
                   "id": 272,
                   "name": "Eidanger",
-                  "type": "",
+                  "type": "Kommune",
                 },
                 "visible": false,
               },
@@ -477,7 +477,7 @@ exports[`Norsk Ordbok dialect > returns dialect forms with geographic sources 1`
                 "place": {
                   "id": 276,
                   "name": "Bamble",
-                  "type": "",
+                  "type": "Kommune",
                 },
                 "visible": false,
               },
@@ -485,7 +485,7 @@ exports[`Norsk Ordbok dialect > returns dialect forms with geographic sources 1`
                 "place": {
                   "id": 279,
                   "name": "Sannidal",
-                  "type": "",
+                  "type": "Kommune",
                 },
                 "visible": false,
               },
@@ -493,7 +493,7 @@ exports[`Norsk Ordbok dialect > returns dialect forms with geographic sources 1`
                 "place": {
                   "id": 280,
                   "name": "Agder",
-                  "type": "",
+                  "type": "Landsdel",
                 },
                 "visible": true,
               },
@@ -501,7 +501,7 @@ exports[`Norsk Ordbok dialect > returns dialect forms with geographic sources 1`
                 "place": {
                   "id": 281,
                   "name": "Ytre Agder",
-                  "type": "",
+                  "type": "DelAvLandsdel",
                 },
                 "visible": false,
               },
@@ -509,7 +509,7 @@ exports[`Norsk Ordbok dialect > returns dialect forms with geographic sources 1`
                 "place": {
                   "id": 285,
                   "name": "Indre Agder",
-                  "type": "",
+                  "type": "DelAvLandsdel",
                 },
                 "visible": false,
               },
@@ -517,7 +517,7 @@ exports[`Norsk Ordbok dialect > returns dialect forms with geographic sources 1`
                 "place": {
                   "id": 290,
                   "name": "Vegårshei",
-                  "type": "",
+                  "type": "Kommune",
                 },
                 "visible": false,
               },
@@ -525,7 +525,7 @@ exports[`Norsk Ordbok dialect > returns dialect forms with geographic sources 1`
                 "place": {
                   "id": 291,
                   "name": "Dypvåg",
-                  "type": "",
+                  "type": "Kommune",
                 },
                 "visible": false,
               },
@@ -533,7 +533,7 @@ exports[`Norsk Ordbok dialect > returns dialect forms with geographic sources 1`
                 "place": {
                   "id": 295,
                   "name": "Mykland",
-                  "type": "",
+                  "type": "Kommune",
                 },
                 "visible": false,
               },
@@ -541,7 +541,7 @@ exports[`Norsk Ordbok dialect > returns dialect forms with geographic sources 1`
                 "place": {
                   "id": 296,
                   "name": "Froland",
-                  "type": "",
+                  "type": "Kommune",
                 },
                 "visible": false,
               },
@@ -549,7 +549,7 @@ exports[`Norsk Ordbok dialect > returns dialect forms with geographic sources 1`
                 "place": {
                   "id": 300,
                   "name": "Austre Moland",
-                  "type": "",
+                  "type": "Kommune",
                 },
                 "visible": false,
               },
@@ -557,7 +557,7 @@ exports[`Norsk Ordbok dialect > returns dialect forms with geographic sources 1`
                 "place": {
                   "id": 305,
                   "name": "Fjære",
-                  "type": "",
+                  "type": "Kommune",
                 },
                 "visible": false,
               },
@@ -565,7 +565,7 @@ exports[`Norsk Ordbok dialect > returns dialect forms with geographic sources 1`
                 "place": {
                   "id": 306,
                   "name": "Landvik",
-                  "type": "",
+                  "type": "Kommune",
                 },
                 "visible": false,
               },
@@ -573,7 +573,7 @@ exports[`Norsk Ordbok dialect > returns dialect forms with geographic sources 1`
                 "place": {
                   "id": 311,
                   "name": "Herefoss",
-                  "type": "",
+                  "type": "Kommune",
                 },
                 "visible": false,
               },
@@ -581,7 +581,7 @@ exports[`Norsk Ordbok dialect > returns dialect forms with geographic sources 1`
                 "place": {
                   "id": 313,
                   "name": "Vegusdal",
-                  "type": "",
+                  "type": "Kommune",
                 },
                 "visible": false,
               },
@@ -589,7 +589,7 @@ exports[`Norsk Ordbok dialect > returns dialect forms with geographic sources 1`
                 "place": {
                   "id": 314,
                   "name": "Iveland",
-                  "type": "",
+                  "type": "Kommune",
                 },
                 "visible": false,
               },
@@ -597,7 +597,7 @@ exports[`Norsk Ordbok dialect > returns dialect forms with geographic sources 1`
                 "place": {
                   "id": 326,
                   "name": "Tveit",
-                  "type": "",
+                  "type": "Kommune",
                 },
                 "visible": false,
               },
@@ -605,7 +605,7 @@ exports[`Norsk Ordbok dialect > returns dialect forms with geographic sources 1`
                 "place": {
                   "id": 327,
                   "name": "Oddernes",
-                  "type": "",
+                  "type": "Kommune",
                 },
                 "visible": false,
               },
@@ -613,7 +613,7 @@ exports[`Norsk Ordbok dialect > returns dialect forms with geographic sources 1`
                 "place": {
                   "id": 328,
                   "name": "Randesund",
-                  "type": "",
+                  "type": "Kommune",
                 },
                 "visible": false,
               },
@@ -621,7 +621,7 @@ exports[`Norsk Ordbok dialect > returns dialect forms with geographic sources 1`
                 "place": {
                   "id": 329,
                   "name": "Øvrebø",
-                  "type": "",
+                  "type": "Kommune",
                 },
                 "visible": false,
               },
@@ -629,7 +629,7 @@ exports[`Norsk Ordbok dialect > returns dialect forms with geographic sources 1`
                 "place": {
                   "id": 330,
                   "name": "Hægeland",
-                  "type": "",
+                  "type": "Kommune",
                 },
                 "visible": false,
               },
@@ -637,7 +637,7 @@ exports[`Norsk Ordbok dialect > returns dialect forms with geographic sources 1`
                 "place": {
                   "id": 331,
                   "name": "Vennesla",
-                  "type": "",
+                  "type": "Kommune",
                 },
                 "visible": false,
               },
@@ -645,7 +645,7 @@ exports[`Norsk Ordbok dialect > returns dialect forms with geographic sources 1`
                 "place": {
                   "id": 332,
                   "name": "Søgne",
-                  "type": "",
+                  "type": "Kommune",
                 },
                 "visible": false,
               },
@@ -653,7 +653,7 @@ exports[`Norsk Ordbok dialect > returns dialect forms with geographic sources 1`
                 "place": {
                   "id": 333,
                   "name": "Holum",
-                  "type": "",
+                  "type": "Kommune",
                 },
                 "visible": false,
               },
@@ -661,7 +661,7 @@ exports[`Norsk Ordbok dialect > returns dialect forms with geographic sources 1`
                 "place": {
                   "id": 334,
                   "name": "Halse og Harkmark",
-                  "type": "",
+                  "type": "Kommune",
                 },
                 "visible": false,
               },
@@ -669,7 +669,7 @@ exports[`Norsk Ordbok dialect > returns dialect forms with geographic sources 1`
                 "place": {
                   "id": 336,
                   "name": "Greipstad",
-                  "type": "",
+                  "type": "Kommune",
                 },
                 "visible": false,
               },
@@ -677,7 +677,7 @@ exports[`Norsk Ordbok dialect > returns dialect forms with geographic sources 1`
                 "place": {
                   "id": 371,
                   "name": "Lund",
-                  "type": "",
+                  "type": "Kommune",
                 },
                 "visible": true,
               },
@@ -685,7 +685,7 @@ exports[`Norsk Ordbok dialect > returns dialect forms with geographic sources 1`
                 "place": {
                   "id": 622,
                   "name": "Sør-Trøndelag",
-                  "type": "",
+                  "type": "Fylke",
                 },
                 "visible": true,
               },
@@ -693,7 +693,7 @@ exports[`Norsk Ordbok dialect > returns dialect forms with geographic sources 1`
                 "place": {
                   "id": 651,
                   "name": "Orkdalen",
-                  "type": "",
+                  "type": "Landskap",
                 },
                 "visible": false,
               },
@@ -701,7 +701,7 @@ exports[`Norsk Ordbok dialect > returns dialect forms with geographic sources 1`
                 "place": {
                   "id": 654,
                   "name": "Orkdal",
-                  "type": "",
+                  "type": "Kommune",
                 },
                 "visible": false,
               },
@@ -709,7 +709,7 @@ exports[`Norsk Ordbok dialect > returns dialect forms with geographic sources 1`
                 "place": {
                   "id": 655,
                   "name": "Orkland",
-                  "type": "",
+                  "type": "Kommune",
                 },
                 "visible": false,
               },
@@ -717,7 +717,7 @@ exports[`Norsk Ordbok dialect > returns dialect forms with geographic sources 1`
                 "place": {
                   "id": 656,
                   "name": "Meldal",
-                  "type": "",
+                  "type": "Kommune",
                 },
                 "visible": false,
               },
@@ -725,7 +725,7 @@ exports[`Norsk Ordbok dialect > returns dialect forms with geographic sources 1`
                 "place": {
                   "id": 568,
                   "name": "Oppdal",
-                  "type": "",
+                  "type": "Kommune",
                 },
                 "visible": false,
               },
@@ -733,7 +733,7 @@ exports[`Norsk Ordbok dialect > returns dialect forms with geographic sources 1`
                 "place": {
                   "id": 661,
                   "name": "Gauldal",
-                  "type": "",
+                  "type": "Landskap",
                 },
                 "visible": false,
               },
@@ -741,7 +741,7 @@ exports[`Norsk Ordbok dialect > returns dialect forms with geographic sources 1`
                 "place": {
                   "id": 662,
                   "name": "Nedre Gauldal",
-                  "type": "",
+                  "type": "DelAvLandskap",
                 },
                 "visible": false,
               },
@@ -749,7 +749,7 @@ exports[`Norsk Ordbok dialect > returns dialect forms with geographic sources 1`
                 "place": {
                   "id": 665,
                   "name": "Hølonda",
-                  "type": "",
+                  "type": "Kommune",
                 },
                 "visible": false,
               },
@@ -757,7 +757,7 @@ exports[`Norsk Ordbok dialect > returns dialect forms with geographic sources 1`
                 "place": {
                   "id": 666,
                   "name": "Horg",
-                  "type": "",
+                  "type": "Kommune",
                 },
                 "visible": false,
               },
@@ -765,7 +765,7 @@ exports[`Norsk Ordbok dialect > returns dialect forms with geographic sources 1`
                 "place": {
                   "id": 667,
                   "name": "Midtre Gauldal",
-                  "type": "",
+                  "type": "DelAvLandskap",
                 },
                 "visible": false,
               },
@@ -773,7 +773,7 @@ exports[`Norsk Ordbok dialect > returns dialect forms with geographic sources 1`
                 "place": {
                   "id": 668,
                   "name": "Støren",
-                  "type": "",
+                  "type": "Kommune",
                 },
                 "visible": false,
               },
@@ -781,7 +781,7 @@ exports[`Norsk Ordbok dialect > returns dialect forms with geographic sources 1`
                 "place": {
                   "id": 669,
                   "name": "Soknedal",
-                  "type": "",
+                  "type": "Kommune",
                 },
                 "visible": false,
               },
@@ -789,7 +789,7 @@ exports[`Norsk Ordbok dialect > returns dialect forms with geographic sources 1`
                 "place": {
                   "id": 671,
                   "name": "Singsås",
-                  "type": "",
+                  "type": "Kommune",
                 },
                 "visible": false,
               },
@@ -797,7 +797,7 @@ exports[`Norsk Ordbok dialect > returns dialect forms with geographic sources 1`
                 "place": {
                   "id": 672,
                   "name": "Øvre Gauldal",
-                  "type": "",
+                  "type": "DelAvLandskap",
                 },
                 "visible": false,
               },
@@ -805,7 +805,7 @@ exports[`Norsk Ordbok dialect > returns dialect forms with geographic sources 1`
                 "place": {
                   "id": 673,
                   "name": "Haltdalen",
-                  "type": "",
+                  "type": "Kommune",
                 },
                 "visible": false,
               },
@@ -813,7 +813,7 @@ exports[`Norsk Ordbok dialect > returns dialect forms with geographic sources 1`
                 "place": {
                   "id": 674,
                   "name": "Ålen",
-                  "type": "",
+                  "type": "Kommune",
                 },
                 "visible": false,
               },
@@ -821,7 +821,7 @@ exports[`Norsk Ordbok dialect > returns dialect forms with geographic sources 1`
                 "place": {
                   "id": 676,
                   "name": "Brekken",
-                  "type": "",
+                  "type": "Kommune",
                 },
                 "visible": false,
               },
@@ -829,7 +829,7 @@ exports[`Norsk Ordbok dialect > returns dialect forms with geographic sources 1`
                 "place": {
                   "id": 677,
                   "name": "Røros",
-                  "type": "",
+                  "type": "Kommune",
                 },
                 "visible": false,
               },
@@ -837,7 +837,7 @@ exports[`Norsk Ordbok dialect > returns dialect forms with geographic sources 1`
                 "place": {
                   "id": 699,
                   "name": "Skogn",
-                  "type": "",
+                  "type": "Kommune",
                 },
                 "visible": true,
               },
@@ -845,7 +845,7 @@ exports[`Norsk Ordbok dialect > returns dialect forms with geographic sources 1`
                 "place": {
                   "id": 838,
                   "name": "Målselv",
-                  "type": "",
+                  "type": "Kommune",
                 },
                 "visible": true,
               },
@@ -853,7 +853,7 @@ exports[`Norsk Ordbok dialect > returns dialect forms with geographic sources 1`
                 "place": {
                   "id": 839,
                   "name": "Øverbygd",
-                  "type": "",
+                  "type": "Kommune",
                 },
                 "visible": true,
               },
@@ -866,7 +866,7 @@ exports[`Norsk Ordbok dialect > returns dialect forms with geographic sources 1`
                 "place": {
                   "id": 100,
                   "name": "Hamar",
-                  "type": "",
+                  "type": "Kommune",
                 },
                 "visible": true,
               },
@@ -874,7 +874,7 @@ exports[`Norsk Ordbok dialect > returns dialect forms with geographic sources 1`
                 "place": {
                   "id": 125,
                   "name": "Gudbrandsdalen",
-                  "type": "",
+                  "type": "Landskap",
                 },
                 "visible": true,
               },
@@ -882,7 +882,7 @@ exports[`Norsk Ordbok dialect > returns dialect forms with geographic sources 1`
                 "place": {
                   "id": 127,
                   "name": "Dovre",
-                  "type": "",
+                  "type": "Kommune",
                 },
                 "visible": false,
               },
@@ -890,7 +890,7 @@ exports[`Norsk Ordbok dialect > returns dialect forms with geographic sources 1`
                 "place": {
                   "id": 128,
                   "name": "Lesja",
-                  "type": "",
+                  "type": "Kommune",
                 },
                 "visible": false,
               },
@@ -898,7 +898,7 @@ exports[`Norsk Ordbok dialect > returns dialect forms with geographic sources 1`
                 "place": {
                   "id": 131,
                   "name": "Vågå",
-                  "type": "",
+                  "type": "Kommune",
                 },
                 "visible": false,
               },
@@ -906,7 +906,7 @@ exports[`Norsk Ordbok dialect > returns dialect forms with geographic sources 1`
                 "place": {
                   "id": 139,
                   "name": "Øyer",
-                  "type": "",
+                  "type": "Kommune",
                 },
                 "visible": false,
               },
@@ -914,7 +914,7 @@ exports[`Norsk Ordbok dialect > returns dialect forms with geographic sources 1`
                 "place": {
                   "id": 179,
                   "name": "Hallingdal",
-                  "type": "",
+                  "type": "Landskap",
                 },
                 "visible": true,
               },
@@ -922,7 +922,7 @@ exports[`Norsk Ordbok dialect > returns dialect forms with geographic sources 1`
                 "place": {
                   "id": 180,
                   "name": "Øvre Hallingdal",
-                  "type": "",
+                  "type": "DelAvLandskap",
                 },
                 "visible": false,
               },
@@ -930,7 +930,7 @@ exports[`Norsk Ordbok dialect > returns dialect forms with geographic sources 1`
                 "place": {
                   "id": 183,
                   "name": "Ål",
-                  "type": "",
+                  "type": "Kommune",
                 },
                 "visible": false,
               },
@@ -938,7 +938,7 @@ exports[`Norsk Ordbok dialect > returns dialect forms with geographic sources 1`
                 "place": {
                   "id": 184,
                   "name": "Hol i Hallingdal",
-                  "type": "",
+                  "type": "Kommune",
                 },
                 "visible": false,
               },
@@ -946,7 +946,7 @@ exports[`Norsk Ordbok dialect > returns dialect forms with geographic sources 1`
                 "place": {
                   "id": 187,
                   "name": "Flå i Hallingdal",
-                  "type": "",
+                  "type": "Kommune",
                 },
                 "visible": false,
               },
@@ -954,7 +954,7 @@ exports[`Norsk Ordbok dialect > returns dialect forms with geographic sources 1`
                 "place": {
                   "id": 270,
                   "name": "Porsgrunn",
-                  "type": "",
+                  "type": "Kommune",
                 },
                 "visible": true,
               },
@@ -962,7 +962,7 @@ exports[`Norsk Ordbok dialect > returns dialect forms with geographic sources 1`
                 "place": {
                   "id": 281,
                   "name": "Ytre Agder",
-                  "type": "",
+                  "type": "DelAvLandsdel",
                 },
                 "visible": true,
               },
@@ -970,7 +970,7 @@ exports[`Norsk Ordbok dialect > returns dialect forms with geographic sources 1`
                 "place": {
                   "id": 284,
                   "name": "Søndeled",
-                  "type": "",
+                  "type": "Kommune",
                 },
                 "visible": false,
               },
@@ -978,7 +978,7 @@ exports[`Norsk Ordbok dialect > returns dialect forms with geographic sources 1`
                 "place": {
                   "id": 293,
                   "name": "Holt",
-                  "type": "",
+                  "type": "Kommune",
                 },
                 "visible": false,
               },
@@ -986,7 +986,7 @@ exports[`Norsk Ordbok dialect > returns dialect forms with geographic sources 1`
                 "place": {
                   "id": 304,
                   "name": "Grimstad",
-                  "type": "",
+                  "type": "Kommune",
                 },
                 "visible": false,
               },
@@ -994,7 +994,7 @@ exports[`Norsk Ordbok dialect > returns dialect forms with geographic sources 1`
                 "place": {
                   "id": 335,
                   "name": "Mandal",
-                  "type": "",
+                  "type": "Kommune",
                 },
                 "visible": false,
               },
@@ -1002,7 +1002,7 @@ exports[`Norsk Ordbok dialect > returns dialect forms with geographic sources 1`
                 "place": {
                   "id": 352,
                   "name": "Austad",
-                  "type": "",
+                  "type": "Kommune",
                 },
                 "visible": false,
               },
@@ -1010,7 +1010,7 @@ exports[`Norsk Ordbok dialect > returns dialect forms with geographic sources 1`
                 "place": {
                   "id": 368,
                   "name": "Rogaland",
-                  "type": "",
+                  "type": "Fylke",
                 },
                 "visible": true,
               },
@@ -1018,7 +1018,7 @@ exports[`Norsk Ordbok dialect > returns dialect forms with geographic sources 1`
                 "place": {
                   "id": 517,
                   "name": "Fjordane",
-                  "type": "",
+                  "type": "DelAvFylke",
                 },
                 "visible": true,
               },
@@ -1026,7 +1026,7 @@ exports[`Norsk Ordbok dialect > returns dialect forms with geographic sources 1`
                 "place": {
                   "id": 569,
                   "name": "Ålesund",
-                  "type": "",
+                  "type": "Kommune",
                 },
                 "visible": true,
               },
@@ -1034,7 +1034,7 @@ exports[`Norsk Ordbok dialect > returns dialect forms with geographic sources 1`
                 "place": {
                   "id": 603,
                   "name": "Frei",
-                  "type": "",
+                  "type": "Kommune",
                 },
                 "visible": true,
               },
@@ -1042,7 +1042,7 @@ exports[`Norsk Ordbok dialect > returns dialect forms with geographic sources 1`
                 "place": {
                   "id": 617,
                   "name": "Edøy",
-                  "type": "",
+                  "type": "Kommune",
                 },
                 "visible": true,
               },
@@ -1050,7 +1050,7 @@ exports[`Norsk Ordbok dialect > returns dialect forms with geographic sources 1`
                 "place": {
                   "id": 639,
                   "name": "Ørland",
-                  "type": "",
+                  "type": "Kommune",
                 },
                 "visible": true,
               },
@@ -1058,7 +1058,7 @@ exports[`Norsk Ordbok dialect > returns dialect forms with geographic sources 1`
                 "place": {
                   "id": 646,
                   "name": "Åfjord",
-                  "type": "",
+                  "type": "Kommune",
                 },
                 "visible": true,
               },
@@ -1066,7 +1066,7 @@ exports[`Norsk Ordbok dialect > returns dialect forms with geographic sources 1`
                 "place": {
                   "id": 658,
                   "name": "Skaun",
-                  "type": "",
+                  "type": "Kommune",
                 },
                 "visible": true,
               },
@@ -1074,7 +1074,7 @@ exports[`Norsk Ordbok dialect > returns dialect forms with geographic sources 1`
                 "place": {
                   "id": 682,
                   "name": "Strinda",
-                  "type": "",
+                  "type": "Kommune",
                 },
                 "visible": true,
               },
@@ -1082,7 +1082,7 @@ exports[`Norsk Ordbok dialect > returns dialect forms with geographic sources 1`
                 "place": {
                   "id": 686,
                   "name": "Trondheim",
-                  "type": "",
+                  "type": "Kommune",
                 },
                 "visible": true,
               },
@@ -1090,7 +1090,7 @@ exports[`Norsk Ordbok dialect > returns dialect forms with geographic sources 1`
                 "place": {
                   "id": 690,
                   "name": "Meråker",
-                  "type": "",
+                  "type": "Kommune",
                 },
                 "visible": true,
               },
@@ -1098,7 +1098,7 @@ exports[`Norsk Ordbok dialect > returns dialect forms with geographic sources 1`
                 "place": {
                   "id": 731,
                   "name": "Ytre Namdalen",
-                  "type": "",
+                  "type": "DelAvLandskap",
                 },
                 "visible": true,
               },
@@ -1106,7 +1106,7 @@ exports[`Norsk Ordbok dialect > returns dialect forms with geographic sources 1`
                 "place": {
                   "id": 735,
                   "name": "Nærøy",
-                  "type": "",
+                  "type": "Kommune",
                 },
                 "visible": false,
               },
@@ -1114,7 +1114,7 @@ exports[`Norsk Ordbok dialect > returns dialect forms with geographic sources 1`
                 "place": {
                   "id": 736,
                   "name": "Vikna",
-                  "type": "",
+                  "type": "Kommune",
                 },
                 "visible": false,
               },
@@ -1122,7 +1122,7 @@ exports[`Norsk Ordbok dialect > returns dialect forms with geographic sources 1`
                 "place": {
                   "id": 740,
                   "name": "Leka",
-                  "type": "",
+                  "type": "Kommune",
                 },
                 "visible": false,
               },
@@ -1130,7 +1130,7 @@ exports[`Norsk Ordbok dialect > returns dialect forms with geographic sources 1`
                 "place": {
                   "id": 741,
                   "name": "Nord-Noreg",
-                  "type": "",
+                  "type": "Landsdel",
                 },
                 "visible": true,
               },
@@ -1138,7 +1138,7 @@ exports[`Norsk Ordbok dialect > returns dialect forms with geographic sources 1`
                 "place": {
                   "id": 742,
                   "name": "Nordland",
-                  "type": "",
+                  "type": "Fylke",
                 },
                 "visible": false,
               },
@@ -1146,7 +1146,7 @@ exports[`Norsk Ordbok dialect > returns dialect forms with geographic sources 1`
                 "place": {
                   "id": 743,
                   "name": "Helgeland",
-                  "type": "",
+                  "type": "DelAvFylke",
                 },
                 "visible": false,
               },
@@ -1154,7 +1154,7 @@ exports[`Norsk Ordbok dialect > returns dialect forms with geographic sources 1`
                 "place": {
                   "id": 744,
                   "name": "Sør-Helgeland",
-                  "type": "",
+                  "type": "Landskap",
                 },
                 "visible": false,
               },
@@ -1162,7 +1162,7 @@ exports[`Norsk Ordbok dialect > returns dialect forms with geographic sources 1`
                 "place": {
                   "id": 764,
                   "name": "Dønnes",
-                  "type": "",
+                  "type": "Kommune",
                 },
                 "visible": false,
               },
@@ -1170,7 +1170,7 @@ exports[`Norsk Ordbok dialect > returns dialect forms with geographic sources 1`
                 "place": {
                   "id": 773,
                   "name": "Lurøy",
-                  "type": "",
+                  "type": "Kommune",
                 },
                 "visible": false,
               },
@@ -1178,7 +1178,7 @@ exports[`Norsk Ordbok dialect > returns dialect forms with geographic sources 1`
                 "place": {
                   "id": 776,
                   "name": "Meløy",
-                  "type": "",
+                  "type": "Kommune",
                 },
                 "visible": false,
               },
@@ -1186,7 +1186,7 @@ exports[`Norsk Ordbok dialect > returns dialect forms with geographic sources 1`
                 "place": {
                   "id": 777,
                   "name": "Salten",
-                  "type": "",
+                  "type": "Landskap",
                 },
                 "visible": false,
               },
@@ -1194,7 +1194,7 @@ exports[`Norsk Ordbok dialect > returns dialect forms with geographic sources 1`
                 "place": {
                   "id": 778,
                   "name": "Saltdal",
-                  "type": "",
+                  "type": "Kommune",
                 },
                 "visible": false,
               },
@@ -1202,7 +1202,7 @@ exports[`Norsk Ordbok dialect > returns dialect forms with geographic sources 1`
                 "place": {
                   "id": 782,
                   "name": "Fauske",
-                  "type": "",
+                  "type": "Kommune",
                 },
                 "visible": false,
               },
@@ -1210,7 +1210,7 @@ exports[`Norsk Ordbok dialect > returns dialect forms with geographic sources 1`
                 "place": {
                   "id": 788,
                   "name": "Leiranger",
-                  "type": "",
+                  "type": "Kommune",
                 },
                 "visible": false,
               },
@@ -1218,7 +1218,7 @@ exports[`Norsk Ordbok dialect > returns dialect forms with geographic sources 1`
                 "place": {
                   "id": 789,
                   "name": "Steigen",
-                  "type": "",
+                  "type": "Kommune",
                 },
                 "visible": false,
               },
@@ -1226,7 +1226,7 @@ exports[`Norsk Ordbok dialect > returns dialect forms with geographic sources 1`
                 "place": {
                   "id": 790,
                   "name": "Hamarøy",
-                  "type": "",
+                  "type": "Kommune",
                 },
                 "visible": false,
               },
@@ -1234,7 +1234,7 @@ exports[`Norsk Ordbok dialect > returns dialect forms with geographic sources 1`
                 "place": {
                   "id": 791,
                   "name": "Ofoten",
-                  "type": "",
+                  "type": "Landskap",
                 },
                 "visible": false,
               },
@@ -1242,7 +1242,7 @@ exports[`Norsk Ordbok dialect > returns dialect forms with geographic sources 1`
                 "place": {
                   "id": 799,
                   "name": "Lofoten",
-                  "type": "",
+                  "type": "Landskap",
                 },
                 "visible": false,
               },
@@ -1250,7 +1250,7 @@ exports[`Norsk Ordbok dialect > returns dialect forms with geographic sources 1`
                 "place": {
                   "id": 811,
                   "name": "Vesterålen",
-                  "type": "",
+                  "type": "Landskap",
                 },
                 "visible": false,
               },
@@ -1258,7 +1258,7 @@ exports[`Norsk Ordbok dialect > returns dialect forms with geographic sources 1`
                 "place": {
                   "id": 820,
                   "name": "Troms",
-                  "type": "",
+                  "type": "Fylke",
                 },
                 "visible": false,
               },
@@ -1266,7 +1266,7 @@ exports[`Norsk Ordbok dialect > returns dialect forms with geographic sources 1`
                 "place": {
                   "id": 821,
                   "name": "Sør-Troms",
-                  "type": "",
+                  "type": "Landskap",
                 },
                 "visible": false,
               },
@@ -1274,7 +1274,7 @@ exports[`Norsk Ordbok dialect > returns dialect forms with geographic sources 1`
                 "place": {
                   "id": 822,
                   "name": "Kvæfjord",
-                  "type": "",
+                  "type": "Kommune",
                 },
                 "visible": false,
               },
@@ -1282,7 +1282,7 @@ exports[`Norsk Ordbok dialect > returns dialect forms with geographic sources 1`
                 "place": {
                   "id": 828,
                   "name": "Trondenes",
-                  "type": "",
+                  "type": "Kommune",
                 },
                 "visible": false,
               },
@@ -1290,7 +1290,7 @@ exports[`Norsk Ordbok dialect > returns dialect forms with geographic sources 1`
                 "place": {
                   "id": 830,
                   "name": "Andørja",
-                  "type": "",
+                  "type": "Kommune",
                 },
                 "visible": false,
               },
@@ -1298,7 +1298,7 @@ exports[`Norsk Ordbok dialect > returns dialect forms with geographic sources 1`
                 "place": {
                   "id": 831,
                   "name": "Midt-Troms",
-                  "type": "",
+                  "type": "Landskap",
                 },
                 "visible": false,
               },
@@ -1306,7 +1306,7 @@ exports[`Norsk Ordbok dialect > returns dialect forms with geographic sources 1`
                 "place": {
                   "id": 835,
                   "name": "Dyrøy",
-                  "type": "",
+                  "type": "Kommune",
                 },
                 "visible": false,
               },
@@ -1314,7 +1314,7 @@ exports[`Norsk Ordbok dialect > returns dialect forms with geographic sources 1`
                 "place": {
                   "id": 836,
                   "name": "Sørreisa",
-                  "type": "",
+                  "type": "Kommune",
                 },
                 "visible": false,
               },
@@ -1322,7 +1322,7 @@ exports[`Norsk Ordbok dialect > returns dialect forms with geographic sources 1`
                 "place": {
                   "id": 841,
                   "name": "Malangen",
-                  "type": "",
+                  "type": "Kommune",
                 },
                 "visible": false,
               },
@@ -1330,7 +1330,7 @@ exports[`Norsk Ordbok dialect > returns dialect forms with geographic sources 1`
                 "place": {
                   "id": 843,
                   "name": "Lenvik",
-                  "type": "",
+                  "type": "Kommune",
                 },
                 "visible": false,
               },
@@ -1338,7 +1338,7 @@ exports[`Norsk Ordbok dialect > returns dialect forms with geographic sources 1`
                 "place": {
                   "id": 845,
                   "name": "Torsken",
-                  "type": "",
+                  "type": "Kommune",
                 },
                 "visible": false,
               },
@@ -1346,7 +1346,7 @@ exports[`Norsk Ordbok dialect > returns dialect forms with geographic sources 1`
                 "place": {
                   "id": 842,
                   "name": "Senja",
-                  "type": "",
+                  "type": "DelAvLandskap",
                 },
                 "visible": false,
               },
@@ -1354,7 +1354,7 @@ exports[`Norsk Ordbok dialect > returns dialect forms with geographic sources 1`
                 "place": {
                   "id": 846,
                   "name": "Berg i Troms",
-                  "type": "",
+                  "type": "Kommune",
                 },
                 "visible": false,
               },
@@ -1362,7 +1362,7 @@ exports[`Norsk Ordbok dialect > returns dialect forms with geographic sources 1`
                 "place": {
                   "id": 849,
                   "name": "Tromsøysund",
-                  "type": "",
+                  "type": "Kommune",
                 },
                 "visible": false,
               },
@@ -1370,7 +1370,7 @@ exports[`Norsk Ordbok dialect > returns dialect forms with geographic sources 1`
                 "place": {
                   "id": 855,
                   "name": "Karlsøy",
-                  "type": "",
+                  "type": "Kommune",
                 },
                 "visible": false,
               },
@@ -1378,7 +1378,7 @@ exports[`Norsk Ordbok dialect > returns dialect forms with geographic sources 1`
                 "place": {
                   "id": 858,
                   "name": "Nordreisa",
-                  "type": "",
+                  "type": "Kommune",
                 },
                 "visible": false,
               },
@@ -1386,7 +1386,7 @@ exports[`Norsk Ordbok dialect > returns dialect forms with geographic sources 1`
                 "place": {
                   "id": 860,
                   "name": "Finnmark",
-                  "type": "",
+                  "type": "Fylke",
                 },
                 "visible": false,
               },
@@ -1399,7 +1399,7 @@ exports[`Norsk Ordbok dialect > returns dialect forms with geographic sources 1`
                 "place": {
                   "id": 99,
                   "name": "Stange",
-                  "type": "",
+                  "type": "Kommune",
                 },
                 "visible": true,
               },
@@ -1407,7 +1407,7 @@ exports[`Norsk Ordbok dialect > returns dialect forms with geographic sources 1`
                 "place": {
                   "id": 121,
                   "name": "Tolga",
-                  "type": "",
+                  "type": "Kommune",
                 },
                 "visible": true,
               },
@@ -1415,7 +1415,7 @@ exports[`Norsk Ordbok dialect > returns dialect forms with geographic sources 1`
                 "place": {
                   "id": 122,
                   "name": "Os i Østerdalen",
-                  "type": "",
+                  "type": "Kommune",
                 },
                 "visible": true,
               },
@@ -1423,7 +1423,7 @@ exports[`Norsk Ordbok dialect > returns dialect forms with geographic sources 1`
                 "place": {
                   "id": 225,
                   "name": "Horten",
-                  "type": "",
+                  "type": "Kommune",
                 },
                 "visible": true,
               },
@@ -1431,7 +1431,7 @@ exports[`Norsk Ordbok dialect > returns dialect forms with geographic sources 1`
                 "place": {
                   "id": 264,
                   "name": "Nedre Telemark",
-                  "type": "",
+                  "type": "Landskap",
                 },
                 "visible": true,
               },
@@ -1439,7 +1439,7 @@ exports[`Norsk Ordbok dialect > returns dialect forms with geographic sources 1`
                 "place": {
                   "id": 266,
                   "name": "Holla",
-                  "type": "",
+                  "type": "Kommune",
                 },
                 "visible": false,
               },
@@ -1447,7 +1447,7 @@ exports[`Norsk Ordbok dialect > returns dialect forms with geographic sources 1`
                 "place": {
                   "id": 268,
                   "name": "Gjerpen",
-                  "type": "",
+                  "type": "Kommune",
                 },
                 "visible": false,
               },
@@ -1455,7 +1455,7 @@ exports[`Norsk Ordbok dialect > returns dialect forms with geographic sources 1`
                 "place": {
                   "id": 269,
                   "name": "Skien",
-                  "type": "",
+                  "type": "Kommune",
                 },
                 "visible": false,
               },
@@ -1463,7 +1463,7 @@ exports[`Norsk Ordbok dialect > returns dialect forms with geographic sources 1`
                 "place": {
                   "id": 272,
                   "name": "Eidanger",
-                  "type": "",
+                  "type": "Kommune",
                 },
                 "visible": false,
               },
@@ -1471,7 +1471,7 @@ exports[`Norsk Ordbok dialect > returns dialect forms with geographic sources 1`
                 "place": {
                   "id": 275,
                   "name": "Langesund",
-                  "type": "",
+                  "type": "Kommune",
                 },
                 "visible": false,
               },
@@ -1479,7 +1479,7 @@ exports[`Norsk Ordbok dialect > returns dialect forms with geographic sources 1`
                 "place": {
                   "id": 277,
                   "name": "Skåtøy",
-                  "type": "",
+                  "type": "Kommune",
                 },
                 "visible": false,
               },
@@ -1487,7 +1487,7 @@ exports[`Norsk Ordbok dialect > returns dialect forms with geographic sources 1`
                 "place": {
                   "id": 278,
                   "name": "Kragerø",
-                  "type": "",
+                  "type": "Kommune",
                 },
                 "visible": false,
               },
@@ -1495,7 +1495,7 @@ exports[`Norsk Ordbok dialect > returns dialect forms with geographic sources 1`
                 "place": {
                   "id": 284,
                   "name": "Søndeled",
-                  "type": "",
+                  "type": "Kommune",
                 },
                 "visible": true,
               },
@@ -1503,7 +1503,7 @@ exports[`Norsk Ordbok dialect > returns dialect forms with geographic sources 1`
                 "place": {
                   "id": 290,
                   "name": "Vegårshei",
-                  "type": "",
+                  "type": "Kommune",
                 },
                 "visible": true,
               },
@@ -1511,7 +1511,7 @@ exports[`Norsk Ordbok dialect > returns dialect forms with geographic sources 1`
                 "place": {
                   "id": 293,
                   "name": "Holt",
-                  "type": "",
+                  "type": "Kommune",
                 },
                 "visible": true,
               },
@@ -1519,7 +1519,7 @@ exports[`Norsk Ordbok dialect > returns dialect forms with geographic sources 1`
                 "place": {
                   "id": 312,
                   "name": "Birkenes",
-                  "type": "",
+                  "type": "Kommune",
                 },
                 "visible": true,
               },
@@ -1527,7 +1527,7 @@ exports[`Norsk Ordbok dialect > returns dialect forms with geographic sources 1`
                 "place": {
                   "id": 568,
                   "name": "Oppdal",
-                  "type": "",
+                  "type": "Kommune",
                 },
                 "visible": true,
               },
@@ -1535,7 +1535,7 @@ exports[`Norsk Ordbok dialect > returns dialect forms with geographic sources 1`
                 "place": {
                   "id": 675,
                   "name": "Glåmos",
-                  "type": "",
+                  "type": "Kommune",
                 },
                 "visible": true,
               },
@@ -1543,7 +1543,7 @@ exports[`Norsk Ordbok dialect > returns dialect forms with geographic sources 1`
                 "place": {
                   "id": 780,
                   "name": "Gildeskål",
-                  "type": "",
+                  "type": "Kommune",
                 },
                 "visible": true,
               },
@@ -1551,7 +1551,7 @@ exports[`Norsk Ordbok dialect > returns dialect forms with geographic sources 1`
                 "place": {
                   "id": 840,
                   "name": "Balsfjord",
-                  "type": "",
+                  "type": "Kommune",
                 },
                 "visible": true,
               },
@@ -1559,7 +1559,7 @@ exports[`Norsk Ordbok dialect > returns dialect forms with geographic sources 1`
                 "place": {
                   "id": 851,
                   "name": "Ullsfjord",
-                  "type": "",
+                  "type": "Kommune",
                 },
                 "visible": true,
               },
@@ -1572,7 +1572,7 @@ exports[`Norsk Ordbok dialect > returns dialect forms with geographic sources 1`
                 "place": {
                   "id": 283,
                   "name": "Risør",
-                  "type": "",
+                  "type": "Kommune",
                 },
                 "visible": true,
               },
@@ -1580,7 +1580,7 @@ exports[`Norsk Ordbok dialect > returns dialect forms with geographic sources 1`
                 "place": {
                   "id": 298,
                   "name": "Arendal",
-                  "type": "",
+                  "type": "Kommune",
                 },
                 "visible": true,
               },
@@ -1593,7 +1593,7 @@ exports[`Norsk Ordbok dialect > returns dialect forms with geographic sources 1`
                 "place": {
                   "id": 58,
                   "name": "Oslo",
-                  "type": "",
+                  "type": "Kommune",
                 },
                 "visible": true,
               },
@@ -1601,7 +1601,7 @@ exports[`Norsk Ordbok dialect > returns dialect forms with geographic sources 1`
                 "place": {
                   "id": 239,
                   "name": "Larvik",
-                  "type": "",
+                  "type": "Kommune",
                 },
                 "visible": true,
               },
@@ -1609,7 +1609,7 @@ exports[`Norsk Ordbok dialect > returns dialect forms with geographic sources 1`
                 "place": {
                   "id": 273,
                   "name": "Brevik",
-                  "type": "",
+                  "type": "Kommune",
                 },
                 "visible": true,
               },
@@ -1617,7 +1617,7 @@ exports[`Norsk Ordbok dialect > returns dialect forms with geographic sources 1`
                 "place": {
                   "id": 325,
                   "name": "Kristiansand",
-                  "type": "",
+                  "type": "Kommune",
                 },
                 "visible": true,
               },
@@ -1625,7 +1625,7 @@ exports[`Norsk Ordbok dialect > returns dialect forms with geographic sources 1`
                 "place": {
                   "id": 792,
                   "name": "Tysfjord",
-                  "type": "",
+                  "type": "Kommune",
                 },
                 "visible": true,
               },
@@ -1633,7 +1633,7 @@ exports[`Norsk Ordbok dialect > returns dialect forms with geographic sources 1`
                 "place": {
                   "id": 862,
                   "name": "Alta",
-                  "type": "",
+                  "type": "Kommune",
                 },
                 "visible": true,
               },
@@ -1646,7 +1646,7 @@ exports[`Norsk Ordbok dialect > returns dialect forms with geographic sources 1`
                 "place": {
                   "id": 777,
                   "name": "Salten",
-                  "type": "",
+                  "type": "Landskap",
                 },
                 "visible": true,
               },
@@ -1654,7 +1654,7 @@ exports[`Norsk Ordbok dialect > returns dialect forms with geographic sources 1`
                 "place": {
                   "id": 778,
                   "name": "Saltdal",
-                  "type": "",
+                  "type": "Kommune",
                 },
                 "visible": false,
               },
@@ -1662,7 +1662,7 @@ exports[`Norsk Ordbok dialect > returns dialect forms with geographic sources 1`
                 "place": {
                   "id": 779,
                   "name": "Beiarn",
-                  "type": "",
+                  "type": "Kommune",
                 },
                 "visible": false,
               },
@@ -1670,7 +1670,7 @@ exports[`Norsk Ordbok dialect > returns dialect forms with geographic sources 1`
                 "place": {
                   "id": 781,
                   "name": "Skjerstad",
-                  "type": "",
+                  "type": "Kommune",
                 },
                 "visible": false,
               },
@@ -1678,7 +1678,7 @@ exports[`Norsk Ordbok dialect > returns dialect forms with geographic sources 1`
                 "place": {
                   "id": 785,
                   "name": "Sørfold",
-                  "type": "",
+                  "type": "Kommune",
                 },
                 "visible": false,
               },
@@ -1686,7 +1686,7 @@ exports[`Norsk Ordbok dialect > returns dialect forms with geographic sources 1`
                 "place": {
                   "id": 786,
                   "name": "Kjerringøy",
-                  "type": "",
+                  "type": "Kommune",
                 },
                 "visible": false,
               },
@@ -1694,7 +1694,7 @@ exports[`Norsk Ordbok dialect > returns dialect forms with geographic sources 1`
                 "place": {
                   "id": 787,
                   "name": "Nordfold",
-                  "type": "",
+                  "type": "Kommune",
                 },
                 "visible": false,
               },
@@ -1891,7 +1891,7 @@ exports[`Norsk Ordbok place references > returns place references on definitions
           "place": {
             "id": 609,
             "name": "Sunndal",
-            "type": "kommune",
+            "type": "Kommune",
           },
           "visible": true,
         },
@@ -1899,7 +1899,7 @@ exports[`Norsk Ordbok place references > returns place references on definitions
           "place": {
             "id": 610,
             "name": "Stangvik",
-            "type": "kommune",
+            "type": "Kommune",
           },
           "visible": true,
         },
@@ -1907,7 +1907,7 @@ exports[`Norsk Ordbok place references > returns place references on definitions
           "place": {
             "id": 625,
             "name": "Vinje i Fosen",
-            "type": "kommune",
+            "type": "Kommune",
           },
           "visible": true,
         },
@@ -1915,7 +1915,7 @@ exports[`Norsk Ordbok place references > returns place references on definitions
           "place": {
             "id": 626,
             "name": "Hemne",
-            "type": "kommune",
+            "type": "Kommune",
           },
           "visible": true,
         },
@@ -1923,7 +1923,7 @@ exports[`Norsk Ordbok place references > returns place references on definitions
           "place": {
             "id": 568,
             "name": "Oppdal",
-            "type": "kommune",
+            "type": "Kommune",
           },
           "visible": true,
         },
@@ -1931,7 +1931,7 @@ exports[`Norsk Ordbok place references > returns place references on definitions
           "place": {
             "id": 663,
             "name": "Melhus",
-            "type": "kommune",
+            "type": "Kommune",
           },
           "visible": true,
         },
@@ -1939,7 +1939,7 @@ exports[`Norsk Ordbok place references > returns place references on definitions
           "place": {
             "id": 665,
             "name": "Hølonda",
-            "type": "kommune",
+            "type": "Kommune",
           },
           "visible": true,
         },
@@ -1947,7 +1947,7 @@ exports[`Norsk Ordbok place references > returns place references on definitions
           "place": {
             "id": 666,
             "name": "Horg",
-            "type": "kommune",
+            "type": "Kommune",
           },
           "visible": true,
         },
@@ -1955,7 +1955,7 @@ exports[`Norsk Ordbok place references > returns place references on definitions
           "place": {
             "id": 710,
             "name": "Sparbu",
-            "type": "kommune",
+            "type": "Kommune",
           },
           "visible": true,
         },
@@ -1963,7 +1963,7 @@ exports[`Norsk Ordbok place references > returns place references on definitions
           "place": {
             "id": 749,
             "name": "Velfjord",
-            "type": "kommune",
+            "type": "Kommune",
           },
           "visible": true,
         },
@@ -1971,7 +1971,7 @@ exports[`Norsk Ordbok place references > returns place references on definitions
           "place": {
             "id": 762,
             "name": "Drevja",
-            "type": "kommune",
+            "type": "Kommune",
           },
           "visible": true,
         },

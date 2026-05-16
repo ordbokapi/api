@@ -22,6 +22,7 @@ import { Gender } from '../gender.model';
 import { InflectionTag } from '../inflection-tag.model';
 import { EtymologyLanguage } from '../etymology-language.model';
 import { BibliographyFilter } from './bibliography-filter.input';
+import { PlaceFilter } from './place-filter.input';
 import { StringFilter } from './string-filter.input';
 
 @InputType({
@@ -72,11 +73,23 @@ export class ArticleFilter {
   })
   inflection?: StringFilter;
 
-  @Field(() => StringFilter, {
+  @Field(() => PlaceFilter, {
     nullable: true,
-    description: 'Filtrer etter stadnamn i dialektkjeldene.',
+    description: 'Filtrer etter stader knytte til dialektformer.',
   })
-  dialectPlace?: StringFilter;
+  dialectPlace?: PlaceFilter;
+
+  @Field(() => PlaceFilter, {
+    nullable: true,
+    description: 'Filtrer etter stader knytte til heimfesting.',
+  })
+  attestationPlace?: PlaceFilter;
+
+  @Field(() => PlaceFilter, {
+    nullable: true,
+    description: 'Filtrer etter geografiske stader.',
+  })
+  place?: PlaceFilter;
 
   @Field(() => BibliographyFilter, {
     nullable: true,

@@ -143,6 +143,39 @@ async function seedPostgres(connectionString: string): Promise<void> {
         modified_at TIMESTAMPTZ NOT NULL DEFAULT now(),
         PRIMARY KEY (dictionary, key)
       );
+      CREATE TABLE IF NOT EXISTS bibliography (
+        id BIGINT PRIMARY KEY,
+        code TEXT NOT NULL DEFAULT '',
+        author TEXT NOT NULL DEFAULT '',
+        title TEXT NOT NULL DEFAULT '',
+        year TEXT NOT NULL DEFAULT '',
+        fields JSONB NOT NULL DEFAULT '[]',
+        fetched_at TIMESTAMPTZ NOT NULL DEFAULT now()
+      );
+      CREATE TABLE IF NOT EXISTS article_bibliography (
+        dictionary TEXT NOT NULL,
+        article_id BIGINT NOT NULL,
+        bibl_id BIGINT NOT NULL,
+        PRIMARY KEY (dictionary, article_id, bibl_id)
+      );
+      CREATE TABLE IF NOT EXISTS places (
+        id BIGINT PRIMARY KEY,
+        place_name TEXT NOT NULL DEFAULT '',
+        place_name_full TEXT NOT NULL DEFAULT '',
+        place_type TEXT NOT NULL DEFAULT '',
+        parent_id BIGINT,
+        place_order INTEGER NOT NULL DEFAULT 0,
+        municipality_nr TEXT,
+        weight_threshold INTEGER NOT NULL DEFAULT 0,
+        fetched_at TIMESTAMPTZ NOT NULL DEFAULT now()
+      );
+      CREATE TABLE IF NOT EXISTS article_place (
+        dictionary TEXT NOT NULL,
+        article_id BIGINT NOT NULL,
+        place_id BIGINT NOT NULL,
+        context TEXT NOT NULL DEFAULT 'dialect',
+        PRIMARY KEY (dictionary, article_id, place_id, context)
+      );
     `);
 
     const articles = loadFixture<FixtureArticle[]>('articles.json');
@@ -172,6 +205,79 @@ async function seedPostgres(connectionString: string): Promise<void> {
           [m.dictionary, m.key, JSON.stringify(m.data)],
         );
       }
+    }
+
+    const bibliography = loadFixture<
+      {
+        id: number;
+        code: string;
+        author: string;
+        title: string;
+        year: string;
+      }[]
+    >('bibliography.json');
+    for (const b of bibliography) {
+      await client.query(
+        `INSERT INTO bibliography (id, code, author, title, year)
+         VALUES ($1, $2, $3, $4, $5)
+         ON CONFLICT (id) DO NOTHING`,
+        [b.id, b.code, b.author, b.title, b.year],
+      );
+    }
+
+    const articleBibliography = loadFixture<
+      { dictionary: string; article_id: number; bibl_id: number }[]
+    >('article-bibliography.json');
+    for (const ab of articleBibliography) {
+      await client.query(
+        `INSERT INTO article_bibliography (dictionary, article_id, bibl_id)
+         VALUES ($1, $2, $3)
+         ON CONFLICT DO NOTHING`,
+        [ab.dictionary, ab.article_id, ab.bibl_id],
+      );
+    }
+
+    const places = loadFixture<
+      {
+        id: number;
+        place_name: string;
+        place_name_full: string;
+        place_type: string;
+        parent_id: number | null;
+        municipality_nr: string | null;
+      }[]
+    >('places.json');
+    for (const p of places) {
+      await client.query(
+        `INSERT INTO places (id, place_name, place_name_full, place_type, parent_id, municipality_nr)
+         VALUES ($1, $2, $3, $4, $5, $6)
+         ON CONFLICT (id) DO NOTHING`,
+        [
+          p.id,
+          p.place_name,
+          p.place_name_full,
+          p.place_type,
+          p.parent_id,
+          p.municipality_nr,
+        ],
+      );
+    }
+
+    const articlePlace = loadFixture<
+      {
+        dictionary: string;
+        article_id: number;
+        place_id: number;
+        context: string;
+      }[]
+    >('article-place.json');
+    for (const ap of articlePlace) {
+      await client.query(
+        `INSERT INTO article_place (dictionary, article_id, place_id, context)
+         VALUES ($1, $2, $3, $4)
+         ON CONFLICT DO NOTHING`,
+        [ap.dictionary, ap.article_id, ap.place_id, ap.context],
+      );
     }
   } finally {
     await client.end();

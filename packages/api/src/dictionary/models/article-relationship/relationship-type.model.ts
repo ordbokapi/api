@@ -30,4 +30,26 @@ export enum ArticleRelationshipType {
 registerEnumType(ArticleRelationshipType, {
   name: 'ArticleRelationshipType',
   description: 'Typen av artikkelrelasjonen.',
+  valuesMap: {
+    Related: {
+      description: 'Ein generisk relasjon mellom to artiklar.',
+    },
+    SeeAlso: {
+      description:
+        'Ei tilvising til ein annan artikkel som gjev meir informasjon eller er relatert på anna vis.',
+    },
+    Usage: {
+      description: 'Ein relasjon der den eine artikkelen er bruka i den andre.',
+    },
+    Synonym: {
+      description: 'Artiklane er synonyme.',
+    },
+    Antonym: {
+      description: 'Artiklane er antonyme.',
+    },
+    Phrase: {
+      description:
+        'Den relaterte artikkelen er eit fast uttrykk som den fyrste artikkelen er ein del av.',
+    },
+  },
 });

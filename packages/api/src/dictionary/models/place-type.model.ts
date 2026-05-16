@@ -18,16 +18,33 @@
 
 import { registerEnumType } from '@nestjs/graphql';
 
-export enum Gender {
-  HankjoennHokjoenn = 'HankjoennHokjoenn', // Masculine/Feminine
-  Hankjoenn = 'Hankjoenn', // Masculine
-  Hokjoenn = 'Hokjoenn', // Feminine
-  Inkjekjoenn = 'Inkjekjoenn', // Neuter
-  Ukjent = 'Ukjent', // Unknown
+export enum PlaceType {
+  Kommune = 'Kommune',
+  Landskap = 'Landskap',
+  Fylke = 'Fylke',
+  DelAvLandskap = 'DelAvLandskap',
+  Landsdel = 'Landsdel',
+  Tvillingkommune = 'Tvillingkommune',
+  DelAvLandsdel = 'DelAvLandsdel',
+  DelAvFylke = 'DelAvFylke',
+  Region = 'Region',
+  Land = 'Land',
 }
 
-registerEnumType(Gender, {
-  name: 'Gender',
-  description:
-    'Det grammatiske kjønnet til eit substantiv. Ukjent tyder at kjønnet ikkje er kjent. null tyder at kjønn ikkje er relevant eller ikkje er oppgjeve.',
+registerEnumType(PlaceType, {
+  name: 'PlaceType',
+  description: 'Typen geografisk stad.',
 });
+
+export const RawPlaceTypeMap: Record<string, PlaceType> = {
+  kommune: PlaceType.Kommune,
+  landskap: PlaceType.Landskap,
+  fylke: PlaceType.Fylke,
+  'del av landskap': PlaceType.DelAvLandskap,
+  landsdel: PlaceType.Landsdel,
+  tvillingkommune: PlaceType.Tvillingkommune,
+  'del av landsdel': PlaceType.DelAvLandsdel,
+  'del av fylke': PlaceType.DelAvFylke,
+  region: PlaceType.Region,
+  land: PlaceType.Land,
+};

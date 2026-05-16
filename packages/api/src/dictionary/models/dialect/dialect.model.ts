@@ -21,7 +21,7 @@ import { DialectSubcategory } from './dialect-subcategory.model';
 
 @ObjectType({
   description:
-    'Dialektinformasjon for eit ord, med underkategoriar og dialektformer frå ulike stader.',
+    'Dialektinformasjon for eit oppslag, med underkategoriar og dialektformer frå ulike stader. Somme former kan vera samleformer som representerer fleire dialektvariantar.',
 })
 export class Dialect {
   @Field(() => String, {

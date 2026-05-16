@@ -20,11 +20,12 @@ import { Field, ObjectType } from '@nestjs/graphql';
 import { Place } from './place.model';
 
 @ObjectType({
-  description: 'Ei heimfesting for ei tyding.',
+  description:
+    'Ei geografisk heimfesting som viser kvar ei tyding eller bruksform er registrert i kjeldematerialet.',
 })
-export class PlaceReference {
+export class GeographicAttestation {
   @Field(() => Place, {
-    description: 'Staden som tydinga er heimfesta til.',
+    description: 'Staden som er heimfesta.',
   })
   place: Place;
 

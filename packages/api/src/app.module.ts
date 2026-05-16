@@ -114,7 +114,10 @@ query Search($query: String!) {
 query DialectWords($place: String!) {
   articles(
     dictionaries: [NorskOrdbok]
-    filter: { dialectPlace: { eq: $place } }
+    filter: {
+      wordClass: Substantiv
+      dialectPlace: { name: { eq: $place } }
+    }
     first: 10
   ) {
     totalCount
@@ -131,6 +134,19 @@ query DialectWords($place: String!) {
           }
           examples {
             textContent
+          }
+        }
+        dialect {
+          subcategories {
+            forms {
+              form
+              sources {
+                place {
+                  name
+                  type
+                }
+              }
+            }
           }
         }
       }

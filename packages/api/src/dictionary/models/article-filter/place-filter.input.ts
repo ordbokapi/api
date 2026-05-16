@@ -16,21 +16,29 @@
 // You should have received a copy of the GNU Affero General Public License
 // along with Ordbok API. If not, see <https://www.gnu.org/licenses/>.
 
-import { Field, ObjectType } from '@nestjs/graphql';
-import { Place } from '../place.model';
+import { Field, InputType } from '@nestjs/graphql';
+import { StringFilter } from './string-filter.input';
 
-@ObjectType({
-  description: 'Ei heimfesting for ei dialektform.',
+@InputType({
+  description:
+    'Filter for geografiske stader. Felt på same nivå vert kombinerte med OG-logikk (AND).',
 })
-export class DialectSource {
-  @Field(() => Place, {
-    description: 'Staden som dialektforma er heimfesta til.',
+export class PlaceFilter {
+  @Field(() => StringFilter, {
+    nullable: true,
+    description: 'Filtrer etter stadnamn.',
   })
-  place: Place;
+  name?: StringFilter;
 
-  @Field(() => Boolean, {
-    description:
-      'Om staden er merkt som synleg i kjeldedata. I den offisielle nettstaden til Norsk Ordbok vert berre synlege stader viste i opplisting.',
+  @Field(() => StringFilter, {
+    nullable: true,
+    description: 'Filtrer etter stadkode.',
   })
-  visible: boolean;
+  code?: StringFilter;
+
+  @Field(() => StringFilter, {
+    nullable: true,
+    description: 'Filtrer etter stadtype.',
+  })
+  type?: StringFilter;
 }

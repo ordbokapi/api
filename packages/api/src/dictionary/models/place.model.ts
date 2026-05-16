@@ -17,6 +17,7 @@
 // along with Ordbok API. If not, see <https://www.gnu.org/licenses/>.
 
 import { Field, Int, ObjectType } from '@nestjs/graphql';
+import { PlaceType } from './place-type.model';
 
 @ObjectType({
   description:
@@ -30,7 +31,49 @@ export class Place {
   name: string;
 
   @Field(() => String, {
+    nullable: true,
+    description: 'Kortform eller kodeforkortinga for staden.',
+  })
+  code?: string;
+
+  @Field(() => PlaceType, {
+    nullable: true,
     description: 'Kva type geografisk stad det er.',
   })
-  type: string;
+  type?: PlaceType;
+
+  parentId?: number | null;
+
+  @Field(() => Place, {
+    nullable: true,
+    description: 'Overordna stad i hierarkiet.',
+  })
+  parent?: Place;
+
+  @Field(() => [Place], {
+    nullable: true,
+    description: 'Underordna stader i hierarkiet.',
+  })
+  children?: Place[];
+
+  @Field(() => String, {
+    nullable: true,
+    description: 'Kommunenummer, om relevant.',
+  })
+  municipalityNr?: string;
+}
+
+@ObjectType({
+  description: 'Paginert kopling av geografiske stader.',
+})
+export class PlaceConnection {
+  @Field(() => [Place], {
+    description: 'Liste over stader.',
+  })
+  entries: Place[];
+
+  @Field(() => Int, {
+    description: 'Totalt tal på treff.',
+  })
+  totalCount: number;
 }

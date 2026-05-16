@@ -19,6 +19,7 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
 import { ArticleFilter } from '../models/article-filter/article-filter.input';
 import { BibliographyFilter } from '../models/article-filter/bibliography-filter.input';
+import { PlaceFilter } from '../models/article-filter/place-filter.input';
 import { StringFilter } from '../models/article-filter/string-filter.input';
 import {
   ArticleSort,
@@ -50,9 +51,15 @@ const WordClassToTag: Record<WordClass, string> = {
   [WordClass.Symbol]: 'SYM',
   [WordClass.Forkorting]: 'ABBR',
   [WordClass.Uttrykk]: 'EXPR',
+  [WordClass.Talord]: 'DET_Q',
+  [WordClass.Eigennamn]: 'PROPN',
+  [WordClass.Prefiks]: 'PFX',
+  [WordClass.Samansetjingsled]: 'COMPPFX',
+  [WordClass.Infinitivsmerke]: 'INFM',
+  [WordClass.Ukjend]: 'UNKN',
 };
 
-const GenderToTag: Record<Gender, string> = {
+const GenderToTag: Partial<Record<Gender, string>> = {
   [Gender.Hankjoenn]: 'Masc',
   [Gender.Hokjoenn]: 'Fem',
   [Gender.Inkjekjoenn]: 'Neuter',
@@ -166,7 +173,13 @@ export class ArticleFilterCompiler {
       clauses.push(`paradigm_tags = "${WordClassToTag[filter.wordClass]}"`);
     }
     if (filter.gender) {
-      clauses.push(`paradigm_tags = "${GenderToTag[filter.gender]}"`);
+      if (filter.gender === Gender.Ukjent) {
+        clauses.push(
+          `paradigm_tags = "NOUN" AND paradigm_tags != "Masc" AND paradigm_tags != "Fem" AND paradigm_tags != "Neuter"`,
+        );
+      } else {
+        clauses.push(`paradigm_tags = "${GenderToTag[filter.gender]}"`);
+      }
     }
     if (
       filter.hasSplitInfinitive !== undefined &&
@@ -193,7 +206,13 @@ export class ArticleFilterCompiler {
 
     this.#compileStringFilter(clauses, 'lemmas', filter.lemma);
     this.#compileStringFilter(clauses, 'inflections', filter.inflection);
-    this.#compileStringFilter(clauses, 'dialect_places', filter.dialectPlace);
+    this.#compilePlaceFilter(clauses, 'dialect_place', filter.dialectPlace);
+    this.#compilePlaceFilter(
+      clauses,
+      'attestation_place',
+      filter.attestationPlace,
+    );
+    this.#compilePlaceFilter(clauses, 'place', filter.place);
     this.#compileBibliographyFilter(
       clauses,
       'older_source',
@@ -254,6 +273,17 @@ export class ArticleFilterCompiler {
     }
 
     return clauses.join(' AND ');
+  }
+
+  #compilePlaceFilter(
+    clauses: string[],
+    prefix: string,
+    filter: PlaceFilter | undefined,
+  ): void {
+    if (!filter) return;
+    this.#compileStringFilter(clauses, `${prefix}_names`, filter.name);
+    this.#compileStringFilter(clauses, `${prefix}_codes`, filter.code);
+    this.#compileStringFilter(clauses, `${prefix}_types`, filter.type);
   }
 
   #compileBibliographyFilter(
