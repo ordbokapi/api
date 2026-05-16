@@ -116,12 +116,22 @@ export class InMemoryCacheProvider implements ICacheProvider {
   }
 
   delete(key: string) {
+    let deleted = false;
+
     if (this.nonExpiringCache.has(key)) {
       this.nonExpiringCache.delete(key);
+      deleted = true;
     }
+
     if (this.ttlCache.has(key)) {
       this.ttlCache.delete(key);
+      deleted = true;
     }
-    this.logger.verbose(`Deleted cache for key: ${key}`);
+
+    if (deleted) {
+      this.logger.verbose(`Deleted cache for key: ${key}`);
+    }
+
+    return deleted;
   }
 }
