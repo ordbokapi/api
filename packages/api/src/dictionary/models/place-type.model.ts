@@ -48,3 +48,16 @@ export const RawPlaceTypeMap: Record<string, PlaceType> = {
   region: PlaceType.Region,
   land: PlaceType.Land,
 };
+
+export const PlaceTypeToRaw: Record<PlaceType, string> = {
+  [PlaceType.Kommune]: 'kommune',
+  [PlaceType.Landskap]: 'landskap',
+  [PlaceType.Fylke]: 'fylke',
+  [PlaceType.DelAvLandskap]: 'del av landskap',
+  [PlaceType.Landsdel]: 'landsdel',
+  [PlaceType.Tvillingkommune]: 'tvillingkommune',
+  [PlaceType.DelAvLandsdel]: 'del av landsdel',
+  [PlaceType.DelAvFylke]: 'del av fylke',
+  [PlaceType.Region]: 'region',
+  [PlaceType.Land]: 'land',
+};

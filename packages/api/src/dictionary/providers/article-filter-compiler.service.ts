@@ -33,6 +33,7 @@ import {
   EtymologyLanguageRawCodes,
   RawCodeToEtymologyLanguage,
 } from '../models/etymology-language.model';
+import { PlaceTypeToRaw } from '../models/place-type.model';
 
 const maxFilterDepth = 3;
 const maxFilterClauses = 30;
@@ -281,9 +282,24 @@ export class ArticleFilterCompiler {
     filter: PlaceFilter | undefined,
   ): void {
     if (!filter) return;
+    const fields = [filter.name, filter.code, filter.type].filter(Boolean);
+    if (fields.length === 0) {
+      throw new BadRequestException(
+        'PlaceFilter er tomt, men eitt felt må vera sett.',
+      );
+    }
+    if (fields.length > 1) {
+      throw new BadRequestException(
+        'PlaceFilter kan berre ha eitt felt om gongen, men fleire vart sette.',
+      );
+    }
     this.#compileStringFilter(clauses, `${prefix}_names`, filter.name);
     this.#compileStringFilter(clauses, `${prefix}_codes`, filter.code);
-    this.#compileStringFilter(clauses, `${prefix}_types`, filter.type);
+    if (filter.type) {
+      clauses.push(
+        `${prefix}_types = "${this.#escape(PlaceTypeToRaw[filter.type])}"`,
+      );
+    }
   }
 
   #compileBibliographyFilter(
@@ -292,6 +308,22 @@ export class ArticleFilterCompiler {
     filter: BibliographyFilter | undefined,
   ): void {
     if (!filter) return;
+    const fields = [
+      filter.code,
+      filter.author,
+      filter.title,
+      filter.year,
+    ].filter(Boolean);
+    if (fields.length === 0) {
+      throw new BadRequestException(
+        'BibliographyFilter er tomt, men eitt felt må vera sett.',
+      );
+    }
+    if (fields.length > 1) {
+      throw new BadRequestException(
+        'BibliographyFilter kan berre ha eitt felt om gongen, men fleire vart sette.',
+      );
+    }
     this.#compileStringFilter(clauses, `${prefix}_codes`, filter.code);
     this.#compileStringFilter(clauses, `${prefix}_authors`, filter.author);
     this.#compileStringFilter(clauses, `${prefix}_titles`, filter.title);

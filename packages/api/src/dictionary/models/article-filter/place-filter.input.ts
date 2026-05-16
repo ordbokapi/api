@@ -17,11 +17,12 @@
 // along with Ordbok API. If not, see <https://www.gnu.org/licenses/>.
 
 import { Field, InputType } from '@nestjs/graphql';
+import { PlaceType } from '../place-type.model';
 import { StringFilter } from './string-filter.input';
 
 @InputType({
   description:
-    'Filter for geografiske stader. Felt på same nivå vert kombinerte med OG-logikk (AND).',
+    'Filter for geografiske stader. Nøyaktig eitt felt må vera sett.',
 })
 export class PlaceFilter {
   @Field(() => StringFilter, {
@@ -36,9 +37,9 @@ export class PlaceFilter {
   })
   code?: StringFilter;
 
-  @Field(() => StringFilter, {
+  @Field(() => PlaceType, {
     nullable: true,
     description: 'Filtrer etter stadtype.',
   })
-  type?: StringFilter;
+  type?: PlaceType;
 }

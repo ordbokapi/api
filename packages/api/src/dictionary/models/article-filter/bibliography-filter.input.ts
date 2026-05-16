@@ -21,7 +21,7 @@ import { StringFilter } from './string-filter.input';
 
 @InputType({
   description:
-    'Filter for bibliografiske kjelder. Felt på same nivå vert kombinerte med OG-logikk (AND).',
+    'Filter for bibliografiske kjelder. Nøyaktig eitt felt må vera sett.',
 })
 export class BibliographyFilter {
   @Field(() => StringFilter, {

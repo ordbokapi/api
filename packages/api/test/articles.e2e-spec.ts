@@ -389,7 +389,7 @@ describe('articles query', () => {
     const byType = await gql(`{
       articles(
         dictionaries: [NorskOrdbok]
-        filter: { dialectPlace: { type: { eq: "Kommune" } } }
+        filter: { dialectPlace: { type: Kommune } }
       ) { totalCount }
     }`);
     expect(byType.articles.totalCount).toBeGreaterThan(

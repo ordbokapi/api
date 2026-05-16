@@ -23,6 +23,7 @@ import { WordClass } from '../models/word-class.model';
 import { Gender } from '../models/gender.model';
 import { InflectionTag } from '../models/inflection-tag.model';
 import { EtymologyLanguage } from '../models/etymology-language.model';
+import { PlaceType } from '../models/place-type.model';
 import {
   ArticleSortField,
   SortDirection,
@@ -141,10 +142,16 @@ describe('ArticleFilterCompiler', () => {
         );
       });
 
-      test('dialectPlace', () => {
+      test('dialectPlace by name', () => {
         expect(
           compileFilter({ dialectPlace: { name: { eq: 'Eidskog' } } }),
         ).toBe('dialect_place_names = "Eidskog"');
+      });
+
+      test('dialectPlace by type', () => {
+        expect(
+          compileFilter({ dialectPlace: { type: PlaceType.Kommune } }),
+        ).toBe('dialect_place_types = "kommune"');
       });
 
       test('olderSource code', () => {
@@ -533,6 +540,35 @@ describe('ArticleFilterCompiler', () => {
         };
         // 1 (root) + 10 (AND) + 10 (OR) + 1 (NOT) + 10 (NOT.AND) = 32 > 30
         expect(() => compiler.compile(filter)).toThrow(BadRequestException);
+      });
+
+      test('rejects PlaceFilter with multiple fields', () => {
+        expect(() =>
+          compileFilter({
+            dialectPlace: { name: { eq: 'Bergen' }, type: PlaceType.Kommune },
+          }),
+        ).toThrow(/fleire vart sette/);
+      });
+
+      test('rejects empty PlaceFilter', () => {
+        expect(() => compileFilter({ dialectPlace: {} })).toThrow(/er tomt/);
+      });
+
+      test('rejects BibliographyFilter with multiple fields', () => {
+        expect(() =>
+          compileFilter({
+            writtenFormSource: {
+              code: { eq: 'FløgstadKS' },
+              author: { eq: 'Fløgstad' },
+            },
+          }),
+        ).toThrow(/fleire vart sette/);
+      });
+
+      test('rejects empty BibliographyFilter', () => {
+        expect(() => compileFilter({ writtenFormSource: {} })).toThrow(
+          /er tomt/,
+        );
       });
     });
   });
