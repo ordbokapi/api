@@ -1342,8 +1342,10 @@ export class WordService {
     const dialects: Dialect[] = [];
 
     for (const dialectData of data?.body?.dialect ?? []) {
+      const intro: string | undefined = dialectData.intro || undefined;
       const dialect: Dialect = {
-        intro: dialectData.intro || undefined,
+        exhaustive:
+          intro === 'målf' ? true : intro === 'målf òg' ? false : undefined,
         subcategories: [],
       };
 
@@ -1405,8 +1407,20 @@ export class WordService {
     const writtenForms: WrittenForm[] = [];
 
     for (const wfData of data?.body?.written_form ?? []) {
+      const intro: string | undefined = wfData.intro || undefined;
       const writtenForm: WrittenForm = {
-        intro: wfData.intro || undefined,
+        older:
+          intro === 'e skr' || intro === 'e skr òg'
+            ? true
+            : intro === 'skr' || intro === 'skr òg'
+              ? false
+              : undefined,
+        exhaustive:
+          intro === 'skr' || intro === 'e skr'
+            ? true
+            : intro === 'skr òg' || intro === 'e skr òg'
+              ? false
+              : undefined,
         variants: [],
       };
 

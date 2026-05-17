@@ -118,7 +118,7 @@ describe('Norsk Ordbok dialect', () => {
     const data = await gql(`{
       article(id: 166337, dictionary: NorskOrdbok) {
         dialect {
-          intro
+          exhaustive
           subcategories {
             label
             forms {
@@ -144,7 +144,7 @@ describe('Norsk Ordbok dialect', () => {
   it('returns empty dialect for BM articles', async () => {
     const data = await gql(`{
       article(id: 66381, dictionary: Bokmaalsordboka) {
-        dialect { intro }
+        dialect { exhaustive }
       }
     }`);
     expect(data.article.dialect).toEqual([]);
@@ -156,7 +156,8 @@ describe('Norsk Ordbok written form', () => {
     const data = await gql(`{
       article(id: 166337, dictionary: NorskOrdbok) {
         writtenForm {
-          intro
+          older
+          exhaustive
           variants {
             writtenForm
             sources { code id }
@@ -173,7 +174,7 @@ describe('Norsk Ordbok written form', () => {
   it('returns empty written form for BM articles', async () => {
     const data = await gql(`{
       article(id: 66381, dictionary: Bokmaalsordboka) {
-        writtenForm { intro }
+        writtenForm { older exhaustive }
       }
     }`);
     expect(data.article.writtenForm).toEqual([]);
@@ -289,8 +290,8 @@ describe('Norsk Ordbok full nested structure', () => {
         lemmas { lemma }
         etymology { textContent }
         pronunciation { textContent }
-        dialect { intro subcategories { forms { form } } }
-        writtenForm { intro variants { writtenForm } }
+        dialect { exhaustive subcategories { forms { form } } }
+        writtenForm { older exhaustive variants { writtenForm } }
         olderSources { code }
         definitions {
           id

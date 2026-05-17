@@ -24,11 +24,12 @@ import { DialectSubcategory } from './dialect-subcategory.model';
     'Dialektinformasjon for eit oppslag, med underkategoriar og dialektformer frå ulike stader. Somme former kan vera samleformer som representerer fleire dialektvariantar.',
 })
 export class Dialect {
-  @Field(() => String, {
+  @Field(() => Boolean, {
     nullable: true,
-    description: 'Innleiande tekst for dialektinformasjonen.',
+    description:
+      'true om lista over dialektformer er uttømmande, false om lista berre inneheld tilleggsformer utover lemmaet. Null om ukjend.',
   })
-  intro?: string;
+  exhaustive?: boolean;
 
   @Field(() => [DialectSubcategory], {
     description: 'Liste over underkategoriar med dialektformer.',

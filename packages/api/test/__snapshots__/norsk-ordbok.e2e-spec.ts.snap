@@ -202,7 +202,7 @@ exports[`Norsk Ordbok article > returns lemmas with paradigms 1`] = `
 exports[`Norsk Ordbok dialect > returns dialect forms with geographic sources 1`] = `
 [
   {
-    "intro": "målf òg",
+    "exhaustive": false,
     "subcategories": [
       {
         "forms": [
@@ -1999,7 +1999,8 @@ exports[`Norsk Ordbok pronunciation > returns pronunciation for articles with pr
 exports[`Norsk Ordbok written form > returns written form variants with sources 1`] = `
 [
   {
-    "intro": "skr òg",
+    "exhaustive": false,
+    "older": false,
     "variants": [
       {
         "sources": [

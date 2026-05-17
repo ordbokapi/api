@@ -24,11 +24,19 @@ import { WrittenFormVariant } from './written-form-variant.model';
     'Skriftformdata for eit ord, med historiske skriftformer og tilhøyrande kjelder.',
 })
 export class WrittenForm {
-  @Field(() => String, {
+  @Field(() => Boolean, {
     nullable: true,
-    description: 'Innleiande tekst for skriftformdata.',
+    description:
+      'true om skriftformene er frå eldre skrift, false om ikkje. Null om ukjend.',
   })
-  intro?: string;
+  older?: boolean;
+
+  @Field(() => Boolean, {
+    nullable: true,
+    description:
+      'true om lista over skriftformer er uttømmande, false om lista berre inneheld tilleggsformer utover lemmaet. Null om ukjend.',
+  })
+  exhaustive?: boolean;
 
   @Field(() => [WrittenFormVariant], {
     description: 'Liste over skriftformvariantar.',
