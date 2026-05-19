@@ -46,6 +46,19 @@ interface FixtureMetadata {
   data: Record<string, unknown>;
 }
 
+interface FixtureInlineRef {
+  dictionary: string;
+  article_id: number;
+  quote_content: string;
+  offset_start: number;
+  offset_end: number;
+  code: string;
+  spec: string | null;
+  ref_type: string | null;
+  bibl_id: number | null;
+  place_id: number | null;
+}
+
 interface MeiliDocument {
   id: string;
   dictionary: string;
@@ -176,6 +189,19 @@ async function seedPostgres(connectionString: string): Promise<void> {
         context TEXT NOT NULL DEFAULT 'dialect',
         PRIMARY KEY (dictionary, article_id, place_id, context)
       );
+      CREATE TABLE IF NOT EXISTS inline_ref_parse (
+        dictionary TEXT NOT NULL,
+        article_id BIGINT NOT NULL,
+        quote_content TEXT NOT NULL,
+        offset_start INTEGER NOT NULL,
+        offset_end INTEGER NOT NULL,
+        code TEXT NOT NULL,
+        spec TEXT,
+        ref_type TEXT,
+        bibl_id BIGINT,
+        place_id BIGINT,
+        FOREIGN KEY (dictionary, article_id) REFERENCES articles (dictionary, id)
+      );
     `);
 
     const articles = loadFixture<FixtureArticle[]>('articles.json');
@@ -277,6 +303,26 @@ async function seedPostgres(connectionString: string): Promise<void> {
          VALUES ($1, $2, $3, $4)
          ON CONFLICT DO NOTHING`,
         [ap.dictionary, ap.article_id, ap.place_id, ap.context],
+      );
+    }
+
+    const inlineRefs = loadFixture<FixtureInlineRef[]>('inline-ref-parse.json');
+    for (const ir of inlineRefs) {
+      await client.query(
+        `INSERT INTO inline_ref_parse (dictionary, article_id, quote_content, offset_start, offset_end, code, spec, ref_type, bibl_id, place_id)
+         VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)`,
+        [
+          ir.dictionary,
+          ir.article_id,
+          ir.quote_content,
+          ir.offset_start,
+          ir.offset_end,
+          ir.code,
+          ir.spec,
+          ir.ref_type,
+          ir.bibl_id,
+          ir.place_id,
+        ],
       );
     }
   } finally {

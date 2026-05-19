@@ -17,7 +17,7 @@ exports[`Norsk Ordbok article > returns definitions with content and examples 1`
           "textContent": "den (for)lengde mergen",
         },
         {
-          "textContent": "mange av beini er innhole og fyllte med merg",
+          "textContent": "mange av beini er innhole og fyllte med merg(Holms.StrømNF 120)",
         },
       ],
       "id": 3,
@@ -61,7 +61,7 @@ exports[`Norsk Ordbok article > returns definitions with content and examples 1`
       ],
       "examples": [
         {
-          "textContent": "hos til dømes eik lagar mergen ei femspissa stjerne",
+          "textContent": "hos til dømes eik lagar mergen ei femspissa stjerne(Myhr.Tre 27)",
         },
       ],
       "id": 11,
@@ -219,30 +219,6 @@ exports[`Norsk Ordbok dialect > returns dialect forms with geographic sources 1`
               },
               {
                 "place": {
-                  "id": 4,
-                  "name": "Sør-Austlandet",
-                  "type": "DelAvLandsdel",
-                },
-                "visible": false,
-              },
-              {
-                "place": {
-                  "id": 5,
-                  "name": "Austfold",
-                  "type": "Fylke",
-                },
-                "visible": false,
-              },
-              {
-                "place": {
-                  "id": 41,
-                  "name": "Akershus",
-                  "type": "Fylke",
-                },
-                "visible": false,
-              },
-              {
-                "place": {
                   "id": 85,
                   "name": "Eidskog",
                   "type": "Kommune",
@@ -259,83 +235,11 @@ exports[`Norsk Ordbok dialect > returns dialect forms with geographic sources 1`
               },
               {
                 "place": {
-                  "id": 88,
-                  "name": "Odal",
-                  "type": "Landskap",
-                },
-                "visible": false,
-              },
-              {
-                "place": {
-                  "id": 91,
-                  "name": "Solør",
-                  "type": "Landskap",
-                },
-                "visible": false,
-              },
-              {
-                "place": {
-                  "id": 97,
-                  "name": "Hedmark",
-                  "type": "Landskap",
-                },
-                "visible": false,
-              },
-              {
-                "place": {
                   "id": 106,
                   "name": "Østerdalen",
                   "type": "Landskap",
                 },
                 "visible": true,
-              },
-              {
-                "place": {
-                  "id": 113,
-                  "name": "Rendal",
-                  "type": "Tvillingkommune",
-                },
-                "visible": false,
-              },
-              {
-                "place": {
-                  "id": 116,
-                  "name": "Stor-Elvdal",
-                  "type": "Kommune",
-                },
-                "visible": false,
-              },
-              {
-                "place": {
-                  "id": 119,
-                  "name": "Alvdal",
-                  "type": "Kommune",
-                },
-                "visible": false,
-              },
-              {
-                "place": {
-                  "id": 120,
-                  "name": "Tynset",
-                  "type": "Kommune",
-                },
-                "visible": false,
-              },
-              {
-                "place": {
-                  "id": 121,
-                  "name": "Tolga",
-                  "type": "Kommune",
-                },
-                "visible": false,
-              },
-              {
-                "place": {
-                  "id": 123,
-                  "name": "Kvikne",
-                  "type": "Kommune",
-                },
-                "visible": false,
               },
               {
                 "place": {
@@ -347,67 +251,11 @@ exports[`Norsk Ordbok dialect > returns dialect forms with geographic sources 1`
               },
               {
                 "place": {
-                  "id": 158,
-                  "name": "Vest-Oppland",
-                  "type": "DelAvFylke",
-                },
-                "visible": false,
-              },
-              {
-                "place": {
                   "id": 192,
                   "name": "Flesberg",
                   "type": "Kommune",
                 },
                 "visible": true,
-              },
-              {
-                "place": {
-                  "id": 194,
-                  "name": "Sigdal",
-                  "type": "Kommune",
-                },
-                "visible": false,
-              },
-              {
-                "place": {
-                  "id": 196,
-                  "name": "Ringerike",
-                  "type": "Landskap",
-                },
-                "visible": false,
-              },
-              {
-                "place": {
-                  "id": 197,
-                  "name": "Ådal",
-                  "type": "Kommune",
-                },
-                "visible": false,
-              },
-              {
-                "place": {
-                  "id": 198,
-                  "name": "Norderhov",
-                  "type": "Kommune",
-                },
-                "visible": false,
-              },
-              {
-                "place": {
-                  "id": 202,
-                  "name": "Nedre Buskerud",
-                  "type": "Landskap",
-                },
-                "visible": false,
-              },
-              {
-                "place": {
-                  "id": 216,
-                  "name": "Vestfold",
-                  "type": "Fylke",
-                },
-                "visible": false,
               },
               {
                 "place": {
@@ -419,259 +267,11 @@ exports[`Norsk Ordbok dialect > returns dialect forms with geographic sources 1`
               },
               {
                 "place": {
-                  "id": 264,
-                  "name": "Nedre Telemark",
-                  "type": "Landskap",
-                },
-                "visible": false,
-              },
-              {
-                "place": {
-                  "id": 265,
-                  "name": "Drangedal",
-                  "type": "Kommune",
-                },
-                "visible": false,
-              },
-              {
-                "place": {
-                  "id": 266,
-                  "name": "Holla",
-                  "type": "Kommune",
-                },
-                "visible": false,
-              },
-              {
-                "place": {
-                  "id": 267,
-                  "name": "Solum",
-                  "type": "Kommune",
-                },
-                "visible": false,
-              },
-              {
-                "place": {
-                  "id": 268,
-                  "name": "Gjerpen",
-                  "type": "Kommune",
-                },
-                "visible": false,
-              },
-              {
-                "place": {
-                  "id": 271,
-                  "name": "Siljan",
-                  "type": "Kommune",
-                },
-                "visible": false,
-              },
-              {
-                "place": {
-                  "id": 272,
-                  "name": "Eidanger",
-                  "type": "Kommune",
-                },
-                "visible": false,
-              },
-              {
-                "place": {
-                  "id": 276,
-                  "name": "Bamble",
-                  "type": "Kommune",
-                },
-                "visible": false,
-              },
-              {
-                "place": {
-                  "id": 279,
-                  "name": "Sannidal",
-                  "type": "Kommune",
-                },
-                "visible": false,
-              },
-              {
-                "place": {
                   "id": 280,
                   "name": "Agder",
                   "type": "Landsdel",
                 },
                 "visible": true,
-              },
-              {
-                "place": {
-                  "id": 281,
-                  "name": "Ytre Agder",
-                  "type": "DelAvLandsdel",
-                },
-                "visible": false,
-              },
-              {
-                "place": {
-                  "id": 285,
-                  "name": "Indre Agder",
-                  "type": "DelAvLandsdel",
-                },
-                "visible": false,
-              },
-              {
-                "place": {
-                  "id": 290,
-                  "name": "Vegårshei",
-                  "type": "Kommune",
-                },
-                "visible": false,
-              },
-              {
-                "place": {
-                  "id": 291,
-                  "name": "Dypvåg",
-                  "type": "Kommune",
-                },
-                "visible": false,
-              },
-              {
-                "place": {
-                  "id": 295,
-                  "name": "Mykland",
-                  "type": "Kommune",
-                },
-                "visible": false,
-              },
-              {
-                "place": {
-                  "id": 296,
-                  "name": "Froland",
-                  "type": "Kommune",
-                },
-                "visible": false,
-              },
-              {
-                "place": {
-                  "id": 300,
-                  "name": "Austre Moland",
-                  "type": "Kommune",
-                },
-                "visible": false,
-              },
-              {
-                "place": {
-                  "id": 305,
-                  "name": "Fjære",
-                  "type": "Kommune",
-                },
-                "visible": false,
-              },
-              {
-                "place": {
-                  "id": 306,
-                  "name": "Landvik",
-                  "type": "Kommune",
-                },
-                "visible": false,
-              },
-              {
-                "place": {
-                  "id": 311,
-                  "name": "Herefoss",
-                  "type": "Kommune",
-                },
-                "visible": false,
-              },
-              {
-                "place": {
-                  "id": 313,
-                  "name": "Vegusdal",
-                  "type": "Kommune",
-                },
-                "visible": false,
-              },
-              {
-                "place": {
-                  "id": 314,
-                  "name": "Iveland",
-                  "type": "Kommune",
-                },
-                "visible": false,
-              },
-              {
-                "place": {
-                  "id": 326,
-                  "name": "Tveit",
-                  "type": "Kommune",
-                },
-                "visible": false,
-              },
-              {
-                "place": {
-                  "id": 327,
-                  "name": "Oddernes",
-                  "type": "Kommune",
-                },
-                "visible": false,
-              },
-              {
-                "place": {
-                  "id": 328,
-                  "name": "Randesund",
-                  "type": "Kommune",
-                },
-                "visible": false,
-              },
-              {
-                "place": {
-                  "id": 329,
-                  "name": "Øvrebø",
-                  "type": "Kommune",
-                },
-                "visible": false,
-              },
-              {
-                "place": {
-                  "id": 330,
-                  "name": "Hægeland",
-                  "type": "Kommune",
-                },
-                "visible": false,
-              },
-              {
-                "place": {
-                  "id": 331,
-                  "name": "Vennesla",
-                  "type": "Kommune",
-                },
-                "visible": false,
-              },
-              {
-                "place": {
-                  "id": 332,
-                  "name": "Søgne",
-                  "type": "Kommune",
-                },
-                "visible": false,
-              },
-              {
-                "place": {
-                  "id": 333,
-                  "name": "Holum",
-                  "type": "Kommune",
-                },
-                "visible": false,
-              },
-              {
-                "place": {
-                  "id": 334,
-                  "name": "Halse og Harkmark",
-                  "type": "Kommune",
-                },
-                "visible": false,
-              },
-              {
-                "place": {
-                  "id": 336,
-                  "name": "Greipstad",
-                  "type": "Kommune",
-                },
-                "visible": false,
               },
               {
                 "place": {
@@ -688,150 +288,6 @@ exports[`Norsk Ordbok dialect > returns dialect forms with geographic sources 1`
                   "type": "Fylke",
                 },
                 "visible": true,
-              },
-              {
-                "place": {
-                  "id": 651,
-                  "name": "Orkdalen",
-                  "type": "Landskap",
-                },
-                "visible": false,
-              },
-              {
-                "place": {
-                  "id": 654,
-                  "name": "Orkdal",
-                  "type": "Kommune",
-                },
-                "visible": false,
-              },
-              {
-                "place": {
-                  "id": 655,
-                  "name": "Orkland",
-                  "type": "Kommune",
-                },
-                "visible": false,
-              },
-              {
-                "place": {
-                  "id": 656,
-                  "name": "Meldal",
-                  "type": "Kommune",
-                },
-                "visible": false,
-              },
-              {
-                "place": {
-                  "id": 568,
-                  "name": "Oppdal",
-                  "type": "Kommune",
-                },
-                "visible": false,
-              },
-              {
-                "place": {
-                  "id": 661,
-                  "name": "Gauldal",
-                  "type": "Landskap",
-                },
-                "visible": false,
-              },
-              {
-                "place": {
-                  "id": 662,
-                  "name": "Nedre Gauldal",
-                  "type": "DelAvLandskap",
-                },
-                "visible": false,
-              },
-              {
-                "place": {
-                  "id": 665,
-                  "name": "Hølonda",
-                  "type": "Kommune",
-                },
-                "visible": false,
-              },
-              {
-                "place": {
-                  "id": 666,
-                  "name": "Horg",
-                  "type": "Kommune",
-                },
-                "visible": false,
-              },
-              {
-                "place": {
-                  "id": 667,
-                  "name": "Midtre Gauldal",
-                  "type": "DelAvLandskap",
-                },
-                "visible": false,
-              },
-              {
-                "place": {
-                  "id": 668,
-                  "name": "Støren",
-                  "type": "Kommune",
-                },
-                "visible": false,
-              },
-              {
-                "place": {
-                  "id": 669,
-                  "name": "Soknedal",
-                  "type": "Kommune",
-                },
-                "visible": false,
-              },
-              {
-                "place": {
-                  "id": 671,
-                  "name": "Singsås",
-                  "type": "Kommune",
-                },
-                "visible": false,
-              },
-              {
-                "place": {
-                  "id": 672,
-                  "name": "Øvre Gauldal",
-                  "type": "DelAvLandskap",
-                },
-                "visible": false,
-              },
-              {
-                "place": {
-                  "id": 673,
-                  "name": "Haltdalen",
-                  "type": "Kommune",
-                },
-                "visible": false,
-              },
-              {
-                "place": {
-                  "id": 674,
-                  "name": "Ålen",
-                  "type": "Kommune",
-                },
-                "visible": false,
-              },
-              {
-                "place": {
-                  "id": 676,
-                  "name": "Brekken",
-                  "type": "Kommune",
-                },
-                "visible": false,
-              },
-              {
-                "place": {
-                  "id": 677,
-                  "name": "Røros",
-                  "type": "Kommune",
-                },
-                "visible": false,
               },
               {
                 "place": {
@@ -880,75 +336,11 @@ exports[`Norsk Ordbok dialect > returns dialect forms with geographic sources 1`
               },
               {
                 "place": {
-                  "id": 127,
-                  "name": "Dovre",
-                  "type": "Kommune",
-                },
-                "visible": false,
-              },
-              {
-                "place": {
-                  "id": 128,
-                  "name": "Lesja",
-                  "type": "Kommune",
-                },
-                "visible": false,
-              },
-              {
-                "place": {
-                  "id": 131,
-                  "name": "Vågå",
-                  "type": "Kommune",
-                },
-                "visible": false,
-              },
-              {
-                "place": {
-                  "id": 139,
-                  "name": "Øyer",
-                  "type": "Kommune",
-                },
-                "visible": false,
-              },
-              {
-                "place": {
                   "id": 179,
                   "name": "Hallingdal",
                   "type": "Landskap",
                 },
                 "visible": true,
-              },
-              {
-                "place": {
-                  "id": 180,
-                  "name": "Øvre Hallingdal",
-                  "type": "DelAvLandskap",
-                },
-                "visible": false,
-              },
-              {
-                "place": {
-                  "id": 183,
-                  "name": "Ål",
-                  "type": "Kommune",
-                },
-                "visible": false,
-              },
-              {
-                "place": {
-                  "id": 184,
-                  "name": "Hol i Hallingdal",
-                  "type": "Kommune",
-                },
-                "visible": false,
-              },
-              {
-                "place": {
-                  "id": 187,
-                  "name": "Flå i Hallingdal",
-                  "type": "Kommune",
-                },
-                "visible": false,
               },
               {
                 "place": {
@@ -965,46 +357,6 @@ exports[`Norsk Ordbok dialect > returns dialect forms with geographic sources 1`
                   "type": "DelAvLandsdel",
                 },
                 "visible": true,
-              },
-              {
-                "place": {
-                  "id": 284,
-                  "name": "Søndeled",
-                  "type": "Kommune",
-                },
-                "visible": false,
-              },
-              {
-                "place": {
-                  "id": 293,
-                  "name": "Holt",
-                  "type": "Kommune",
-                },
-                "visible": false,
-              },
-              {
-                "place": {
-                  "id": 304,
-                  "name": "Grimstad",
-                  "type": "Kommune",
-                },
-                "visible": false,
-              },
-              {
-                "place": {
-                  "id": 335,
-                  "name": "Mandal",
-                  "type": "Kommune",
-                },
-                "visible": false,
-              },
-              {
-                "place": {
-                  "id": 352,
-                  "name": "Austad",
-                  "type": "Kommune",
-                },
-                "visible": false,
               },
               {
                 "place": {
@@ -1104,291 +456,11 @@ exports[`Norsk Ordbok dialect > returns dialect forms with geographic sources 1`
               },
               {
                 "place": {
-                  "id": 735,
-                  "name": "Nærøy",
-                  "type": "Kommune",
-                },
-                "visible": false,
-              },
-              {
-                "place": {
-                  "id": 736,
-                  "name": "Vikna",
-                  "type": "Kommune",
-                },
-                "visible": false,
-              },
-              {
-                "place": {
-                  "id": 740,
-                  "name": "Leka",
-                  "type": "Kommune",
-                },
-                "visible": false,
-              },
-              {
-                "place": {
                   "id": 741,
                   "name": "Nord-Noreg",
                   "type": "Landsdel",
                 },
                 "visible": true,
-              },
-              {
-                "place": {
-                  "id": 742,
-                  "name": "Nordland",
-                  "type": "Fylke",
-                },
-                "visible": false,
-              },
-              {
-                "place": {
-                  "id": 743,
-                  "name": "Helgeland",
-                  "type": "DelAvFylke",
-                },
-                "visible": false,
-              },
-              {
-                "place": {
-                  "id": 744,
-                  "name": "Sør-Helgeland",
-                  "type": "Landskap",
-                },
-                "visible": false,
-              },
-              {
-                "place": {
-                  "id": 764,
-                  "name": "Dønnes",
-                  "type": "Kommune",
-                },
-                "visible": false,
-              },
-              {
-                "place": {
-                  "id": 773,
-                  "name": "Lurøy",
-                  "type": "Kommune",
-                },
-                "visible": false,
-              },
-              {
-                "place": {
-                  "id": 776,
-                  "name": "Meløy",
-                  "type": "Kommune",
-                },
-                "visible": false,
-              },
-              {
-                "place": {
-                  "id": 777,
-                  "name": "Salten",
-                  "type": "Landskap",
-                },
-                "visible": false,
-              },
-              {
-                "place": {
-                  "id": 778,
-                  "name": "Saltdal",
-                  "type": "Kommune",
-                },
-                "visible": false,
-              },
-              {
-                "place": {
-                  "id": 782,
-                  "name": "Fauske",
-                  "type": "Kommune",
-                },
-                "visible": false,
-              },
-              {
-                "place": {
-                  "id": 788,
-                  "name": "Leiranger",
-                  "type": "Kommune",
-                },
-                "visible": false,
-              },
-              {
-                "place": {
-                  "id": 789,
-                  "name": "Steigen",
-                  "type": "Kommune",
-                },
-                "visible": false,
-              },
-              {
-                "place": {
-                  "id": 790,
-                  "name": "Hamarøy",
-                  "type": "Kommune",
-                },
-                "visible": false,
-              },
-              {
-                "place": {
-                  "id": 791,
-                  "name": "Ofoten",
-                  "type": "Landskap",
-                },
-                "visible": false,
-              },
-              {
-                "place": {
-                  "id": 799,
-                  "name": "Lofoten",
-                  "type": "Landskap",
-                },
-                "visible": false,
-              },
-              {
-                "place": {
-                  "id": 811,
-                  "name": "Vesterålen",
-                  "type": "Landskap",
-                },
-                "visible": false,
-              },
-              {
-                "place": {
-                  "id": 820,
-                  "name": "Troms",
-                  "type": "Fylke",
-                },
-                "visible": false,
-              },
-              {
-                "place": {
-                  "id": 821,
-                  "name": "Sør-Troms",
-                  "type": "Landskap",
-                },
-                "visible": false,
-              },
-              {
-                "place": {
-                  "id": 822,
-                  "name": "Kvæfjord",
-                  "type": "Kommune",
-                },
-                "visible": false,
-              },
-              {
-                "place": {
-                  "id": 828,
-                  "name": "Trondenes",
-                  "type": "Kommune",
-                },
-                "visible": false,
-              },
-              {
-                "place": {
-                  "id": 830,
-                  "name": "Andørja",
-                  "type": "Kommune",
-                },
-                "visible": false,
-              },
-              {
-                "place": {
-                  "id": 831,
-                  "name": "Midt-Troms",
-                  "type": "Landskap",
-                },
-                "visible": false,
-              },
-              {
-                "place": {
-                  "id": 835,
-                  "name": "Dyrøy",
-                  "type": "Kommune",
-                },
-                "visible": false,
-              },
-              {
-                "place": {
-                  "id": 836,
-                  "name": "Sørreisa",
-                  "type": "Kommune",
-                },
-                "visible": false,
-              },
-              {
-                "place": {
-                  "id": 841,
-                  "name": "Malangen",
-                  "type": "Kommune",
-                },
-                "visible": false,
-              },
-              {
-                "place": {
-                  "id": 843,
-                  "name": "Lenvik",
-                  "type": "Kommune",
-                },
-                "visible": false,
-              },
-              {
-                "place": {
-                  "id": 845,
-                  "name": "Torsken",
-                  "type": "Kommune",
-                },
-                "visible": false,
-              },
-              {
-                "place": {
-                  "id": 842,
-                  "name": "Senja",
-                  "type": "DelAvLandskap",
-                },
-                "visible": false,
-              },
-              {
-                "place": {
-                  "id": 846,
-                  "name": "Berg i Troms",
-                  "type": "Kommune",
-                },
-                "visible": false,
-              },
-              {
-                "place": {
-                  "id": 849,
-                  "name": "Tromsøysund",
-                  "type": "Kommune",
-                },
-                "visible": false,
-              },
-              {
-                "place": {
-                  "id": 855,
-                  "name": "Karlsøy",
-                  "type": "Kommune",
-                },
-                "visible": false,
-              },
-              {
-                "place": {
-                  "id": 858,
-                  "name": "Nordreisa",
-                  "type": "Kommune",
-                },
-                "visible": false,
-              },
-              {
-                "place": {
-                  "id": 860,
-                  "name": "Finnmark",
-                  "type": "Fylke",
-                },
-                "visible": false,
               },
             ],
           },
@@ -1437,62 +509,6 @@ exports[`Norsk Ordbok dialect > returns dialect forms with geographic sources 1`
               },
               {
                 "place": {
-                  "id": 266,
-                  "name": "Holla",
-                  "type": "Kommune",
-                },
-                "visible": false,
-              },
-              {
-                "place": {
-                  "id": 268,
-                  "name": "Gjerpen",
-                  "type": "Kommune",
-                },
-                "visible": false,
-              },
-              {
-                "place": {
-                  "id": 269,
-                  "name": "Skien",
-                  "type": "Kommune",
-                },
-                "visible": false,
-              },
-              {
-                "place": {
-                  "id": 272,
-                  "name": "Eidanger",
-                  "type": "Kommune",
-                },
-                "visible": false,
-              },
-              {
-                "place": {
-                  "id": 275,
-                  "name": "Langesund",
-                  "type": "Kommune",
-                },
-                "visible": false,
-              },
-              {
-                "place": {
-                  "id": 277,
-                  "name": "Skåtøy",
-                  "type": "Kommune",
-                },
-                "visible": false,
-              },
-              {
-                "place": {
-                  "id": 278,
-                  "name": "Kragerø",
-                  "type": "Kommune",
-                },
-                "visible": false,
-              },
-              {
-                "place": {
                   "id": 284,
                   "name": "Søndeled",
                   "type": "Kommune",
@@ -1511,7 +527,7 @@ exports[`Norsk Ordbok dialect > returns dialect forms with geographic sources 1`
                 "place": {
                   "id": 293,
                   "name": "Holt",
-                  "type": "Kommune",
+                  "type": null,
                 },
                 "visible": true,
               },
@@ -1650,54 +666,6 @@ exports[`Norsk Ordbok dialect > returns dialect forms with geographic sources 1`
                 },
                 "visible": true,
               },
-              {
-                "place": {
-                  "id": 778,
-                  "name": "Saltdal",
-                  "type": "Kommune",
-                },
-                "visible": false,
-              },
-              {
-                "place": {
-                  "id": 779,
-                  "name": "Beiarn",
-                  "type": "Kommune",
-                },
-                "visible": false,
-              },
-              {
-                "place": {
-                  "id": 781,
-                  "name": "Skjerstad",
-                  "type": "Kommune",
-                },
-                "visible": false,
-              },
-              {
-                "place": {
-                  "id": 785,
-                  "name": "Sørfold",
-                  "type": "Kommune",
-                },
-                "visible": false,
-              },
-              {
-                "place": {
-                  "id": 786,
-                  "name": "Kjerringøy",
-                  "type": "Kommune",
-                },
-                "visible": false,
-              },
-              {
-                "place": {
-                  "id": 787,
-                  "name": "Nordfold",
-                  "type": "Kommune",
-                },
-                "visible": false,
-              },
             ],
           },
         ],
@@ -1712,11 +680,28 @@ exports[`Norsk Ordbok literature references > returns literature references on d
 [
   {
     "id": 3,
-    "literatureReferences": [],
+    "literatureReferences": [
+      {
+        "code": "Holms.StrømNF",
+        "id": 864,
+        "spec": {
+          "textContent": "120",
+        },
+      },
+    ],
     "subDefinitions": [
       {
         "id": 4,
-        "literatureReferences": [],
+        "literatureReferences": [
+          {
+            "code": "Du.MM",
+            "id": 344,
+          },
+          {
+            "code": "Aukr.",
+            "id": 58,
+          },
+        ],
       },
       {
         "id": 10,
@@ -1752,6 +737,13 @@ exports[`Norsk Ordbok literature references > returns literature references on d
         "id": 1219,
         "spec": {
           "textContent": "41",
+        },
+      },
+      {
+        "code": "Myhr.Tre",
+        "id": 1433,
+        "spec": {
+          "textContent": "27",
         },
       },
     ],
@@ -1801,11 +793,37 @@ exports[`Norsk Ordbok literature references > returns literature references on d
     "subDefinitions": [
       {
         "id": 5,
-        "literatureReferences": [],
+        "literatureReferences": [
+          {
+            "code": "Vi.SkrU",
+            "id": 2442,
+          },
+          {
+            "code": "NoSold",
+            "id": 1650,
+          },
+          {
+            "code": "SS",
+            "id": 2124,
+          },
+        ],
       },
       {
         "id": 8,
-        "literatureReferences": [],
+        "literatureReferences": [
+          {
+            "code": "Ga.",
+            "id": 11217,
+          },
+          {
+            "code": "Seljord1786",
+            "id": 1971,
+          },
+          {
+            "code": "GOS",
+            "id": 664,
+          },
+        ],
       },
     ],
   },

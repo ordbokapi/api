@@ -16,7 +16,18 @@
 // You should have received a copy of the GNU Affero General Public License
 // along with Ordbok API. If not, see <https://www.gnu.org/licenses/>.
 
-export * from './dialect.model';
-export * from './dialect-filter.input';
-export * from './dialect-form.model';
-export * from './dialect-subcategory.model';
+import { Field, InputType } from '@nestjs/graphql';
+import { PlaceFilter } from '../article-filter/place-filter.input';
+
+@InputType({
+  description:
+    'Filter for dialektdata. Avgrensar kva former og kjelder som vert returnerte.',
+})
+export class DialectFilter {
+  @Field(() => PlaceFilter, {
+    nullable: true,
+    description:
+      'Filtrer dialektformer etter kjeldestaden dei er attesterte frå. Berre former med minst éi kjelde som matchar filteret vert med.',
+  })
+  place?: PlaceFilter;
+}

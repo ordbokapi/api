@@ -21,6 +21,8 @@ import { registerEnumType } from '@nestjs/graphql';
 export enum RichContentSegmentType {
   Text = 'Text',
   Article = 'Article',
+  Bibliography = 'Bibliography',
+  Place = 'Place',
   Superscript = 'Superscript',
   Subscript = 'Subscript',
   Emphasis = 'Emphasis',

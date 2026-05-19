@@ -502,7 +502,7 @@ describe('articles query', () => {
         }
       ) { totalCount }
     }`);
-    expect(withDialect.articles.totalCount).toMatchInlineSnapshot(`9`);
+    expect(withDialect.articles.totalCount).toMatchInlineSnapshot(`10`);
     expect(withoutEtym.articles.totalCount).toMatchInlineSnapshot(`4`);
   });
 

@@ -38,6 +38,7 @@ import {
   RichContent,
   BibliographyReference,
   Dialect,
+  DialectFilter,
   WrittenForm,
 } from '../models';
 
@@ -85,8 +86,12 @@ export class ArticleResolver {
   }
 
   @ResolveField(() => [FlatDefinition])
-  async flatDefinitions(@Parent() article: Article) {
-    return this.wordService.getFlatDefinitions(article);
+  async flatDefinitions(
+    @Parent() article: Article,
+    @Args('includeHidden', { type: () => Boolean, defaultValue: false })
+    includeHidden: boolean,
+  ) {
+    return this.wordService.getFlatDefinitions(article, includeHidden);
   }
 
   @ResolveField(() => WordClass)
@@ -125,8 +130,14 @@ export class ArticleResolver {
   }
 
   @ResolveField(() => [Dialect], { nullable: true })
-  async dialect(@Parent() article: Article) {
-    return this.wordService.getDialect(article);
+  async dialect(
+    @Parent() article: Article,
+    @Args('includeHidden', { type: () => Boolean, defaultValue: false })
+    includeHidden: boolean,
+    @Args('filter', { type: () => DialectFilter, nullable: true })
+    filter?: DialectFilter,
+  ) {
+    return this.wordService.getDialect(article, includeHidden, filter);
   }
 
   @ResolveField(() => [WrittenForm], { nullable: true })

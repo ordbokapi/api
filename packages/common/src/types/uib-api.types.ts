@@ -169,6 +169,16 @@ export type ArticleTextElement = {
 };
 
 /**
+ * A literature reference on an article element.
+ */
+export type ArticleLiteratureReference = {
+  code: string;
+  bibl_id: number;
+  type_: string;
+  spec?: { content: string; items: ArticleElement[] } | null;
+};
+
+/**
  * An element in an article.
  */
 export type ArticleElement =
@@ -198,6 +208,7 @@ export type ArticleElement =
         | 'etymology_ref';
       content: string | null;
       items: ArticleElement[];
+      lit_refs?: ArticleLiteratureReference[];
     }
   | {
       type_: 'definition';
@@ -209,6 +220,7 @@ export type ArticleElement =
       type_: 'example';
       quote: ArticleTextElement;
       explanation: ArticleTextElement;
+      lit_refs?: ArticleLiteratureReference[];
     }
   | {
       type_: 'compound_list';

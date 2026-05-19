@@ -40,6 +40,7 @@ const seedArticles = {
   ],
   nn: [87267], // "vane"
   no: [
+    78087, // "forstå"
     166337, // "merg"
     194163, // "stjerneloden"
     266810, // "pund"
@@ -171,7 +172,27 @@ async function main() {
     );
     console.log(`Wrote ${articleBiblJson.length} article_bibliography rows`);
 
-    const biblIds = [...new Set(articleBiblJson.map((r) => r.bibl_id))];
+    const { rows: inlineRefRows } = await client.query(
+      `SELECT json_agg(row_to_json(t)) AS data FROM (
+         SELECT dictionary, article_id, quote_content, offset_start, offset_end,
+                code, spec, ref_type, bibl_id, place_id
+         FROM inline_ref_parse WHERE ${articleIdConditions}
+         ORDER BY dictionary, article_id, offset_start
+       ) t`,
+    );
+    const inlineRefJson = inlineRefRows[0].data ?? [];
+    await writeFile(
+      join(fixturesDir, 'inline-ref-parse.json'),
+      JSON.stringify(inlineRefJson) + '\n',
+    );
+    console.log(`Wrote ${inlineRefJson.length} inline_ref_parse rows`);
+
+    const biblIds = [
+      ...new Set([
+        ...articleBiblJson.map((r) => r.bibl_id),
+        ...inlineRefJson.filter((r) => r.bibl_id != null).map((r) => r.bibl_id),
+      ]),
+    ];
     if (biblIds.length > 0) {
       const { rows: biblRows } = await client.query(
         `SELECT json_agg(row_to_json(t)) AS data FROM (
@@ -205,7 +226,14 @@ async function main() {
     );
     console.log(`Wrote ${articlePlaceJson.length} article_place rows`);
 
-    const placeIds = [...new Set(articlePlaceJson.map((r) => r.place_id))];
+    const placeIds = [
+      ...new Set([
+        ...articlePlaceJson.map((r) => r.place_id),
+        ...inlineRefJson
+          .filter((r) => r.place_id != null)
+          .map((r) => r.place_id),
+      ]),
+    ];
     if (placeIds.length > 0) {
       const { rows: placeRows } = await client.query(
         `SELECT json_agg(row_to_json(t)) AS data FROM (

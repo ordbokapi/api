@@ -24,6 +24,7 @@ import {
   jsonb,
   timestamp,
   primaryKey,
+  foreignKey,
 } from 'drizzle-orm/pg-core';
 
 export const articles = pgTable(
@@ -83,3 +84,25 @@ export const places = pgTable('places', {
     .notNull()
     .defaultNow(),
 });
+
+export const inlineRefParse = pgTable(
+  'inline_ref_parse',
+  {
+    dictionary: text('dictionary').notNull(),
+    articleId: bigint('article_id', { mode: 'number' }).notNull(),
+    quoteContent: text('quote_content').notNull(),
+    offsetStart: integer('offset_start').notNull(),
+    offsetEnd: integer('offset_end').notNull(),
+    code: text('code').notNull(),
+    spec: text('spec'),
+    refType: text('ref_type'),
+    biblId: bigint('bibl_id', { mode: 'number' }),
+    placeId: bigint('place_id', { mode: 'number' }),
+  },
+  (table) => [
+    foreignKey({
+      columns: [table.dictionary, table.articleId],
+      foreignColumns: [articles.dictionary, articles.id],
+    }),
+  ],
+);

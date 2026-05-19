@@ -26,6 +26,7 @@ import {
   SearchOptions,
   FullSearchResult,
   RawConceptTable,
+  InlineRefParseEntry,
 } from 'ordbokapi-common';
 import { ICacheProvider } from '../../providers';
 import * as crypto from 'crypto';
@@ -384,5 +385,29 @@ export class UibCacheService {
     id: string,
   ): RawConceptTable['concepts'][string] | null {
     return this.getConcepts(dictionary).concepts[id] ?? null;
+  }
+
+  async getInlineRefParse(
+    dictionary: UibDictionary,
+    articleId: number,
+  ): Promise<InlineRefParseEntry[]> {
+    const cacheKey = `inline-ref:${dictionary}:${articleId}`;
+    try {
+      const cached: InlineRefParseEntry[] = await this.cache.get(cacheKey);
+
+      if (cached) {
+        return cached;
+      }
+    } catch {
+      // Ignore errors.
+    }
+
+    const entries = await this.data.getInlineRefParse(dictionary, articleId);
+
+    if (entries.length > 0) {
+      Promise.resolve(this.cache.set(cacheKey, entries)).catch(() => {});
+    }
+
+    return entries;
   }
 }

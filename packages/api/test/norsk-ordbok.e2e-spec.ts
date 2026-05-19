@@ -329,3 +329,200 @@ describe('Norsk Ordbok quirks', () => {
     expect(data.article.definitions.length).toBeGreaterThan(0);
   });
 });
+
+describe('Norsk Ordbok inline references', () => {
+  it('produces Bibliography segments in example rich content', async () => {
+    const data = await gql(`{
+      article(id: 78087, dictionary: NorskOrdbok) {
+        flatDefinitions(includeHidden: true) {
+          examples {
+            richContent { type content ... on RichContentBibliographySegment { reference { code id } } }
+          }
+        }
+      }
+    }`);
+    const allSegments = data.article.flatDefinitions.flatMap((d: any) =>
+      d.examples.flatMap((ex: any) => ex.richContent),
+    );
+    const biblSegments = allSegments.filter(
+      (s: any) => s.type === 'Bibliography',
+    );
+
+    expect(biblSegments.length).toBeGreaterThan(0);
+    expect(biblSegments[0].reference.code).toBeTruthy();
+    expect(typeof biblSegments[0].reference.id).toBe('number');
+  });
+
+  it('produces Place segments in example rich content', async () => {
+    const data = await gql(`{
+      article(id: 78087, dictionary: NorskOrdbok) {
+        flatDefinitions(includeHidden: true) {
+          examples {
+            richContent { type content ... on RichContentPlaceSegment { place { id name type } } }
+          }
+        }
+      }
+    }`);
+    const allSegments = data.article.flatDefinitions.flatMap((d: any) =>
+      d.examples.flatMap((ex: any) => ex.richContent),
+    );
+    const placeSegments = allSegments.filter((s: any) => s.type === 'Place');
+
+    expect(placeSegments.length).toBeGreaterThan(0);
+    expect(placeSegments[0].place.name).toBeTruthy();
+    expect(typeof placeSegments[0].place.id).toBe('number');
+  });
+});
+
+describe('Norsk Ordbok hidden data filtering', () => {
+  it('excludes UANALYSERT DOEME examples by default', async () => {
+    const data = await gql(`{
+      article(id: 78087, dictionary: NorskOrdbok) {
+        flatDefinitions {
+          examples { textContent }
+        }
+      }
+    }`);
+    const allExamples = data.article.flatDefinitions.flatMap(
+      (d: any) => d.examples,
+    );
+    const uanalysert = allExamples.filter((ex: any) =>
+      ex.textContent.startsWith('UANALYSERT DOEME:'),
+    );
+
+    expect(uanalysert).toEqual([]);
+  });
+
+  it('includes UANALYSERT DOEME examples with includeHidden', async () => {
+    const data = await gql(`{
+      article(id: 78087, dictionary: NorskOrdbok) {
+        flatDefinitions(includeHidden: true) {
+          examples { textContent }
+        }
+      }
+    }`);
+    const allExamples = data.article.flatDefinitions.flatMap(
+      (d: any) => d.examples,
+    );
+    const uanalysert = allExamples.filter((ex: any) =>
+      ex.textContent.startsWith('UANALYSERT DOEME:'),
+    );
+
+    expect(uanalysert.length).toBeGreaterThan(0);
+  });
+
+  it('excludes non-visible dialect sources by default', async () => {
+    const data = await gql(`{
+      article(id: 166337, dictionary: NorskOrdbok) {
+        dialect {
+          subcategories {
+            forms {
+              sources { visible }
+            }
+          }
+        }
+      }
+    }`);
+    const allSources = data.article.dialect.flatMap((d: any) =>
+      d.subcategories.flatMap((sub: any) =>
+        sub.forms.flatMap((f: any) => f.sources),
+      ),
+    );
+    const hidden = allSources.filter((s: any) => !s.visible);
+
+    expect(hidden).toEqual([]);
+  });
+
+  it('includes non-visible dialect sources with includeHidden', async () => {
+    const data = await gql(`{
+      article(id: 166337, dictionary: NorskOrdbok) {
+        dialect(includeHidden: true) {
+          subcategories {
+            forms {
+              sources { visible }
+            }
+          }
+        }
+      }
+    }`);
+    const allSources = data.article.dialect.flatMap((d: any) =>
+      d.subcategories.flatMap((sub: any) =>
+        sub.forms.flatMap((f: any) => f.sources),
+      ),
+    );
+    const hidden = allSources.filter((s: any) => !s.visible);
+
+    expect(hidden.length).toBeGreaterThan(0);
+  });
+
+  it('excludes non-visible place references by default', async () => {
+    const data = await gql(`{
+      article(id: 194163, dictionary: NorskOrdbok) {
+        flatDefinitions {
+          placeReferences { visible }
+        }
+      }
+    }`);
+    const allRefs = data.article.flatDefinitions.flatMap(
+      (d: any) => d.placeReferences,
+    );
+    const hidden = allRefs.filter((r: any) => !r.visible);
+
+    expect(hidden).toEqual([]);
+  });
+});
+
+describe('Norsk Ordbok dialect filtering', () => {
+  it('filters dialect forms by place name', async () => {
+    const unfiltered = await gql(`{
+      article(id: 166337, dictionary: NorskOrdbok) {
+        dialect {
+          subcategories {
+            forms { form sources { place { name } } }
+          }
+        }
+      }
+    }`);
+
+    const allPlaceNames = unfiltered.article.dialect.flatMap((d: any) =>
+      d.subcategories.flatMap((sub: any) =>
+        sub.forms.flatMap((f: any) => f.sources.map((s: any) => s.place.name)),
+      ),
+    );
+
+    expect(allPlaceNames.length).toBeGreaterThan(0);
+
+    const targetPlace = allPlaceNames[0];
+    const filtered = await gql(
+      `query ($filter: DialectFilter!) {
+        article(id: 166337, dictionary: NorskOrdbok) {
+          dialect(filter: $filter) {
+            subcategories {
+              forms { form sources { place { name } } }
+            }
+          }
+        }
+      }`,
+      { filter: { place: { name: { eq: targetPlace } } } },
+    );
+
+    const filteredForms = filtered.article.dialect.flatMap((d: any) =>
+      d.subcategories.flatMap((sub: any) => sub.forms),
+    );
+
+    expect(filteredForms.length).toBeGreaterThan(0);
+
+    for (const form of filteredForms) {
+      const hasMatch = form.sources.some(
+        (s: any) => s.place.name === targetPlace,
+      );
+      expect(hasMatch).toBe(true);
+    }
+
+    expect(filteredForms.length).toBeLessThan(
+      unfiltered.article.dialect.flatMap((d: any) =>
+        d.subcategories.flatMap((sub: any) => sub.forms),
+      ).length,
+    );
+  });
+});

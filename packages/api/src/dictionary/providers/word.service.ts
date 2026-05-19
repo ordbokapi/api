@@ -36,9 +36,13 @@ import {
   AntonymArticleRelationship,
   SeeAlsoArticleRelationship,
   RichContentArticleSegment,
+  RichContentBibliographySegment,
   RichContentFormattedTextSegment,
   RichContentFractionSegment,
+  RichContentPlaceSegment,
+  RichContentSegment,
   RichContentSegmentType,
+  RichContentTextSegment,
   ArticleRelationship,
   ArticleGraph,
   ArticleGraphEdge,
@@ -50,11 +54,15 @@ import {
   Bibliography,
   BibliographyReference,
   Dialect,
+  DialectFilter,
   DialectSubcategory,
   DialectForm,
   WrittenForm,
   WrittenFormVariant,
   RawPlaceTypeMap,
+  Place,
+  PlaceFilter,
+  StringFilter,
 } from '../models';
 import { OrdboekeneApiSearchType as ApiSearchType } from './ordboekene-api.service';
 import { flattenDefinitions } from './flatten-definitions';
@@ -73,6 +81,7 @@ import {
   PlaceEntry,
   SearchOptions,
   LightSearchResult,
+  InlineRefParseEntry,
 } from 'ordbokapi-common';
 import { UibCacheService } from './uib-cache.service';
 
@@ -275,7 +284,23 @@ export class WordService {
 
       const articleData = data as unknown as ArticleData;
       this.#rawData.set(article, articleData);
-      this.transformArticleResponse(article, articleData);
+
+      let inlineRefs: InlineRefParseEntry[] | undefined;
+
+      if (article.dictionary === Dictionary.NorskOrdbok) {
+        inlineRefs = await this.uib.getInlineRefParse(
+          toUibDictionary(article.dictionary),
+          article.id,
+        );
+      }
+
+      const inlinePlaceMap = await this.#getPlacesForInlineRefs(inlineRefs);
+      this.transformArticleResponse(
+        article,
+        articleData,
+        inlineRefs,
+        inlinePlaceMap,
+      );
 
       article.lemmas = this.transformLemmaInfo(articleData);
       article.gender = this.transformGender(articleData);
@@ -311,12 +336,24 @@ export class WordService {
     return article.definitions!;
   }
 
-  async getFlatDefinitions(article: Article): Promise<FlatDefinition[]> {
+  async getFlatDefinitions(
+    article: Article,
+    includeHidden = false,
+  ): Promise<FlatDefinition[]> {
     if (!(await this.#hydrateArticle(article))) {
       return [];
     }
 
-    return article.flatDefinitions!;
+    const defs = article.flatDefinitions!;
+    if (includeHidden) return defs;
+
+    return defs.map((def) => ({
+      ...def,
+      examples: def.examples.filter(
+        (ex) => !ex.textContent.startsWith('UANALYSERT DOEME:'),
+      ),
+      placeReferences: def.placeReferences.filter((ref) => ref.visible),
+    }));
   }
 
   async getRelationships(article: Article): Promise<ArticleRelationship[]> {
@@ -405,11 +442,129 @@ export class WordService {
     return article.pronunciation!;
   }
 
-  async getDialect(article: Article): Promise<Dialect[]> {
+  async getDialect(
+    article: Article,
+    includeHidden = false,
+    filter?: DialectFilter,
+  ): Promise<Dialect[]> {
     if (!(await this.#hydrateArticle(article))) {
       return [];
     }
-    return article.dialect!;
+
+    const placeFilter = filter?.place;
+
+    if (includeHidden && !placeFilter) {
+      return article.dialect!;
+    }
+
+    const result: Dialect[] = [];
+
+    for (const d of article.dialect!) {
+      const newSubs: typeof d.subcategories = [];
+
+      for (const sub of d.subcategories) {
+        const newForms: typeof sub.forms = [];
+
+        for (const form of sub.forms) {
+          let newSources: typeof form.sources;
+          let placeMatched = !placeFilter;
+
+          if (includeHidden) {
+            newSources = form.sources;
+
+            if (placeFilter) {
+              for (const s of newSources) {
+                if (this.#matchPlaceFilter(s.place, placeFilter)) {
+                  placeMatched = true;
+                  break;
+                }
+              }
+            }
+          } else {
+            newSources = [];
+
+            for (const s of form.sources) {
+              if (!s.visible) {
+                continue;
+              }
+
+              newSources.push(s);
+
+              if (
+                placeFilter &&
+                !placeMatched &&
+                this.#matchPlaceFilter(s.place, placeFilter)
+              ) {
+                placeMatched = true;
+              }
+            }
+          }
+
+          if (!placeMatched) {
+            continue;
+          }
+
+          newForms.push(
+            newSources === form.sources
+              ? form
+              : { ...form, sources: newSources },
+          );
+        }
+
+        if (newForms.length === 0) {
+          continue;
+        }
+
+        newSubs.push({ ...sub, forms: newForms });
+      }
+
+      if (newSubs.length === 0) {
+        continue;
+      }
+
+      result.push({ ...d, subcategories: newSubs });
+    }
+    return result;
+  }
+
+  #matchStringFilter(value: string | undefined, filter: StringFilter): boolean {
+    if (filter.eq != null) {
+      return value === filter.eq;
+    }
+
+    if (filter.contains != null) {
+      return value != null && value.includes(filter.contains);
+    }
+
+    if (filter.startsWith != null) {
+      return value != null && value.startsWith(filter.startsWith);
+    }
+
+    if (filter.in != null) {
+      return value != null && filter.in.includes(value);
+    }
+
+    if (filter.exists != null) {
+      return filter.exists ? value != null : value == null;
+    }
+
+    return true;
+  }
+
+  #matchPlaceFilter(place: Place, filter: PlaceFilter): boolean {
+    if (filter.name && !this.#matchStringFilter(place.name, filter.name)) {
+      return false;
+    }
+
+    if (filter.code && !this.#matchStringFilter(place.code, filter.code)) {
+      return false;
+    }
+
+    if (filter.type != null && place.type !== filter.type) {
+      return false;
+    }
+
+    return true;
   }
 
   async getWrittenForm(article: Article): Promise<WrittenForm[]> {
@@ -460,7 +615,23 @@ export class WordService {
     };
 
     this.#rawData.set(article, articleData);
-    this.transformArticleResponse(article, articleData);
+
+    let inlineRefs: InlineRefParseEntry[] | undefined;
+
+    if (dictionary === Dictionary.NorskOrdbok) {
+      inlineRefs = await this.uib.getInlineRefParse(
+        toUibDictionary(dictionary),
+        data.article_id,
+      );
+    }
+
+    const inlinePlaceMap = await this.#getPlacesForInlineRefs(inlineRefs);
+    this.transformArticleResponse(
+      article,
+      articleData,
+      inlineRefs,
+      inlinePlaceMap,
+    );
 
     article.lemmas = this.transformLemmaInfo(articleData);
     article.gender = this.transformGender(articleData);
@@ -720,8 +891,15 @@ export class WordService {
       return richContent;
     }
 
-    // Format the text element
-    const segments = element.content.split('$');
+    // Some Norsk Ordbok articles have hanging XML closing tag parts in data.
+    let content = element.content.startsWith('/>')
+      ? element.content.slice(2)
+      : element.content;
+
+    // Some Norsk Ordbok articles have garbled quotes, fix «..." to «...».
+    content = content.replace(/«([^»"]*?)"/g, '«$1»');
+
+    const segments = content.split('$');
 
     for (const [i, segment] of segments.entries()) {
       richContent.append(segment);
@@ -847,6 +1025,25 @@ export class WordService {
 
       case 'example': {
         richContent.append(this.formatText(dictionary, element.quote));
+
+        for (const ref of element.lit_refs ?? []) {
+          if (ref.code == null || ref.bibl_id == null) continue;
+
+          const litRef: BibliographyReference = {
+            code: ref.code,
+            id: ref.bibl_id,
+          };
+
+          if (ref.spec?.content) {
+            litRef.spec = this.formatText(
+              Dictionary.NorskOrdbok,
+              ref.spec,
+            ).build();
+          }
+
+          richContent.append(new RichContentBibliographySegment(litRef));
+        }
+
         break;
       }
 
@@ -945,6 +1142,8 @@ export class WordService {
   private transformArticleResponse(
     article: Article,
     data: ArticleData,
+    inlineRefs?: InlineRefParseEntry[],
+    inlinePlaceMap?: Map<number, PlaceEntry>,
   ): Article {
     const definitions: Definition[] = [];
 
@@ -964,6 +1163,8 @@ export class WordService {
           )
             ? data.body.definitions[0].elements
             : data.body.definitions,
+          inlineRefs,
+          inlinePlaceMap,
         ),
       );
     }
@@ -1054,13 +1255,22 @@ export class WordService {
     dictionary: Dictionary,
     definition: Definition,
     element: ArticleElement,
+    inlineRefs?: InlineRefParseEntry[],
+    inlinePlaceMap?: Map<number, PlaceEntry>,
   ): Definition {
     switch (element.type_) {
       case 'explanation':
       case 'compound_list': {
         const richContent = this.formatElement(dictionary, element);
+        const built = richContent.build();
 
-        definition.content.push(richContent.build());
+        if (inlineRefs?.length) {
+          definition.content.push(
+            this.#hydrateInlineRefs(built, inlineRefs, inlinePlaceMap),
+          );
+        } else {
+          definition.content.push(built);
+        }
 
         const constructorRanges = this.getRelationshipConstructors(
           element as ArticleElement & {
@@ -1100,8 +1310,17 @@ export class WordService {
 
       case 'example': {
         const richContent = this.formatElement(dictionary, element);
+        const built = richContent.build();
 
-        definition.examples.push(richContent.build());
+        if (inlineRefs?.length && !element.lit_refs?.length) {
+          definition.examples.push(
+            this.#hydrateInlineRefs(built, inlineRefs, inlinePlaceMap),
+          );
+        } else {
+          definition.examples.push(built);
+        }
+        this.extractLiteratureReferences(element, definition);
+
         break;
       }
 
@@ -1114,6 +1333,8 @@ export class WordService {
             dictionary,
             subDefinition,
             subElement,
+            inlineRefs,
+            inlinePlaceMap,
           );
         }
 
@@ -1129,6 +1350,8 @@ export class WordService {
     articleId: number,
     dictionary: Dictionary,
     elements: any[],
+    inlineRefs?: InlineRefParseEntry[],
+    inlinePlaceMap?: Map<number, PlaceEntry>,
   ): Definition[] {
     const definitions: Definition[] = [];
 
@@ -1156,10 +1379,19 @@ export class WordService {
             dictionary,
             definition,
             element,
+            inlineRefs,
+            inlinePlaceMap,
           );
         }
       } else {
-        this.transformDefinitionElement(articleId, dictionary, definition, def);
+        this.transformDefinitionElement(
+          articleId,
+          dictionary,
+          definition,
+          def,
+          inlineRefs,
+          inlinePlaceMap,
+        );
       }
 
       if (isNew) {
@@ -1309,6 +1541,125 @@ export class WordService {
 
       definition.literatureReferences.push(litRef);
     }
+  }
+
+  #hydrateInlineRefs(
+    content: RichContent,
+    inlineRefs: InlineRefParseEntry[],
+    inlinePlaceMap?: Map<number, PlaceEntry>,
+  ): RichContent {
+    const text = content.textContent;
+    const matches = inlineRefs.filter(
+      (e) =>
+        (e.biblId != null || e.placeId != null) &&
+        (e.quoteContent === text ||
+          e.quoteContent.replace(/«([^»"]*?)"/g, '«$1»') === text),
+    );
+
+    if (matches.length === 0) {
+      return content;
+    }
+
+    matches.sort((a, b) => a.offsetStart - b.offsetStart);
+
+    // Offsets are stored in the DB as UTF-8 byte positions.
+    const encoder = new TextEncoder();
+    const encoded = encoder.encode(matches[0].quoteContent);
+    const byteToChar = (byteOffset: number): number => {
+      const slice = encoded.slice(0, byteOffset);
+      return new TextDecoder().decode(slice).length;
+    };
+
+    const segments: RichContentSegment[] = [];
+    let cursor = 0;
+
+    for (const entry of matches) {
+      const charStart = byteToChar(entry.offsetStart);
+      const charEnd = byteToChar(entry.offsetEnd);
+
+      if (charStart > cursor) {
+        segments.push(
+          new RichContentTextSegment(text.slice(cursor, charStart)),
+        );
+      }
+
+      if (entry.refType === 'place' && entry.placeId != null) {
+        const placeEntry = inlinePlaceMap?.get(entry.placeId);
+        if (placeEntry) {
+          const place: Place = {
+            id: placeEntry.id,
+            name: placeEntry.name,
+            code: placeEntry.code || undefined,
+            type: RawPlaceTypeMap[placeEntry.type],
+            parentId: placeEntry.parentId,
+          };
+          segments.push(
+            new RichContentPlaceSegment(place, text.slice(charStart, charEnd)),
+          );
+        } else {
+          segments.push(
+            new RichContentTextSegment(text.slice(charStart, charEnd)),
+          );
+        }
+      } else {
+        const ref: BibliographyReference = {
+          code: entry.code,
+          id: entry.biblId ?? 0,
+        };
+
+        if (entry.spec) {
+          ref.spec = new RichContent([new RichContentTextSegment(entry.spec)]);
+        }
+
+        segments.push(new RichContentBibliographySegment(ref));
+      }
+
+      cursor = charEnd;
+    }
+
+    if (cursor < text.length) {
+      segments.push(new RichContentTextSegment(text.slice(cursor)));
+    }
+
+    // Trim trailing whitespace from text segments that precede a bibliography
+    // place segment, so that clients rendering superscripts or other custom
+    // formatting don't get extra space before the annotation.
+    for (let i = 0; i < segments.length - 1; i++) {
+      const seg = segments[i];
+      const next = segments[i + 1];
+
+      if (
+        seg.type === RichContentSegmentType.Text &&
+        (next.type === RichContentSegmentType.Bibliography ||
+          next.type === RichContentSegmentType.Place)
+      ) {
+        seg.content = seg.content.trimEnd();
+      }
+    }
+
+    return new RichContent(segments);
+  }
+
+  async #getPlacesForInlineRefs(
+    inlineRefs?: InlineRefParseEntry[],
+  ): Promise<Map<number, PlaceEntry> | undefined> {
+    if (!inlineRefs?.length) {
+      return undefined;
+    }
+
+    const placeIds = [
+      ...new Set(
+        inlineRefs
+          .filter((e) => e.refType === 'place' && e.placeId != null)
+          .map((e) => e.placeId!),
+      ),
+    ];
+
+    if (placeIds.length === 0) {
+      return undefined;
+    }
+
+    return this.data.getPlacesByIds(placeIds);
   }
 
   async #getPlacesForArticle(

@@ -488,6 +488,41 @@ export class UibDbService {
     };
   }
 
+  async getInlineRefParse(
+    dictionary: UibDictionary,
+    articleId: number,
+  ): Promise<InlineRefParseEntry[]> {
+    const rows = await this.database.db
+      .select({
+        quoteContent: schema.inlineRefParse.quoteContent,
+        offsetStart: schema.inlineRefParse.offsetStart,
+        offsetEnd: schema.inlineRefParse.offsetEnd,
+        code: schema.inlineRefParse.code,
+        spec: schema.inlineRefParse.spec,
+        refType: schema.inlineRefParse.refType,
+        biblId: schema.inlineRefParse.biblId,
+        placeId: schema.inlineRefParse.placeId,
+      })
+      .from(schema.inlineRefParse)
+      .where(
+        and(
+          eq(schema.inlineRefParse.dictionary, dictionary),
+          eq(schema.inlineRefParse.articleId, articleId),
+        ),
+      );
+
+    return rows.map((row) => ({
+      quoteContent: row.quoteContent,
+      offsetStart: row.offsetStart,
+      offsetEnd: row.offsetEnd,
+      code: row.code,
+      spec: row.spec,
+      refType: row.refType,
+      biblId: row.biblId,
+      placeId: row.placeId,
+    }));
+  }
+
   // #endregion
 
   // #region Place data
@@ -638,4 +673,15 @@ export interface PlaceEntry {
   type: string;
   parentId: number | null;
   municipalityNr: string | null;
+}
+
+export interface InlineRefParseEntry {
+  quoteContent: string;
+  offsetStart: number;
+  offsetEnd: number;
+  code: string;
+  spec: string | null;
+  refType: string | null;
+  biblId: number | null;
+  placeId: number | null;
 }
