@@ -1369,8 +1369,8 @@ __metadata:
   linkType: hard
 
 "@nestjs/apollo@npm:^13.4.0":
-  version: 13.4.0
-  resolution: "@nestjs/apollo@npm:13.4.0"
+  version: 13.4.1
+  resolution: "@nestjs/apollo@npm:13.4.1"
   dependencies:
     "@apollo/server-plugin-landing-page-graphql-playground": "npm:4.0.1"
     iterall: "npm:1.3.0"
@@ -1394,7 +1394,7 @@ __metadata:
       optional: true
     "@as-integrations/fastify":
       optional: true
-  checksum: 10c0/ff3bd09928662e46f9505cdf12eae43257750135eecf53f473b117fdf1dcb47483fe065b08e15f3f528cfa467a60753edb0d2766cf551dec7c83b3271fdc237e
+  checksum: 10c0/8bbcfca8742593281b866a5153108a530fc288a030231f6fc0a8f36ebc7234cfb0b65a0ac0aaaeebb5b884dac1a0207b86f4681d5529516278e77c3b0b86cb07
   languageName: node
   linkType: hard
 
@@ -1500,8 +1500,8 @@ __metadata:
   linkType: hard
 
 "@nestjs/graphql@npm:^13.4.0":
-  version: 13.4.0
-  resolution: "@nestjs/graphql@npm:13.4.0"
+  version: 13.4.1
+  resolution: "@nestjs/graphql@npm:13.4.1"
   dependencies:
     "@graphql-tools/merge": "npm:9.1.9"
     "@graphql-tools/schema": "npm:10.0.33"
@@ -1515,7 +1515,7 @@ __metadata:
     normalize-path: "npm:3.0.0"
     subscriptions-transport-ws: "npm:0.11.0"
     tslib: "npm:2.8.1"
-    ws: "npm:8.20.0"
+    ws: "npm:8.20.1"
   peerDependencies:
     "@apollo/subgraph": ^2.9.3
     "@nestjs/common": ^11.0.1
@@ -1534,7 +1534,7 @@ __metadata:
       optional: true
     ts-morph:
       optional: true
-  checksum: 10c0/f32774b02d4a48ce4657de4ca9a819a50f780009f927ecfe26e03ae3a4ed85bf531999a27323eea78b1916da0575fccc34a547e5aa847c58ecd4d636ac57b2a9
+  checksum: 10c0/85a554ce7dfa459cbc21432be25bb16747c91978492347e74395918891527be6ea5e284048bf577c0df3f23119e4a109118c43754c7a8acccbc59ccf90638993
   languageName: node
   linkType: hard
 
@@ -8601,9 +8601,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"ws@npm:8.20.0":
-  version: 8.20.0
-  resolution: "ws@npm:8.20.0"
+"ws@npm:8.20.1":
+  version: 8.20.1
+  resolution: "ws@npm:8.20.1"
   peerDependencies:
     bufferutil: ^4.0.1
     utf-8-validate: ">=5.0.2"
@@ -8612,7 +8612,7 @@ __metadata:
       optional: true
     utf-8-validate:
       optional: true
-  checksum: 10c0/956ac5f11738c914089b65878b9223692ace77337ba55379ae68e1ecbeae9b47a0c6eb9403688f609999a58c80d83d99865fe0029b229d308b08c1ef93d4ea14
+  checksum: 10c0/ce162433218399cdedeb76fd33363d4d86a7d910058d4e3c679dce08cea65d6da6b39f11baa4d7808d024cf46ed88f6a05c17611621aaad8fc5e62edacc30c5d
   languageName: node
   linkType: hard
 
