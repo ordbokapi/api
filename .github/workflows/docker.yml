@@ -75,6 +75,7 @@ jobs:
     if: github.event_name == 'push' && github.ref == 'refs/heads/main'
     runs-on: ubuntu-latest
     environment: staging
+    permissions: {}
     steps:
       - name: Trigger deployment
         run: |
