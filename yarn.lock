@@ -1369,8 +1369,8 @@ __metadata:
   linkType: hard
 
 "@nestjs/apollo@npm:^13.4.0":
-  version: 13.4.1
-  resolution: "@nestjs/apollo@npm:13.4.1"
+  version: 13.4.2
+  resolution: "@nestjs/apollo@npm:13.4.2"
   dependencies:
     "@apollo/server-plugin-landing-page-graphql-playground": "npm:4.0.1"
     iterall: "npm:1.3.0"
@@ -1394,7 +1394,7 @@ __metadata:
       optional: true
     "@as-integrations/fastify":
       optional: true
-  checksum: 10c0/8bbcfca8742593281b866a5153108a530fc288a030231f6fc0a8f36ebc7234cfb0b65a0ac0aaaeebb5b884dac1a0207b86f4681d5529516278e77c3b0b86cb07
+  checksum: 10c0/09909db98ce1949b6db9331be78c37ffeb2fd12cc661dedaee59d4286d8ccce0a21d2bb90b6ed7a535c5f82b2e9a2bba2dda20ca7875a7634989d9c54a8cdf6e
   languageName: node
   linkType: hard
 
@@ -1500,8 +1500,8 @@ __metadata:
   linkType: hard
 
 "@nestjs/graphql@npm:^13.4.0":
-  version: 13.4.1
-  resolution: "@nestjs/graphql@npm:13.4.1"
+  version: 13.4.2
+  resolution: "@nestjs/graphql@npm:13.4.2"
   dependencies:
     "@graphql-tools/merge": "npm:9.1.9"
     "@graphql-tools/schema": "npm:10.0.33"
@@ -1534,7 +1534,7 @@ __metadata:
       optional: true
     ts-morph:
       optional: true
-  checksum: 10c0/85a554ce7dfa459cbc21432be25bb16747c91978492347e74395918891527be6ea5e284048bf577c0df3f23119e4a109118c43754c7a8acccbc59ccf90638993
+  checksum: 10c0/6ce949af29d3cf214f4c22ee7076a638f91fb12a0d915ed2bfd3a1ce07a0612c2cdb8fbaed58095dea95bd7a9b657b58a855af36bd953e3cc4399608b336d2c9
   languageName: node
   linkType: hard
 
