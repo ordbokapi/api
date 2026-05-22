@@ -17,7 +17,7 @@
 // along with Ordbok API. If not, see <https://www.gnu.org/licenses/>.
 
 import { Field, InputType } from '@nestjs/graphql';
-import { PlaceType } from '../place-type.model';
+import { PlaceTypeFilter } from './enum-filter.input';
 import { StringFilter } from './string-filter.input';
 
 @InputType({
@@ -37,9 +37,9 @@ export class PlaceFilter {
   })
   code?: StringFilter;
 
-  @Field(() => PlaceType, {
+  @Field(() => PlaceTypeFilter, {
     nullable: true,
     description: 'Filtrer etter stadtype.',
   })
-  type?: PlaceType;
+  type?: PlaceTypeFilter;
 }

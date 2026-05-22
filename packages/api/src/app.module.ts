@@ -115,7 +115,7 @@ query DialectWords($place: String!) {
   articles(
     dictionaries: [NorskOrdbok]
     filter: {
-      wordClass: Substantiv
+      wordClass: { eq: Substantiv }
       dialectPlace: { name: { eq: $place } }
     }
     first: 10
@@ -188,7 +188,7 @@ query WordsAttestedByAuthor($author: String!) {
 query NorseOriginNouns {
   articles(
     dictionaries: [Bokmaalsordboka]
-    filter: { wordClass: Substantiv, etymologyLanguage: Norroent }
+    filter: { wordClass: { eq: Substantiv }, etymologyLanguage: { eq: Norroent } }
     first: 10
   ) {
     totalCount

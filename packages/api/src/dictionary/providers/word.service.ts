@@ -560,8 +560,13 @@ export class WordService {
       return false;
     }
 
-    if (filter.type != null && place.type !== filter.type) {
-      return false;
+    if (filter.type != null) {
+      if (filter.type.eq != null && place.type !== filter.type.eq) {
+        return false;
+      }
+      if (filter.type.in != null && !filter.type.in.includes(place.type!)) {
+        return false;
+      }
     }
 
     return true;

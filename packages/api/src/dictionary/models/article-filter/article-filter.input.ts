@@ -17,11 +17,13 @@
 // along with Ordbok API. If not, see <https://www.gnu.org/licenses/>.
 
 import { Field, InputType } from '@nestjs/graphql';
-import { WordClass } from '../word-class.model';
-import { Gender } from '../gender.model';
 import { InflectionTag } from '../inflection-tag.model';
-import { EtymologyLanguage } from '../etymology-language.model';
 import { BibliographyFilter } from './bibliography-filter.input';
+import {
+  WordClassFilter,
+  GenderFilter,
+  EtymologyLanguageFilter,
+} from './enum-filter.input';
 import { PlaceFilter } from './place-filter.input';
 import { StringFilter } from './string-filter.input';
 
@@ -30,17 +32,17 @@ import { StringFilter } from './string-filter.input';
     'Filter for artikkelsøk. Felt på same nivå vert kombinerte med OG-logikk (AND).',
 })
 export class ArticleFilter {
-  @Field(() => WordClass, {
+  @Field(() => WordClassFilter, {
     nullable: true,
     description: 'Filtrer etter ordklasse.',
   })
-  wordClass?: WordClass;
+  wordClass?: WordClassFilter;
 
-  @Field(() => Gender, {
+  @Field(() => GenderFilter, {
     nullable: true,
     description: 'Filtrer etter grammatisk kjønn.',
   })
-  gender?: Gender;
+  gender?: GenderFilter;
 
   @Field(() => Boolean, {
     nullable: true,
@@ -55,11 +57,11 @@ export class ArticleFilter {
   })
   inflectionTags?: InflectionTag[];
 
-  @Field(() => EtymologyLanguage, {
+  @Field(() => EtymologyLanguageFilter, {
     nullable: true,
     description: 'Filtrer etter etymologisk opphavsspråk.',
   })
-  etymologyLanguage?: EtymologyLanguage;
+  etymologyLanguage?: EtymologyLanguageFilter;
 
   @Field(() => StringFilter, {
     nullable: true,

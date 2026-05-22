@@ -47,7 +47,7 @@ describe('articles query', () => {
     const data = await gql(`{
       articles(
         dictionaries: [Bokmaalsordboka]
-        filter: { wordClass: Substantiv }
+        filter: { wordClass: { eq: Substantiv } }
       ) {
         totalCount
         edges { node { id wordClass } }
@@ -63,7 +63,7 @@ describe('articles query', () => {
     const data = await gql(`{
       articles(
         dictionaries: [Bokmaalsordboka]
-        filter: { gender: Inkjekjoenn }
+        filter: { gender: { eq: Inkjekjoenn } }
       ) {
         totalCount
         edges { node { id gender lemmas { lemma } } }
@@ -142,7 +142,7 @@ describe('articles query', () => {
       articles(
         query: "vane"
         dictionaries: [Bokmaalsordboka]
-        filter: { wordClass: Substantiv }
+        filter: { wordClass: { eq: Substantiv } }
       ) {
         totalCount
         edges { node { id wordClass lemmas { lemma } } }
@@ -160,8 +160,8 @@ describe('articles query', () => {
         dictionaries: [Bokmaalsordboka]
         filter: {
           OR: [
-            { wordClass: Adjektiv }
-            { wordClass: Verb }
+            { wordClass: { eq: Adjektiv } }
+            { wordClass: { eq: Verb } }
           ]
         }
       ) {
@@ -180,8 +180,8 @@ describe('articles query', () => {
       articles(
         dictionaries: [Bokmaalsordboka]
         filter: {
-          wordClass: Substantiv
-          NOT: { gender: Hankjoenn }
+          wordClass: { eq: Substantiv }
+          NOT: { gender: { eq: Hankjoenn } }
         }
       ) {
         totalCount
@@ -251,7 +251,7 @@ describe('articles query', () => {
             AND: [{
               AND: [{
                 AND: [{
-                  AND: [{ wordClass: Substantiv }]
+                  AND: [{ wordClass: { eq: Substantiv } }]
                 }]
               }]
             }]
@@ -315,7 +315,7 @@ describe('articles query', () => {
     const data = await gql(`{
       articles(
         dictionaries: [Bokmaalsordboka]
-        filter: { wordClass: Substantiv }
+        filter: { wordClass: { eq: Substantiv } }
         sort: { field: ArticleId, direction: Asc }
         first: 5
       ) {
@@ -389,11 +389,97 @@ describe('articles query', () => {
     const byType = await gql(`{
       articles(
         dictionaries: [NorskOrdbok]
-        filter: { dialectPlace: { type: Kommune } }
+        filter: { dialectPlace: { type: { eq: Kommune } } }
       ) { totalCount }
     }`);
     expect(byType.articles.totalCount).toBeGreaterThan(
       byName.articles.totalCount,
+    );
+  });
+
+  it('filters by wordClass in', async () => {
+    const single = await gql(`{
+      articles(
+        dictionaries: [Bokmaalsordboka]
+        filter: { wordClass: { eq: Substantiv } }
+      ) { totalCount }
+    }`);
+    const multi = await gql(`{
+      articles(
+        dictionaries: [Bokmaalsordboka]
+        filter: { wordClass: { in: [Substantiv, Verb] } }
+      ) {
+        totalCount
+        edges { node { id wordClass } }
+      }
+    }`);
+    expect(multi.articles.totalCount).toBeGreaterThan(
+      single.articles.totalCount,
+    );
+    for (const edge of multi.articles.edges) {
+      expect(['Substantiv', 'Verb']).toContain(edge.node.wordClass);
+    }
+  });
+
+  it('filters by gender in', async () => {
+    const single = await gql(`{
+      articles(
+        dictionaries: [Bokmaalsordboka]
+        filter: { gender: { eq: Hankjoenn } }
+      ) { totalCount }
+    }`);
+    const multi = await gql(`{
+      articles(
+        dictionaries: [Bokmaalsordboka]
+        filter: { gender: { in: [Hankjoenn, Inkjekjoenn] } }
+      ) {
+        totalCount
+        edges { node { id gender } }
+      }
+    }`);
+    expect(multi.articles.totalCount).toBeGreaterThan(
+      single.articles.totalCount,
+    );
+    for (const edge of multi.articles.edges) {
+      expect(['Hankjoenn', 'Inkjekjoenn', 'HankjoennHokjoenn']).toContain(
+        edge.node.gender,
+      );
+    }
+  });
+
+  it('filters by etymologyLanguage in', async () => {
+    const single = await gql(`{
+      articles(
+        dictionaries: [Bokmaalsordboka]
+        filter: { etymologyLanguage: { eq: Norroent } }
+      ) { totalCount }
+    }`);
+    const multi = await gql(`{
+      articles(
+        dictionaries: [Bokmaalsordboka]
+        filter: { etymologyLanguage: { in: [Norroent, Gresk] } }
+      ) { totalCount }
+    }`);
+    expect(multi.articles.totalCount).toBeGreaterThanOrEqual(
+      single.articles.totalCount,
+    );
+  });
+
+  it('filters by dialectPlace type in', async () => {
+    const single = await gql(`{
+      articles(
+        dictionaries: [NorskOrdbok]
+        filter: { dialectPlace: { type: { eq: Kommune } } }
+      ) { totalCount }
+    }`);
+    const multi = await gql(`{
+      articles(
+        dictionaries: [NorskOrdbok]
+        filter: { dialectPlace: { type: { in: [Kommune, Fylke] } } }
+      ) { totalCount }
+    }`);
+    expect(multi.articles.totalCount).toBeGreaterThanOrEqual(
+      single.articles.totalCount,
     );
   });
 
@@ -511,7 +597,7 @@ describe('articles query', () => {
       articles(
         dictionaries: [NorskOrdbok]
         filter: {
-          wordClass: Substantiv
+          wordClass: { eq: Substantiv }
           AND: [{ dialectForm: { exists: true } }, { etymologyText: { exists: true } }]
         }
       ) {
@@ -592,7 +678,7 @@ describe('articles query', () => {
     const data = await gql(`{
       articles(
         dictionaries: [Bokmaalsordboka]
-        filter: { etymologyLanguage: Norroent }
+        filter: { etymologyLanguage: { eq: Norroent } }
       ) {
         totalCount
         edges { node { id } }
@@ -613,7 +699,7 @@ describe('articles query', () => {
         dictionaries: [Bokmaalsordboka]
         filter: {
           definitionText: { contains: "sjøfart" }
-          etymologyLanguage: Gresk
+          etymologyLanguage: { eq: Gresk }
         }
       ) {
         totalCount
@@ -667,7 +753,7 @@ describe('articles query', () => {
         dictionaries: [Bokmaalsordboka]
         filter: {
           definitionText: { contains: "sjøfart" }
-          NOT: { etymologyLanguage: Gresk }
+          NOT: { etymologyLanguage: { eq: Gresk } }
         }
       ) { totalCount }
     }`);
@@ -689,7 +775,7 @@ describe('articles query', () => {
         filter: {
           AND: [
             { definitionText: { contains: "sjøfart" } }
-            { etymologyLanguage: Gresk }
+            { etymologyLanguage: { eq: Gresk } }
           ]
         }
       ) { totalCount }
@@ -704,7 +790,7 @@ describe('articles query', () => {
     const first = await gql(`{
       articles(
         dictionaries: [Bokmaalsordboka]
-        filter: { wordClass: Substantiv }
+        filter: { wordClass: { eq: Substantiv } }
         first: 2
       ) {
         totalCount
@@ -719,7 +805,7 @@ describe('articles query', () => {
     const second = await gql(`{
       articles(
         dictionaries: [Bokmaalsordboka]
-        filter: { wordClass: Substantiv }
+        filter: { wordClass: { eq: Substantiv } }
         first: 2
         after: "${first.articles.pageInfo.endCursor}"
       ) {
@@ -752,15 +838,15 @@ describe('articles query', () => {
     const langOnly = await gql(`{
       articles(
         dictionaries: [Bokmaalsordboka]
-        filter: { etymologyLanguage: Norroent }
+        filter: { etymologyLanguage: { eq: Norroent } }
       ) { totalCount }
     }`);
     const combined = await gql(`{
       articles(
         dictionaries: [Bokmaalsordboka]
         filter: {
-          etymologyLanguage: Norroent
-          wordClass: Substantiv
+          etymologyLanguage: { eq: Norroent }
+          wordClass: { eq: Substantiv }
         }
       ) {
         totalCount
@@ -781,7 +867,7 @@ describe('articles query', () => {
     const data = await gql(`{
       articles(
         dictionaries: [Bokmaalsordboka]
-        filter: { wordClass: Substantiv }
+        filter: { wordClass: { eq: Substantiv } }
         sort: { field: ArticleId, direction: Asc }
       ) {
         edges { node { id } }
@@ -842,7 +928,7 @@ describe('articles query', () => {
         dictionaries: [Bokmaalsordboka]
         filter: {
           lemma: { startsWith: "van" }
-          wordClass: Substantiv
+          wordClass: { eq: Substantiv }
         }
       ) { totalCount }
     }`);

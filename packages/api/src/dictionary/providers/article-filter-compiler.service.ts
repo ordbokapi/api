@@ -19,6 +19,12 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
 import { ArticleFilter } from '../models/article-filter/article-filter.input';
 import { BibliographyFilter } from '../models/article-filter/bibliography-filter.input';
+import {
+  WordClassFilter,
+  GenderFilter,
+  EtymologyLanguageFilter,
+  PlaceTypeFilter,
+} from '../models/article-filter/enum-filter.input';
 import { PlaceFilter } from '../models/article-filter/place-filter.input';
 import { StringFilter } from '../models/article-filter/string-filter.input';
 import {
@@ -30,6 +36,7 @@ import { WordClass } from '../models/word-class.model';
 import { Gender } from '../models/gender.model';
 import { InflectionTag } from '../models/inflection-tag.model';
 import {
+  EtymologyLanguage,
   EtymologyLanguageRawCodes,
   RawCodeToEtymologyLanguage,
 } from '../models/etymology-language.model';
@@ -171,16 +178,10 @@ export class ArticleFilterCompiler {
     const clauses: string[] = [];
 
     if (filter.wordClass) {
-      clauses.push(`paradigm_tags = "${WordClassToTag[filter.wordClass]}"`);
+      this.#compileWordClassFilter(clauses, filter.wordClass);
     }
     if (filter.gender) {
-      if (filter.gender === Gender.Ukjent) {
-        clauses.push(
-          `paradigm_tags = "NOUN" AND paradigm_tags != "Masc" AND paradigm_tags != "Fem" AND paradigm_tags != "Neuter"`,
-        );
-      } else {
-        clauses.push(`paradigm_tags = "${GenderToTag[filter.gender]}"`);
-      }
+      this.#compileGenderFilter(clauses, filter.gender);
     }
     if (
       filter.hasSplitInfinitive !== undefined &&
@@ -194,15 +195,7 @@ export class ArticleFilterCompiler {
       }
     }
     if (filter.etymologyLanguage) {
-      const codes = EtymologyLanguageRawCodes[filter.etymologyLanguage];
-      const orClauses = codes.map(
-        (c) => `etymology_languages = "${this.#escape(c)}"`,
-      );
-      if (orClauses.length === 1) {
-        clauses.push(orClauses[0]);
-      } else {
-        clauses.push(`(${orClauses.join(' OR ')})`);
-      }
+      this.#compileEtymologyLanguageFilter(clauses, filter.etymologyLanguage);
     }
 
     this.#compileStringFilter(clauses, 'lemmas', filter.lemma);
@@ -296,9 +289,7 @@ export class ArticleFilterCompiler {
     this.#compileStringFilter(clauses, `${prefix}_names`, filter.name);
     this.#compileStringFilter(clauses, `${prefix}_codes`, filter.code);
     if (filter.type) {
-      clauses.push(
-        `${prefix}_types = "${this.#escape(PlaceTypeToRaw[filter.type])}"`,
-      );
+      this.#compilePlaceTypeFilter(clauses, `${prefix}_types`, filter.type);
     }
   }
 
@@ -352,6 +343,95 @@ export class ArticleFilterCompiler {
     }
     if (filter.exists !== undefined && filter.exists !== null) {
       clauses.push(filter.exists ? `${attr} IS NOT EMPTY` : `${attr} IS EMPTY`);
+    }
+  }
+
+  #compileWordClassFilter(clauses: string[], filter: WordClassFilter): void {
+    if (filter.eq !== undefined && filter.eq !== null) {
+      clauses.push(`paradigm_tags = "${WordClassToTag[filter.eq]}"`);
+    }
+
+    if (filter.in !== undefined && filter.in !== null) {
+      const orClauses = filter.in.map(
+        (wc) => `paradigm_tags = "${WordClassToTag[wc]}"`,
+      );
+
+      if (orClauses.length === 1) {
+        clauses.push(orClauses[0]);
+      } else {
+        clauses.push(`(${orClauses.join(' OR ')})`);
+      }
+    }
+  }
+
+  #compileGenderFilter(clauses: string[], filter: GenderFilter): void {
+    const compileOne = (g: Gender): string => {
+      if (g === Gender.Ukjent) {
+        return `paradigm_tags = "NOUN" AND paradigm_tags != "Masc" AND paradigm_tags != "Fem" AND paradigm_tags != "Neuter"`;
+      }
+
+      return `paradigm_tags = "${GenderToTag[g]}"`;
+    };
+
+    if (filter.eq !== undefined && filter.eq !== null) {
+      clauses.push(compileOne(filter.eq));
+    }
+
+    if (filter.in !== undefined && filter.in !== null) {
+      const orClauses = filter.in.map(compileOne);
+
+      if (orClauses.length === 1) {
+        clauses.push(orClauses[0]);
+      } else {
+        clauses.push(`(${orClauses.map((c) => `(${c})`).join(' OR ')})`);
+      }
+    }
+  }
+
+  #compileEtymologyLanguageFilter(
+    clauses: string[],
+    filter: EtymologyLanguageFilter,
+  ): void {
+    const compileOne = (lang: EtymologyLanguage): string[] =>
+      EtymologyLanguageRawCodes[lang].map(
+        (c) => `etymology_languages = "${this.#escape(c)}"`,
+      );
+
+    if (filter.eq !== undefined && filter.eq !== null) {
+      const orClauses = compileOne(filter.eq);
+
+      if (orClauses.length === 1) {
+        clauses.push(orClauses[0]);
+      } else {
+        clauses.push(`(${orClauses.join(' OR ')})`);
+      }
+    }
+    if (filter.in !== undefined && filter.in !== null) {
+      const orClauses = filter.in.flatMap(compileOne);
+
+      if (orClauses.length === 1) {
+        clauses.push(orClauses[0]);
+      } else {
+        clauses.push(`(${orClauses.join(' OR ')})`);
+      }
+    }
+  }
+
+  #compilePlaceTypeFilter(
+    clauses: string[],
+    attr: string,
+    filter: PlaceTypeFilter,
+  ): void {
+    if (filter.eq !== undefined && filter.eq !== null) {
+      clauses.push(`${attr} = "${this.#escape(PlaceTypeToRaw[filter.eq])}"`);
+    }
+
+    if (filter.in !== undefined && filter.in !== null) {
+      const values = filter.in
+        .map((t) => `"${this.#escape(PlaceTypeToRaw[t])}"`)
+        .join(', ');
+
+      clauses.push(`${attr} IN [${values}]`);
     }
   }
 

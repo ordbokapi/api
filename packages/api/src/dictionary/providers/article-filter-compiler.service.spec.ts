@@ -37,7 +37,7 @@ describe('ArticleFilterCompiler', () => {
   describe('compile', () => {
     describe('single field filters', () => {
       test('wordClass', () => {
-        expect(compileFilter({ wordClass: WordClass.Substantiv })).toBe(
+        expect(compileFilter({ wordClass: { eq: WordClass.Substantiv } })).toBe(
           'paradigm_tags = "NOUN"',
         );
       });
@@ -59,25 +59,33 @@ describe('ArticleFilterCompiler', () => {
           [WordClass.Uttrykk, 'EXPR'],
         ];
         for (const [wc, tag] of expected) {
-          expect(compileFilter({ wordClass: wc })).toBe(
+          expect(compileFilter({ wordClass: { eq: wc } })).toBe(
             `paradigm_tags = "${tag}"`,
           );
         }
       });
 
+      test('wordClass in multiple values', () => {
+        expect(
+          compileFilter({
+            wordClass: { in: [WordClass.Substantiv, WordClass.Verb] },
+          }),
+        ).toBe('(paradigm_tags = "NOUN" OR paradigm_tags = "VERB")');
+      });
+
       test('gender', () => {
-        expect(compileFilter({ gender: Gender.Hankjoenn })).toBe(
+        expect(compileFilter({ gender: { eq: Gender.Hankjoenn } })).toBe(
           'paradigm_tags = "Masc"',
         );
-        expect(compileFilter({ gender: Gender.Hokjoenn })).toBe(
+        expect(compileFilter({ gender: { eq: Gender.Hokjoenn } })).toBe(
           'paradigm_tags = "Fem"',
         );
-        expect(compileFilter({ gender: Gender.Inkjekjoenn })).toBe(
+        expect(compileFilter({ gender: { eq: Gender.Inkjekjoenn } })).toBe(
           'paradigm_tags = "Neuter"',
         );
-        expect(compileFilter({ gender: Gender.HankjoennHokjoenn })).toBe(
-          'paradigm_tags = "Masc/Fem"',
-        );
+        expect(
+          compileFilter({ gender: { eq: Gender.HankjoennHokjoenn } }),
+        ).toBe('paradigm_tags = "Masc/Fem"');
       });
 
       test('hasSplitInfinitive true', () => {
@@ -150,7 +158,7 @@ describe('ArticleFilterCompiler', () => {
 
       test('dialectPlace by type', () => {
         expect(
-          compileFilter({ dialectPlace: { type: PlaceType.Kommune } }),
+          compileFilter({ dialectPlace: { type: { eq: PlaceType.Kommune } } }),
         ).toBe('dialect_place_types = "kommune"');
       });
 
@@ -176,16 +184,27 @@ describe('ArticleFilterCompiler', () => {
 
       test('etymologyLanguage with single raw code', () => {
         expect(
-          compileFilter({ etymologyLanguage: EtymologyLanguage.Finsk }),
+          compileFilter({ etymologyLanguage: { eq: EtymologyLanguage.Finsk } }),
         ).toBe('etymology_languages = "finsk"');
       });
 
       test('etymologyLanguage with multiple raw codes', () => {
         const result = compileFilter({
-          etymologyLanguage: EtymologyLanguage.Norroent,
+          etymologyLanguage: { eq: EtymologyLanguage.Norroent },
         });
         expect(result).toMatch(/^\(/);
         expect(result).toContain('etymology_languages = "norr."');
+        expect(result).toContain(' OR ');
+      });
+
+      test('etymologyLanguage in multiple values', () => {
+        const result = compileFilter({
+          etymologyLanguage: {
+            in: [EtymologyLanguage.Finsk, EtymologyLanguage.Latin],
+          },
+        });
+        expect(result).toContain('etymology_languages = "finsk"');
+        expect(result).toContain('etymology_languages = "lat."');
         expect(result).toContain(' OR ');
       });
     });
@@ -235,9 +254,9 @@ describe('ArticleFilterCompiler', () => {
 
       test('mixed filter and contains', () => {
         const result = compileFilter({
-          wordClass: WordClass.Substantiv,
+          wordClass: { eq: WordClass.Substantiv },
           definitionText: { contains: 'fisk' },
-          etymologyLanguage: EtymologyLanguage.Latin,
+          etymologyLanguage: { eq: EtymologyLanguage.Latin },
         });
         expect(result).toContain('paradigm_tags = "NOUN"');
         expect(result).toContain('definition_text CONTAINS "fisk"');
@@ -341,8 +360,8 @@ describe('ArticleFilterCompiler', () => {
       test('wordClass + gender', () => {
         expect(
           compileFilter({
-            wordClass: WordClass.Substantiv,
-            gender: Gender.Hankjoenn,
+            wordClass: { eq: WordClass.Substantiv },
+            gender: { eq: Gender.Hankjoenn },
           }),
         ).toBe('paradigm_tags = "NOUN" AND paradigm_tags = "Masc"');
       });
@@ -359,7 +378,7 @@ describe('ArticleFilterCompiler', () => {
       test('wordClass + lemma + hasSplitInfinitive', () => {
         expect(
           compileFilter({
-            wordClass: WordClass.Verb,
+            wordClass: { eq: WordClass.Verb },
             lemma: { eq: 'kaste' },
             hasSplitInfinitive: false,
           }),
@@ -374,8 +393,8 @@ describe('ArticleFilterCompiler', () => {
         expect(
           compileFilter({
             AND: [
-              { wordClass: WordClass.Substantiv },
-              { gender: Gender.Hankjoenn },
+              { wordClass: { eq: WordClass.Substantiv } },
+              { gender: { eq: Gender.Hankjoenn } },
             ],
           }),
         ).toBe('(paradigm_tags = "NOUN" AND paradigm_tags = "Masc")');
@@ -398,8 +417,8 @@ describe('ArticleFilterCompiler', () => {
         expect(
           compileFilter({
             OR: [
-              { wordClass: WordClass.Adjektiv },
-              { wordClass: WordClass.Verb },
+              { wordClass: { eq: WordClass.Adjektiv } },
+              { wordClass: { eq: WordClass.Verb } },
             ],
           }),
         ).toBe('(paradigm_tags = "ADJ" OR paradigm_tags = "VERB")');
@@ -421,9 +440,9 @@ describe('ArticleFilterCompiler', () => {
 
     describe('NOT combinator', () => {
       test('negates a sub-filter', () => {
-        expect(compileFilter({ NOT: { gender: Gender.Hankjoenn } })).toBe(
-          'NOT (paradigm_tags = "Masc")',
-        );
+        expect(
+          compileFilter({ NOT: { gender: { eq: Gender.Hankjoenn } } }),
+        ).toBe('NOT (paradigm_tags = "Masc")');
       });
 
       test('combined with top-level fields', () => {
@@ -443,8 +462,11 @@ describe('ArticleFilterCompiler', () => {
         expect(
           compileFilter({
             OR: [
-              { wordClass: WordClass.Substantiv, gender: Gender.Hankjoenn },
-              { wordClass: WordClass.Verb },
+              {
+                wordClass: { eq: WordClass.Substantiv },
+                gender: { eq: Gender.Hankjoenn },
+              },
+              { wordClass: { eq: WordClass.Verb } },
             ],
           }),
         ).toBe(
@@ -471,8 +493,8 @@ describe('ArticleFilterCompiler', () => {
             AND: [
               {
                 OR: [
-                  { wordClass: WordClass.Substantiv },
-                  { wordClass: WordClass.Verb },
+                  { wordClass: { eq: WordClass.Substantiv } },
+                  { wordClass: { eq: WordClass.Verb } },
                 ],
               },
               { dialectForm: { exists: true } },
@@ -506,7 +528,9 @@ describe('ArticleFilterCompiler', () => {
               {
                 AND: [
                   {
-                    AND: [{ AND: [{ wordClass: WordClass.Substantiv }] }],
+                    AND: [
+                      { AND: [{ wordClass: { eq: WordClass.Substantiv } }] },
+                    ],
                   },
                 ],
               },
@@ -517,7 +541,7 @@ describe('ArticleFilterCompiler', () => {
 
       test('rejects > 30 clauses', () => {
         const manyFilters = Array.from({ length: 31 }, () => ({
-          wordClass: WordClass.Substantiv,
+          wordClass: { eq: WordClass.Substantiv },
         }));
         expect(() => compiler.compile({ AND: manyFilters })).toThrow(
           BadRequestException,
@@ -527,14 +551,14 @@ describe('ArticleFilterCompiler', () => {
       test('counts clauses across AND, OR, NOT', () => {
         const filter = {
           AND: Array.from({ length: 10 }, () => ({
-            wordClass: WordClass.Substantiv,
+            wordClass: { eq: WordClass.Substantiv },
           })),
           OR: Array.from({ length: 10 }, () => ({
-            wordClass: WordClass.Verb,
+            wordClass: { eq: WordClass.Verb },
           })),
           NOT: {
             AND: Array.from({ length: 10 }, () => ({
-              gender: Gender.Hankjoenn,
+              gender: { eq: Gender.Hankjoenn },
             })),
           },
         };
@@ -545,7 +569,10 @@ describe('ArticleFilterCompiler', () => {
       test('rejects PlaceFilter with multiple fields', () => {
         expect(() =>
           compileFilter({
-            dialectPlace: { name: { eq: 'Bergen' }, type: PlaceType.Kommune },
+            dialectPlace: {
+              name: { eq: 'Bergen' },
+              type: { eq: PlaceType.Kommune },
+            },
           }),
         ).toThrow(/fleire vart sette/);
       });

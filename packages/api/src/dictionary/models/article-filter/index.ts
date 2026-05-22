@@ -19,5 +19,6 @@
 export * from './article-filter.input';
 export * from './article-sort.input';
 export * from './bibliography-filter.input';
+export * from './enum-filter.input';
 export * from './place-filter.input';
 export * from './string-filter.input';
