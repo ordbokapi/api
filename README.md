@@ -20,7 +20,7 @@ along with Ordbok API. If not, see <https://www.gnu.org/licenses/>.
 
 # Ordbok API
 
-![Prosjektbanner](https://ordbokapi.org/images/ordbokapi-open-graph.png)
+![Prosjektbanner](https://ordbokapi.org/images/ordbokapi-opengraph.jpg)
 
 <p align="center">
   <a href="https://ordbokapi.org">Prosjektnettstad</a> •
