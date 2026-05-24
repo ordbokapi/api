@@ -203,7 +203,7 @@ export class MeilisearchService implements OnModuleInit {
         ...(options.facets?.length ? { facets: options.facets } : undefined),
       });
 
-      hits.push(...(result.hits as MeiliSearchHit[]));
+      hits.push(...((result.hits as MeiliSearchHit[]) ?? []));
 
       if (options.facets?.length && result.facetDistribution) {
         if (!facetDistribution) {
@@ -224,7 +224,7 @@ export class MeilisearchService implements OnModuleInit {
         }
       }
 
-      needed -= result.hits.length;
+      needed -= result.hits?.length ?? 0;
       localOffset = 0;
     }
 
