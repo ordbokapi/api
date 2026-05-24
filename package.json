@@ -22,8 +22,8 @@
     "services:stop": "docker-compose -f ./docker-compose.yml down"
   },
   "devDependencies": {
-    "eslint": "^10.2.1",
-    "prettier": "^3.8.3",
+    "oxfmt": "^0.51.0",
+    "oxlint": "^1.66.0",
     "typescript": "^6.0.3"
   },
   "volta": {

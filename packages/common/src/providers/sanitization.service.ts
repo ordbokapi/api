@@ -31,6 +31,6 @@ export class SanitizationService {
   sanitize(value: string): string {
     return value
       .replace(/[^a-zA-Z0-9æøåÆØÅéèÉÈáàÁÀäÄöÖüÜß\- ]/g, '')
-      .replace(/[\-]/g, '\\-');
+      .replace(/[-]/g, '\\-');
   }
 }

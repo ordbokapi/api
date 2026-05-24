@@ -4,8 +4,8 @@
   "private": true,
   "scripts": {
     "build": "tsc",
-    "format": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\"",
-    "lint": "eslint \"{src,apps,libs,test}/**/*.ts\" --fix"
+    "format": "oxfmt --write src/ test/",
+    "lint": "oxlint --fix src/"
   },
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -23,17 +23,10 @@
     "@nestjs/config": "^4.0.4"
   },
   "devDependencies": {
-    "@eslint/eslintrc": "^3.3.5",
-    "@eslint/js": "^10.0.1",
     "@types/node": "^24.0.0",
     "@types/pg": "^8.20.0",
-    "@typescript-eslint/eslint-plugin": "^8.59.1",
-    "@typescript-eslint/parser": "^8.59.1",
-    "eslint": "^10.2.1",
-    "eslint-config-prettier": "^10.1.8",
-    "eslint-plugin-prettier": "^5.5.5",
-    "globals": "^17.5.0",
-    "prettier": "^3.8.3",
+    "oxfmt": "^0.51.0",
+    "oxlint": "^1.66.0",
     "typescript": "^6.0.3"
   }
 }
