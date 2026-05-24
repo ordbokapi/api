@@ -1413,8 +1413,19 @@ export class WordService {
 
     const phrases: Article[] = [];
 
-    for (const element of data?.body?.definitions?.[0]?.elements ?? []) {
-      if (element.type_ === 'definition') {
+    const elements = data?.body?.definitions?.[0]?.elements?.some(
+      (d) => d.type_ === 'definition',
+    )
+      ? data.body.definitions![0].elements
+      : (data?.body?.definitions ?? []);
+
+    for (const element of elements) {
+      if (element.type_ === 'sub_article') {
+        phrases.push({
+          id: element.article_id!,
+          dictionary: article.dictionary,
+        });
+      } else if (element.type_ === 'definition') {
         for (const subElement of element.elements ?? []) {
           if (subElement.type_ === 'sub_article') {
             phrases.push({
@@ -1497,18 +1508,30 @@ export class WordService {
   }
 
   private transformPronunciation(
-    _article: Article,
+    article: Article,
     data: ArticleData,
   ): RichContent[] {
-    const content: RichContent[] = [];
+    const entries = (data?.body?.pronunciation ?? []).filter(
+      (e) => e.type_ === 'pronunciation' && e.content,
+    );
 
-    for (const element of data?.body?.pronunciation ?? []) {
-      if (element.type_ === 'pronunciation' && element.content) {
-        content.push(new RichContentBuilder().append(element.content).build());
-      }
+    if (entries.length === 0) {
+      return [];
     }
 
-    return content;
+    const builder = new RichContentBuilder();
+
+    for (const [i, element] of entries.entries()) {
+      if (i > 0) {
+        builder.append(' eller ');
+      }
+
+      builder.append(
+        this.formatText(article.dictionary, element as ArticleTextElement),
+      );
+    }
+
+    return [builder.build()];
   }
 
   private extractPlaceReferences(element: any, definition: Definition): void {
