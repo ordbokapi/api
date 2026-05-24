@@ -74,6 +74,7 @@ export class MeilisearchService implements OnModuleInit {
 
   #client!: Meilisearch;
   #logger = new Logger(MeilisearchService.name);
+  #indexCounts = new Map<string, { count: number; expiry: number }>();
   #httpAgent = new http.Agent({ keepAlive: true });
   #httpsAgent = new https.Agent({ keepAlive: true });
 
@@ -137,6 +138,138 @@ export class MeilisearchService implements OnModuleInit {
     return this.#client.index(this.#indexName(dictionary));
   }
 
+  async #getIndexCount(indexUid: string): Promise<number> {
+    const cached = this.#indexCounts.get(indexUid);
+    if (cached && cached.expiry > Date.now()) {
+      return cached.count;
+    }
+    const stats = await this.#client.index(indexUid).getStats();
+    this.#indexCounts.set(indexUid, {
+      count: stats.numberOfDocuments,
+      expiry: Date.now() + 5 * 60_000,
+    });
+    return stats.numberOfDocuments;
+  }
+
+  /**
+   * Without a search term, paginate per-index to avoid O(offset) cost of
+   * federated search.
+   */
+  async #sequentialSearch(
+    dictionaries: UibDictionary[],
+    options: {
+      facets?: string[];
+      limit: number;
+      offset: number;
+    },
+  ): Promise<MeiliSearchFacetResults> {
+    const indexUids = dictionaries.map((d) => this.#indexName(d));
+    const counts = await Promise.all(
+      indexUids.map((uid) => this.#getIndexCount(uid)),
+    );
+    const totalCount = counts.reduce((sum, c) => sum + c, 0);
+
+    let remaining = options.offset;
+    let startIndex = 0;
+
+    for (let i = 0; i < counts.length; i++) {
+      if (remaining < counts[i]) {
+        startIndex = i;
+        break;
+      }
+      remaining -= counts[i];
+      if (i === counts.length - 1) {
+        startIndex = i;
+        remaining = counts[i];
+      }
+    }
+
+    const hits: MeiliSearchHit[] = [];
+    let localOffset = remaining;
+    let needed = options.limit;
+    let facetDistribution: Record<string, Record<string, number>> | undefined;
+
+    for (let i = startIndex; i < indexUids.length && needed > 0; i++) {
+      const localLimit = Math.min(needed, counts[i] - localOffset);
+
+      if (localLimit <= 0) {
+        localOffset = 0;
+        continue;
+      }
+
+      const result = await this.#client.index(indexUids[i]).search('', {
+        limit: localLimit,
+        offset: localOffset,
+        ...(options.facets?.length ? { facets: options.facets } : undefined),
+      });
+
+      hits.push(...(result.hits as MeiliSearchHit[]));
+
+      if (options.facets?.length && result.facetDistribution) {
+        if (!facetDistribution) {
+          facetDistribution = result.facetDistribution;
+        } else {
+          for (const [facet, values] of Object.entries(
+            result.facetDistribution,
+          )) {
+            if (!facetDistribution[facet]) {
+              facetDistribution[facet] = values;
+            } else {
+              for (const [val, count] of Object.entries(values)) {
+                facetDistribution[facet][val] =
+                  (facetDistribution[facet][val] ?? 0) + count;
+              }
+            }
+          }
+        }
+      }
+
+      needed -= result.hits.length;
+      localOffset = 0;
+    }
+
+    if (options.facets?.length && !facetDistribution) {
+      facetDistribution = {};
+    }
+
+    if (options.facets?.length) {
+      const missingIndexes = indexUids.filter(
+        (_, i) =>
+          i < startIndex ||
+          i >
+            startIndex +
+              (options.limit > counts[startIndex] - remaining ? 1 : 0),
+      );
+
+      if (missingIndexes.length > 0) {
+        const facetResults = await Promise.all(
+          missingIndexes.map((uid) =>
+            this.#client
+              .index(uid)
+              .search('', { limit: 0, facets: options.facets }),
+          ),
+        );
+
+        for (const r of facetResults) {
+          if (r.facetDistribution) {
+            for (const [facet, values] of Object.entries(r.facetDistribution)) {
+              if (!facetDistribution![facet]) {
+                facetDistribution![facet] = values;
+              } else {
+                for (const [val, count] of Object.entries(values)) {
+                  facetDistribution![facet][val] =
+                    (facetDistribution![facet][val] ?? 0) + count;
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+
+    return { total: totalCount, hits, facetDistribution };
+  }
+
   async search(
     dictionary: UibDictionary,
     query: string,
@@ -169,25 +302,32 @@ export class MeilisearchService implements OnModuleInit {
       offset?: number;
     },
   ): Promise<MeiliSearchResults> {
+    const limit = options?.limit ?? 20;
+    const offset = options?.offset ?? 0;
+
+    if (!query && !options?.filter) {
+      const result = await this.#sequentialSearch(dictionaries, {
+        limit,
+        offset,
+      });
+      return { total: result.total, hits: result.hits };
+    }
+
     const queries = dictionaries.map((dict) => ({
       indexUid: this.#indexName(dict),
       q: query,
       filter: options?.filter,
-      limit: options?.limit ?? 20,
-      offset: options?.offset ?? 0,
     }));
 
-    const result = await this.#client.multiSearch({ queries });
+    const result = await this.#client.multiSearch({
+      federation: { limit, offset },
+      queries,
+    });
 
-    const allHits: MeiliSearchHit[] = [];
-    let total = 0;
-
-    for (const r of result.results) {
-      total += r.estimatedTotalHits ?? r.hits.length;
-      allHits.push(...(r.hits as MeiliSearchHit[]));
-    }
-
-    return { total, hits: allHits };
+    return {
+      total: result.estimatedTotalHits ?? result.hits.length,
+      hits: result.hits as MeiliSearchHit[],
+    };
   }
 
   async searchWithFacets(
@@ -201,44 +341,50 @@ export class MeilisearchService implements OnModuleInit {
       offset?: number;
     },
   ): Promise<MeiliSearchFacetResults> {
-    const queries = dictionaries.map((dict) => ({
-      indexUid: this.#indexName(dict),
-      q: query,
-      filter: options?.filter,
-      sort: options?.sort,
-      facets: options?.facets,
-      limit: options?.limit ?? 20,
-      offset: options?.offset ?? 0,
-    }));
+    const limit = options?.limit ?? 20;
+    const offset = options?.offset ?? 0;
 
-    const result = await this.#client.multiSearch({ queries });
-
-    const allHits: MeiliSearchHit[] = [];
-    let total = 0;
-    const mergedFacets: Record<string, Record<string, number>> = {};
-
-    for (const r of result.results) {
-      total += r.estimatedTotalHits ?? r.hits.length;
-      allHits.push(...(r.hits as MeiliSearchHit[]));
-
-      if (r.facetDistribution) {
-        for (const [attr, counts] of Object.entries(r.facetDistribution)) {
-          if (!mergedFacets[attr]) {
-            mergedFacets[attr] = {};
-          }
-          for (const [value, count] of Object.entries(counts)) {
-            mergedFacets[attr][value] =
-              (mergedFacets[attr][value] ?? 0) + count;
-          }
-        }
-      }
+    if (
+      !query &&
+      !options?.filter &&
+      (!options?.sort || options.sort.length === 0)
+    ) {
+      return this.#sequentialSearch(dictionaries, {
+        facets: options?.facets,
+        limit,
+        offset,
+      });
     }
 
+    const facetsByIndex: Record<string, string[]> = {};
+    const queries = dictionaries.map((dict) => {
+      const indexUid = this.#indexName(dict);
+      if (options?.facets?.length) {
+        facetsByIndex[indexUid] = options.facets;
+      }
+      return {
+        indexUid,
+        q: query,
+        filter: options?.filter,
+        sort: options?.sort,
+      };
+    });
+
+    const result = await this.#client.multiSearch({
+      federation: {
+        limit,
+        offset,
+        ...(Object.keys(facetsByIndex).length > 0
+          ? { facetsByIndex, mergeFacets: {} }
+          : undefined),
+      },
+      queries,
+    });
+
     return {
-      total,
-      hits: allHits,
-      facetDistribution:
-        Object.keys(mergedFacets).length > 0 ? mergedFacets : undefined,
+      total: result.estimatedTotalHits ?? result.hits.length,
+      hits: result.hits as MeiliSearchHit[],
+      facetDistribution: result.facetDistribution ?? undefined,
     };
   }
 
