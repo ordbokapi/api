@@ -51,7 +51,7 @@ For å starte Ordbok API lokalt, fylg desse trinna:
 2. Installer avhengnadar: `yarn`
 3. Opprett `.env` og symlenkjer til pakkene: `yarn mkenvlink`
    kopierer `template.env` til `.env` og opprettar symlenkjer slik at alle pakkene deler same konfigurasjon. Du kan endre portane og passorda i `.env` om du treng det.
-4. Start tenestene med Docker (PostgreSQL, MeiliSearch og Valkey): `yarn services:start`
+4. Start tenestene med Docker (PostgreSQL og MeiliSearch) og fylle databasen med ordbokdata: `yarn services:start`
 5. Bygg prosjektet: `yarn build`
 6. Start tenaren: `yarn start:dev`
 
@@ -59,7 +59,17 @@ API-et lyttar på port 3000 som standard. Opne http://localhost:3000/graphql for
 
 ### Fylle databasen med data
 
-API-et startar utan data. For å fylle databasen med ordbokdata, må du køyre [arbeidarprosessen](https://github.com/ordbokapi/worker) i eit eige terminalvindauge. Sjå README-en i arbeidarkodelageret for oppsett.
+Når databasen er tom fyller `yarn services:start` som standard lokaldata automatisk med siste dagleg snapshot frå Ordbok API.
+
+Vil du overskrive alle dataa i databasen med nyaste snapshot, køyr
+`yarn services:resync`.
+
+> [!NOTE]
+> Vil du slå av automatisk bootstrap heilt, set variabelen til tom verdi og køyr [arbeidarprosessen](https://github.com/ordbokapi/worker) sjølv i eit eige terminalvindauga for å synkronisere frå UiB.
+>
+> **Dette er _ikkje_ tilrådd**, sidan det vil taka veldig lang tid å synkronisere dataa, og det rammar tenestene til UiB med mange førespurnader. Gjer dette berre om du veit kva du gjer og har god grunn til det.
+
+Bootstrap-oppsettet brukar `ORDBOKAPI_WORKER_IMAGE`. Standardverdien peikar til `ghcr.io/ordbokapi/worker:latest`, men du kan overstyre han i `.env` om du vil bruke eit anna bilete. Vil du overstyre kjelda, set `SNAPSHOT_PUBLIC_MANIFEST_URL` til ein annan URL.
 
 ## Bidrag
 

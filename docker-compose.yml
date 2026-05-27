@@ -16,7 +16,7 @@
 # You should have received a copy of the GNU Affero General Public License
 # along with Ordbok API. If not, see <https://www.gnu.org/licenses/>.
 
-name: ordbokapi-local-dev
+name: ordbokapi-local-dev-api
 services:
   db:
     image: postgres:18-alpine
@@ -29,19 +29,35 @@ services:
     volumes:
       - ./.pgdata:/var/lib/postgresql
 
+  bootstrap:
+    image: ${ORDBOKAPI_WORKER_IMAGE:-ghcr.io/ordbokapi/worker:latest}
+    depends_on:
+      db:
+        condition: service_started
+      meilisearch:
+        condition: service_started
+    environment:
+      DATABASE_URL: postgres://ordbokapi:${POSTGRES_PASSWORD:-password}@db:5432/ordbokapi
+      MEILI_URL: http://meilisearch:7700
+      MEILI_API_KEY: ${MEILI_API_KEY:-masterkey}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-password}
+      SNAPSHOT_PUBLIC_MANIFEST_URL: ${SNAPSHOT_PUBLIC_MANIFEST_URL-https://snapshots.ordbokapi.org/live/latest/manifest.json}
+      BOOTSTRAP_FORCE_RESYNC: ${BOOTSTRAP_FORCE_RESYNC:-}
+    entrypoint:
+      - /usr/bin/tini
+      - --
+      - ordbokapi-bootstrap
+    restart: 'no'
+    volumes:
+      - ./.bootstrap:/bootstrap
+
   meilisearch:
     image: getmeili/meilisearch:v1
     environment:
       MEILI_MASTER_KEY: ${MEILI_API_KEY:-masterkey}
       MEILI_ENV: development
+      MEILI_EXPERIMENTAL_CONTAINS_FILTER: 'true'
     ports:
       - '${MEILI_PORT:-7700}:7700'
     volumes:
       - ./.meilidata:/meili_data
-
-  valkey:
-    image: valkey/valkey:9
-    ports:
-      - '${REDIS_PORT:-6379}:6379'
-    volumes:
-      - ./.valkey:/data

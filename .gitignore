@@ -70,10 +70,10 @@ junit.xml
 !.vscode/extensions.json
 
 # Docker volumes
-.pgdata
-.meilidata
-.valkey
-.valkey-backup
+.bootstrap*
+.pgdata*
+.meilidata*
+.valkey*
 
 # Env
 .env

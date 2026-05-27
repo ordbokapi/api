@@ -1,34 +1,35 @@
 {
   "name": "ordbokapi-monorepo",
   "version": "0.0.1",
-  "description": "",
-  "author": "",
   "private": true,
-  "license": "ISC",
-  "engines": {
-    "node": ">=22.5.1",
-    "yarn": ">=4.3.1"
-  },
-  "cacheDirectories": [
-    ".yarn/cache"
-  ],
+  "description": "",
+  "license": "AGPL-3.0-or-later",
+  "author": "",
   "workspaces": [
     "packages/*"
   ],
   "scripts": {
     "build": "yarn workspaces foreach -ptA --exclude ordbokapi-monorepo run build",
     "mkenvlink": "node mkenvlink.mjs",
-    "services:start": "docker-compose -f ./docker-compose.yml up -d",
-    "services:stop": "docker-compose -f ./docker-compose.yml down"
+    "services:start": "docker compose -f ./docker-compose.yml up bootstrap && docker compose -f ./docker-compose.yml up -d",
+    "services:stop": "docker compose -f ./docker-compose.yml down",
+    "services:resync": "BOOTSTRAP_FORCE_RESYNC=true docker compose -f ./docker-compose.yml up bootstrap"
   },
   "devDependencies": {
     "oxfmt": "^0.52.0",
     "oxlint": "^1.66.0",
     "typescript": "^6.0.3"
   },
+  "engines": {
+    "node": ">=22.5.1",
+    "yarn": ">=4.3.1"
+  },
   "volta": {
     "node": "24.16.0",
     "yarn": "4.15.0"
   },
-  "packageManager": "yarn@4.15.0"
+  "packageManager": "yarn@4.15.0",
+  "cacheDirectories": [
+    ".yarn/cache"
+  ]
 }
