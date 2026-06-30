@@ -2080,11 +2080,11 @@ __metadata:
   linkType: hard
 
 "@testcontainers/postgresql@npm:^12.0.0":
-  version: 12.0.3
-  resolution: "@testcontainers/postgresql@npm:12.0.3"
+  version: 12.0.4
+  resolution: "@testcontainers/postgresql@npm:12.0.4"
   dependencies:
-    testcontainers: "npm:^12.0.3"
-  checksum: 10c0/bd020d2bea1f8ce3801e224702b3bd2cb1b648b7cdf7172bfba062e54588b986c1e33773054b44d3a06aa8455a45a32cc08d4083574299b1f75c04c4e090d549
+    testcontainers: "npm:^12.0.4"
+  checksum: 10c0/6ee99a1ac42bcef288b3550297df1eeedf24e11d44273c854630be5951ba923947fec5fc8a07abfff6f42da27a508016c08294876b5ece7bb929c9f515e0bef3
   languageName: node
   linkType: hard
 
@@ -4667,10 +4667,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"get-port@npm:^7.2.0":
-  version: 7.2.0
-  resolution: "get-port@npm:7.2.0"
-  checksum: 10c0/4ed741d9008ad15a24e2098c8971918025cc8241624245e704ecc62bb65160db5c79de5d7112acdaabccbe0714cd0704008c74d43a1f7a24a5875e58b84621be
+"get-port@npm:^5.1.1":
+  version: 5.1.1
+  resolution: "get-port@npm:5.1.1"
+  checksum: 10c0/2873877a469b24e6d5e0be490724a17edb39fafc795d1d662e7bea951ca649713b4a50117a473f9d162312cb0e946597bd0e049ed2f866e79e576e8e213d3d1c
   languageName: node
   linkType: hard
 
@@ -7579,9 +7579,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"testcontainers@npm:^12.0.0, testcontainers@npm:^12.0.3":
-  version: 12.0.3
-  resolution: "testcontainers@npm:12.0.3"
+"testcontainers@npm:^12.0.0, testcontainers@npm:^12.0.4":
+  version: 12.0.4
+  resolution: "testcontainers@npm:12.0.4"
   dependencies:
     "@balena/dockerignore": "npm:^1.0.2"
     "@types/dockerode": "npm:^4.0.1"
@@ -7591,14 +7591,14 @@ __metadata:
     debug: "npm:^4.4.3"
     docker-compose: "npm:^1.4.2"
     dockerode: "npm:^5.0.0"
-    get-port: "npm:^7.2.0"
+    get-port: "npm:^5.1.1"
     proper-lockfile: "npm:^4.1.2"
     properties-reader: "npm:^3.0.1"
     ssh-remote-port-forward: "npm:^1.0.4"
     tar-fs: "npm:^3.1.2"
     tmp: "npm:^0.2.7"
-    undici: "npm:^8.3.0"
-  checksum: 10c0/9fccd24297288eb6fd5b9992e5bc634abf871157477e2dba98d6d3836e805f89a57d0886f7d9d65cb0b476c6f581a4706f09ed0c4090fab01f00e49ec34322df
+    undici: "npm:^8.5.0"
+  checksum: 10c0/db92fd2d2a6abbec9ad37a2a43dc206a7e29af5ad42f3a45b76655687728b8a0b1489c8a76029d34f8da8efb5fd6f4d17a7331386c8743ba9e25ab245a9ea4b1
   languageName: node
   linkType: hard
 
@@ -7915,10 +7915,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"undici@npm:^8.3.0":
-  version: 8.4.1
-  resolution: "undici@npm:8.4.1"
-  checksum: 10c0/45440b3f64c98c7024bc6373faa35bead22f7dda48826a29d37341318513da5de8219f0844f6bb7353d2a6c3d1132a34afa21eafd0d313761916e4f6841c046f
+"undici@npm:^8.5.0":
+  version: 8.5.0
+  resolution: "undici@npm:8.5.0"
+  checksum: 10c0/7c25fd96a4dcc607b905995f6feec948f74a6759cadbea4c6eb9402517aab4887987c8001c80d482297d04f975f44a383325b89577ac21e587983ed088408065
   languageName: node
   linkType: hard
 
