@@ -16,7 +16,7 @@
     "services:resync": "BOOTSTRAP_FORCE_RESYNC=true docker compose -f ./docker-compose.yml up bootstrap"
   },
   "devDependencies": {
-    "oxfmt": "^0.57.0",
+    "oxfmt": "^0.60.0",
     "oxlint": "^1.66.0",
     "typescript": "^6.0.3"
   },
