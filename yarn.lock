@@ -2356,13 +2356,13 @@ __metadata:
   linkType: hard
 
 "@types/pg@npm:^8.20.0":
-  version: 8.20.1
-  resolution: "@types/pg@npm:8.20.1"
+  version: 8.20.3
+  resolution: "@types/pg@npm:8.20.3"
   dependencies:
     "@types/node": "npm:*"
     pg-protocol: "npm:*"
     pg-types: "npm:^2.2.0"
-  checksum: 10c0/bcf2887150822cb0e6a9f5a620d2586f2323f592e13a9645738dda1177e8394a6236d43d12a8cc28e1786bd78ed5fc4fd86929a1c98b3aa4f7f53a9ce916bade
+  checksum: 10c0/c3582162690a0bd1a5705981825204de071314ce9167bec20c18b8ef8975518cfbf4c8585d744a447dfd41b65cf9a50840b077879d80fbe9ecc69302b844cb23
   languageName: node
   linkType: hard
 
