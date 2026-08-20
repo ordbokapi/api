@@ -64,7 +64,7 @@ describe('query complexity estimators', () => {
     expect(complexityOf(nestedPhrases(4))).toBeGreaterThan(
       complexityOf(nestedPhrases(3)) * 9,
     );
-    expect(complexityOf(nestedPhrases(6))).toBeGreaterThan(50000);
+    expect(complexityOf(nestedPhrases(6))).toBeGreaterThan(100000);
   });
 
   test('use an explicit limit argument as the list size', () => {

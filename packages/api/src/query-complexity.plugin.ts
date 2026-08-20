@@ -56,7 +56,7 @@ export const complexityEstimators: ComplexityEstimator[] = [
 @Plugin()
 export class QueryComplexityPlugin implements ApolloServerPlugin {
   readonly #maxComplexity =
-    Number.parseInt(process.env.GRAPHQL_MAX_COMPLEXITY ?? '', 10) || 50000;
+    Number.parseInt(process.env.GRAPHQL_MAX_COMPLEXITY ?? '', 10) || 100000;
 
   constructor(private readonly schemaHost: GraphQLSchemaHost) {}
 
