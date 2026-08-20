@@ -3,8 +3,9 @@
     "**/.yarn": true,
     "**/.pnp.*": true
   },
-  "typescript.tsdk": ".yarn/sdks/typescript/lib",
-  "typescript.enablePromptUseWorkspaceTsdk": true,
+  "js/ts.tsdk.path": ".yarn/sdks/typescript/lib",
+  "js/ts.tsdk.promptToUseWorkspaceVersion": true,
+  "js/ts.experimental.useTsgo": false,
   "editor.formatOnSave": true,
   "editor.defaultFormatter": "oxc.oxc-vscode",
   "editor.rulers": [80, 120],
