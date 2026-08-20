@@ -19,5 +19,4 @@
 export * from './database.service';
 export * from './meilisearch.service';
 export * from './sanitization.service';
-export * from './uib-api.service';
 export * from './uib-db.service';
