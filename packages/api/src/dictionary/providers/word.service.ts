@@ -819,12 +819,10 @@ export class WordService {
         paradigm.id = paradigmInfo.paradigm_id;
         paradigm.inflections = paradigmInfo.inflection
           .filter((inf: any) => inf.tags.length > 0 || inf.word_form)
-          .map(
-            (inf: any): Inflection => ({
-              tags: inf.tags.map((tag: string) => inflectionTagMapping[tag]),
-              wordForm: inf.word_form,
-            }),
-          );
+          .map((inf: any): Inflection => ({
+            tags: inf.tags.map((tag: string) => inflectionTagMapping[tag]),
+            wordForm: inf.word_form,
+          }));
         paradigm.tags = paradigmInfo.tags
           .map((tag: string) => inflectionTagMapping[tag])
           .filter((tag: InflectionTag | undefined) => tag !== undefined);

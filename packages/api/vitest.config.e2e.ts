@@ -40,6 +40,11 @@ export default defineConfig({
   test: {
     include: ['test/**/*.e2e-spec.ts'],
     globalSetup: ['test/global-e2e-setup.ts'],
+    server: {
+      deps: {
+        inline: ['graphql-query-complexity'],
+      },
+    },
     testTimeout: 30_000,
     hookTimeout: 120_000,
     maxWorkers: 1,

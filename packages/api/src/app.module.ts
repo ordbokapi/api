@@ -25,6 +25,7 @@ import { ApolloServerPluginLandingPageLocalDefault } from '@apollo/server/plugin
 import { ApolloServerPluginInlineTrace } from '@apollo/server/plugin/inlineTrace';
 import { AppController } from './app.controller';
 import { DictionaryModule } from './dictionary/dictionary.module';
+import { QueryComplexityPlugin } from './query-complexity.plugin';
 import { RequestLoggerMiddleware } from './request-logger.middleware';
 
 @Module({
@@ -277,6 +278,7 @@ fragment richContentFields on RichContent {
     DictionaryModule,
   ],
   controllers: [AppController],
+  providers: [QueryComplexityPlugin],
 })
 export class AppModule implements NestModule {
   configure(consumer: MiddlewareConsumer): void {

@@ -40,6 +40,11 @@ export default defineConfig({
   test: {
     include: ['src/**/*.spec.ts'],
     setupFiles: ['./vitest.setup.ts'],
+    server: {
+      deps: {
+        inline: ['graphql-query-complexity'],
+      },
+    },
     coverage: {
       provider: 'v8',
       reportsDirectory: './coverage',

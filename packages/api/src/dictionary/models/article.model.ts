@@ -80,6 +80,7 @@ export class Article {
     nullable: true,
     description:
       'Liste over artiklar som inkluderer denne artikkelen som ein del av eit uttrykk.',
+    complexity: ({ childComplexity }) => childComplexity * 25 + 25,
   })
   phrases?: Article[];
 

@@ -26,6 +26,7 @@ import { ArticleRelationshipType } from './relationship-type.model';
 export abstract class ArticleRelationship {
   @Field(() => Article, {
     description: 'Artikkelen som er relatert til.',
+    complexity: ({ childComplexity }) => childComplexity + 25,
   })
   article: Article;
 
