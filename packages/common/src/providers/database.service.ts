@@ -32,7 +32,11 @@ export class DatabaseService {
       this.config.get<string>('DATABASE_URL') ||
       'postgres://localhost:5432/ordbokapi';
 
-    this.#pool = new pg.Pool({ connectionString: url });
+    this.#pool = new pg.Pool({
+      connectionString: url,
+      connectionTimeoutMillis: 10000,
+      statement_timeout: 15000,
+    });
     this.#db = drizzle(this.#pool, { schema });
   }
 

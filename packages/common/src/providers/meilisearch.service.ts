@@ -111,6 +111,13 @@ export class MeilisearchService implements OnModuleInit {
         },
       );
       req.on('error', reject);
+      req.setTimeout(15000, () => {
+        req.destroy(
+          new Error(
+            `Meilisearch request timed out after 15000 ms: ${urlStr}`,
+          ),
+        );
+      });
       if (body) req.write(body);
       req.end();
     });
