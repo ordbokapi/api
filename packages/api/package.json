@@ -57,7 +57,7 @@
     "@types/pg": "^8.20.0",
     "@types/request-ip": "^0.0.41",
     "@types/supertest": "^7.2.0",
-    "@vitest/coverage-v8": "^4.1.5",
+    "@vitest/coverage-v8": "^5.0.0",
     "dotenv": "^17.4.2",
     "json-schema-to-typescript": "^15.0.4",
     "meilisearch": "^0.60.0",
@@ -72,6 +72,6 @@
     "ts-node": "^10.9.2",
     "tsconfig-paths": "^4.2.0",
     "typescript": "^6.0.3",
-    "vitest": "^4.1.5"
+    "vitest": "^5.0.0"
   }
 }
