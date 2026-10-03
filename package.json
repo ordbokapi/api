@@ -26,9 +26,9 @@
   },
   "volta": {
     "node": "24.21.0",
-    "yarn": "4.18.0"
+    "yarn": "4.18.1"
   },
-  "packageManager": "yarn@4.18.0",
+  "packageManager": "yarn@4.18.1",
   "cacheDirectories": [
     ".yarn/cache"
   ]
