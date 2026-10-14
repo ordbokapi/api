@@ -2065,11 +2065,11 @@ __metadata:
   linkType: hard
 
 "@testcontainers/postgresql@npm:^12.0.0":
-  version: 12.2.0
-  resolution: "@testcontainers/postgresql@npm:12.2.0"
+  version: 12.2.1
+  resolution: "@testcontainers/postgresql@npm:12.2.1"
   dependencies:
-    testcontainers: "npm:^12.2.0"
-  checksum: 10c0/99983ececc6f3eb4f3cffe9d47eb88232b60f23a56ce1383247fef6143e01a5069c70024e41954fa4ee27c8f7c7e336b4ed500c7a4adcf2b1def174f3071cb84
+    testcontainers: "npm:^12.2.1"
+  checksum: 10c0/5fc78b432e98860d9d6fc9fe3c2d24b4ea2502f1242bfe554d4ddd7a46ecfe68d15bfc24161c24eb26c6e1be422564eaa31194ed5578e4025605b8b406bbbf6d
   languageName: node
   linkType: hard
 
@@ -7522,9 +7522,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"testcontainers@npm:^12.0.0, testcontainers@npm:^12.2.0":
-  version: 12.2.0
-  resolution: "testcontainers@npm:12.2.0"
+"testcontainers@npm:^12.0.0, testcontainers@npm:^12.2.1":
+  version: 12.2.1
+  resolution: "testcontainers@npm:12.2.1"
   dependencies:
     "@balena/dockerignore": "npm:^1.0.2"
     "@types/dockerode": "npm:^4.0.1"
@@ -7540,8 +7540,8 @@ __metadata:
     ssh-remote-port-forward: "npm:^1.0.4"
     tar-fs: "npm:^3.1.3"
     tmp: "npm:^0.2.7"
-    undici: "npm:^8.10.2"
-  checksum: 10c0/07747d0597c899a838fa8440a194dec46b318d56cbdc5b799a5b6e06dac2f57e769183ccb238caeb9cb2766b1e187d6f4dfcfdce3bac33dd07af246622d6a5b9
+    undici: "npm:^8.11.2"
+  checksum: 10c0/74c19272a19c18c163867fb9cf7fd8b4b3df043bbdd0d6039bd2aec44ab1b9951e792891998406679db9dc242b8b056f495e68dfa1fca47a7ba532088bca9e31
   languageName: node
   linkType: hard
 
@@ -7859,7 +7859,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"undici@npm:^8.10.2":
+"undici@npm:^8.11.2":
   version: 8.11.2
   resolution: "undici@npm:8.11.2"
   checksum: 10c0/106f6991178fb7562fd90cdec7993c5f807a9428682306091f0c4b27fc474ec291f868e29972c6252988bf061ad193df943b3b99e775be157a28d92bbb95699d
