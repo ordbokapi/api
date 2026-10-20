@@ -61,7 +61,7 @@
     "dotenv": "^18.0.0",
     "json-schema-to-typescript": "^16.0.0",
     "meilisearch": "^0.62.0",
-    "oxfmt": "^0.68.0",
+    "oxfmt": "^0.74.0",
     "oxlint": "^1.66.0",
     "pg": "^8.20.0",
     "run-on-tsc-build": "workspace:^",
