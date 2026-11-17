@@ -79,5 +79,5 @@ jobs:
     steps:
       - name: Trigger deployment
         run: |
-          curl -f "${{ secrets.DEPLOY_WEBHOOK_URL }}" \
+          curl -f -X POST "${{ secrets.DEPLOY_WEBHOOK_URL }}" \
             -H "Authorization: Bearer ${{ secrets.DEPLOY_WEBHOOK_SECRET }}"
