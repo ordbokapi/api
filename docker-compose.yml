@@ -19,7 +19,7 @@
 name: ordbokapi-local-dev-api
 services:
   db:
-    image: postgres:18-alpine
+    image: postgres:19-alpine
     environment:
       POSTGRES_USER: ordbokapi
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-password}
